@@ -23,7 +23,6 @@
  */
 package com.linjicong.cloud.stat.dao.typehandle.impl.huawei.rds;
 
-import com.huaweicloud.sdk.rds.v3.model.ChargeInfoResponse;
 import com.huaweicloud.sdk.rds.v3.model.Volume;
 import com.linjicong.cloud.stat.dao.typehandle.JsonTypeHandler;
 

@@ -25,7 +25,6 @@ package com.linjicong.cloud.stat.dao.typehandle.impl.huawei.obs;
 
 import com.linjicong.cloud.stat.dao.typehandle.JsonTypeHandler;
 import com.obs.services.model.AccessControlList;
-import com.obs.services.model.Owner;
 
 /**
  * @author linjicong

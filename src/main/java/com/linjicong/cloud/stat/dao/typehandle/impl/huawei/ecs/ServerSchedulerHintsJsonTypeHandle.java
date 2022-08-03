@@ -23,7 +23,6 @@
  */
 package com.linjicong.cloud.stat.dao.typehandle.impl.huawei.ecs;
 
-import com.huaweicloud.sdk.ecs.v2.model.ServerFault;
 import com.huaweicloud.sdk.ecs.v2.model.ServerSchedulerHints;
 import com.linjicong.cloud.stat.dao.typehandle.JsonTypeHandler;
 

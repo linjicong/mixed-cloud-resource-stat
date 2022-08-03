@@ -24,7 +24,6 @@
 package com.linjicong.cloud.stat.dao.typehandle.impl.huawei.ecs;
 
 import com.huaweicloud.sdk.ecs.v2.model.ServerFlavor;
-import com.huaweicloud.sdk.ecs.v2.model.ServerImage;
 import com.linjicong.cloud.stat.dao.typehandle.JsonTypeHandler;
 
 /**

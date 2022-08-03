@@ -43,7 +43,7 @@ public class CommonSelectProvider extends MapperTemplate {
         //开始拼sql
         StringBuilder sql = new StringBuilder();
         sql.append(SqlHelper.deleteFromTable(entityClass, tableName(entityClass)));
-        sql.append("WHERE stat_date = #{statDate}");
+        sql.append("WHERE date_format(stat_date,'%Y-%m-%d') = #{statDate}");
         return sql.toString();
     }
 }

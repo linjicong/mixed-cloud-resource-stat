@@ -23,12 +23,10 @@
  */
 package com.linjicong.cloud.stat.dao.entity.hcloud;
 
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.date.DateUtil;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.huaweicloud.sdk.dcs.v2.model.InstanceListInfo;
-import com.huaweicloud.sdk.dds.v3.model.*;
+import com.huaweicloud.sdk.dds.v3.model.BackupStrategyForItemResponse;
+import com.huaweicloud.sdk.dds.v3.model.DatastoreItem;
+import com.huaweicloud.sdk.dds.v3.model.GroupResponseItem;
+import com.huaweicloud.sdk.dds.v3.model.TagResponse;
 import com.linjicong.cloud.stat.dao.entity.BasicEntity;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.Data;
@@ -117,15 +115,4 @@ public class HCloudDds extends BasicEntity {
     @Column(columnDefinition="json")
     @Type(type = "json")
     private List<TagResponse> tags ;
-
-    /**
-     * 接口数据转换
-     *
-     */
-    public static HCloudDds fromQueryInstanceResponse(QueryInstanceResponse queryInstanceResponse) {
-        HCloudDds hCloudDds = new HCloudDds();
-        BeanUtil.copyProperties(queryInstanceResponse, hCloudDds);
-        hCloudDds.setStatDate(DateUtil.today());
-        return hCloudDds;
-    }
 }

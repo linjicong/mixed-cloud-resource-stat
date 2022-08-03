@@ -32,6 +32,9 @@ import com.huaweicloud.sdk.dds.v3.region.DdsRegion;
 import com.huaweicloud.sdk.ecs.v2.EcsClient;
 import com.huaweicloud.sdk.ecs.v2.model.ListServersDetailsRequest;
 import com.huaweicloud.sdk.ecs.v2.region.EcsRegion;
+import com.huaweicloud.sdk.elb.v3.ElbClient;
+import com.huaweicloud.sdk.elb.v3.model.ListLoadBalancersRequest;
+import com.huaweicloud.sdk.elb.v3.region.ElbRegion;
 import com.huaweicloud.sdk.rds.v3.RdsClient;
 import com.huaweicloud.sdk.rds.v3.model.ListInstancesRequest;
 import com.huaweicloud.sdk.rds.v3.region.RdsRegion;
@@ -41,11 +44,11 @@ import com.huaweicloud.sdk.sfsturbo.v1.region.SFSTurboRegion;
 import com.linjicong.cloud.stat.dao.constant.hcloud.ObsEndpoint;
 import com.linjicong.cloud.stat.dao.entity.CloudConf;
 import com.linjicong.cloud.stat.dao.entity.hcloud.*;
+import com.linjicong.cloud.stat.util.BeanUtils;
 import com.obs.services.ObsClient;
 import com.obs.services.model.ListBucketsRequest;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author linjicong
@@ -73,10 +76,7 @@ public class HCloudClient{
                 .withRegion(EcsRegion.CN_SOUTH_1)
                 .build();
 
-        return client.listServersDetails(new ListServersDetailsRequest().withLimit(1000))
-                .getServers().parallelStream()
-                .map(HCloudEcs::fromServerDetail)
-                .collect(Collectors.toList());
+        return BeanUtils.cgLibCopyList(client.listServersDetails(new ListServersDetailsRequest().withLimit(1000)).getServers(), HCloudEcs::new);
     }
 
     public List<HCloudRds> listRds() {
@@ -85,10 +85,7 @@ public class HCloudClient{
                 .withRegion(RdsRegion.CN_SOUTH_1)
                 .build();
 
-        return client.listInstances(new ListInstancesRequest().withLimit(100))
-                .getInstances().parallelStream()
-                .map(HCloudRds::fromInstanceResponse)
-                .collect(Collectors.toList());
+        return BeanUtils.cgLibCopyList(client.listInstances(new ListInstancesRequest().withLimit(100)).getInstances(),HCloudRds::new);
     }
 
     public List<HCloudDcs> listDcs() {
@@ -97,10 +94,8 @@ public class HCloudClient{
                 .withRegion(DcsRegion.CN_SOUTH_1)
                 .build();
 
-        return client.listInstances(new com.huaweicloud.sdk.dcs.v2.model.ListInstancesRequest().withLimit(1000))
-                .getInstances().parallelStream()
-                .map(HCloudDcs::fromInstanceListInfo)
-                .collect(Collectors.toList());
+        return BeanUtils.cgLibCopyList(client.listInstances(new com.huaweicloud.sdk.dcs.v2.model.ListInstancesRequest().withLimit(1000)).getInstances(),HCloudDcs::new);
+
     }
 
     public List<HCloudDds> listDds() {
@@ -109,17 +104,11 @@ public class HCloudClient{
                 .withRegion(DdsRegion.CN_SOUTH_1)
                 .build();
 
-        return client.listInstances(new com.huaweicloud.sdk.dds.v3.model.ListInstancesRequest().withLimit(100))
-                .getInstances().parallelStream()
-                .map(HCloudDds::fromQueryInstanceResponse)
-                .collect(Collectors.toList());
+        return BeanUtils.cgLibCopyList(client.listInstances(new com.huaweicloud.sdk.dds.v3.model.ListInstancesRequest().withLimit(100)).getInstances(),HCloudDds::new);
     }
 
     public List<HCloudObs> listObs() {
-        return obsClient.listBucketsV2(new ListBucketsRequest())
-                .getBuckets().parallelStream()
-                .map(HCloudObs::fromObsBucket)
-                .collect(Collectors.toList());
+        return BeanUtils.cgLibCopyList(obsClient.listBucketsV2(new ListBucketsRequest()).getBuckets(),HCloudObs::new);
     }
 
     public List<HCloudSfs> listSfs() {
@@ -128,9 +117,15 @@ public class HCloudClient{
                 .withRegion(SFSTurboRegion.CN_SOUTH_1)
                 .build();
 
-        return client.listShares(new ListSharesRequest().withLimit(200))
-                .getShares().parallelStream()
-                .map(HCloudSfs::fromShares)
-                .collect(Collectors.toList());
+        return BeanUtils.cgLibCopyList(client.listShares(new ListSharesRequest().withLimit(200)).getShares(),HCloudSfs::new);
+    }
+
+    public List<HCloudElb> listElb() {
+        ElbClient client = ElbClient.newBuilder()
+                .withCredential(auth)
+                .withRegion(ElbRegion.CN_SOUTH_1)
+                .build();
+
+        return BeanUtils.cgLibCopyList(client.listLoadBalancers(new ListLoadBalancersRequest().withLimit(200)).getLoadbalancers(), HCloudElb::new);
     }
 }

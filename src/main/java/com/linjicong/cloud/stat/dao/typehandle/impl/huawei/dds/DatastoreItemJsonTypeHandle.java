@@ -24,7 +24,6 @@
 package com.linjicong.cloud.stat.dao.typehandle.impl.huawei.dds;
 
 import com.huaweicloud.sdk.dds.v3.model.DatastoreItem;
-import com.huaweicloud.sdk.rds.v3.model.BackupStrategyForResponse;
 import com.linjicong.cloud.stat.dao.typehandle.JsonTypeHandler;
 
 /**

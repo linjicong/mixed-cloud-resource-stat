@@ -23,25 +23,16 @@
  */
 package com.linjicong.cloud.stat.dao.entity.hcloud;
 
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.date.LocalDateTimeUtil;
 import com.huaweicloud.sdk.ecs.v2.model.*;
-//import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import com.linjicong.cloud.stat.dao.entity.BasicEntity;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
-//import org.hibernate.annotations.Generated;
-//import org.hibernate.annotations.GenerationTime;
-//import org.hibernate.annotations.Type;
-//import org.hibernate.annotations.TypeDef;
 
-import javax.persistence.*;
-import java.time.LocalDateTime;
-import java.util.Date;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.List;
 import java.util.Map;
 
@@ -194,18 +185,4 @@ public class HCloudEcs extends BasicEntity {
     @Column(columnDefinition="json")
     @Type(type = "json")
     private Hypervisor hypervisor;
-
-
-    /**
-     * 接口数据转换
-     *
-     * @param serverDetail serverDetail
-     * @return HCloudEcs
-     */
-    public static HCloudEcs fromServerDetail(ServerDetail serverDetail) {
-        HCloudEcs hCloudEcs = new HCloudEcs();
-        BeanUtil.copyProperties(serverDetail, hCloudEcs);
-        hCloudEcs.setStatDate(DateUtil.today());
-        return hCloudEcs;
-    }
 }

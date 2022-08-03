@@ -28,7 +28,6 @@ import com.linjicong.cloud.stat.client.HCloudClient;
 import com.linjicong.cloud.stat.dao.entity.CloudConf;
 import com.linjicong.cloud.stat.dao.entity.hcloud.HCloudEcs;
 import com.linjicong.cloud.stat.dao.mapper.HCloudEcsMapper;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;

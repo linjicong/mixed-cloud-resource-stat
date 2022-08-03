@@ -23,12 +23,8 @@
  */
 package com.linjicong.cloud.stat.dao.mapper;
 
-import com.linjicong.cloud.stat.dao.entity.hcloud.HCloudDcs;
 import com.linjicong.cloud.stat.dao.entity.hcloud.HCloudDds;
-import org.apache.ibatis.annotations.Delete;
 import org.springframework.stereotype.Repository;
-import tk.mybatis.mapper.common.BaseMapper;
-import tk.mybatis.mapper.common.special.InsertListMapper;
 
 /**
  * @author linjicong

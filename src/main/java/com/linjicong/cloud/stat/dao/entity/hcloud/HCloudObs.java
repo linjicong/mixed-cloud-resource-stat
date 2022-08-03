@@ -23,10 +23,11 @@
  */
 package com.linjicong.cloud.stat.dao.entity.hcloud;
 
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.date.DateUtil;
 import com.linjicong.cloud.stat.dao.entity.BasicEntity;
-import com.obs.services.model.*;
+import com.obs.services.model.AccessControlList;
+import com.obs.services.model.BucketTypeEnum;
+import com.obs.services.model.Owner;
+import com.obs.services.model.StorageClassEnum;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.Data;
 import org.hibernate.annotations.Type;
@@ -72,16 +73,4 @@ public class HCloudObs extends BasicEntity {
 
     @Column(name="bucket_type_enum")
     private BucketTypeEnum bucketTypeEnum;
-
-    /**
-     * 接口数据转换
-     *
-     */
-    public static HCloudObs fromObsBucket(ObsBucket obsBucket) {
-        HCloudObs hCloudObs = new HCloudObs();
-        BeanUtil.copyProperties(obsBucket, hCloudObs);
-        hCloudObs.setBucketTypeEnum(obsBucket.getBucketType());
-        hCloudObs.setStatDate(DateUtil.today());
-        return hCloudObs;
-    }
 }

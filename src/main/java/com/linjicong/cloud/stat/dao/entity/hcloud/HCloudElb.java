@@ -21,18 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.linjicong.cloud.stat.dao.typehandle.impl.huawei.ecs;
-
-import com.huaweicloud.sdk.ecs.v2.model.ServerImage;
-import com.linjicong.cloud.stat.dao.typehandle.JsonTypeHandler;
+package com.linjicong.cloud.stat.dao.entity.hcloud;
 
 /**
  * @author linjicong
- * @date 2022-07-28-14:36
  * @version 1.0.0
+ * @date 2022-08-03-10:17
  */
-public class ServerImageJsonTypeHandle extends JsonTypeHandler<ServerImage> {
-    public ServerImageJsonTypeHandle() {
-        super(ServerImage.class);
-    }
+public class HCloudElb {
 }

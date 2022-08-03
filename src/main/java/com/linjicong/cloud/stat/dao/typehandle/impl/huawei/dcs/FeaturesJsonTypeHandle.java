@@ -24,7 +24,6 @@
 package com.linjicong.cloud.stat.dao.typehandle.impl.huawei.dcs;
 
 import com.huaweicloud.sdk.dcs.v2.model.Features;
-import com.huaweicloud.sdk.rds.v3.model.Datastore;
 import com.linjicong.cloud.stat.dao.typehandle.JsonTypeHandler;
 
 /**

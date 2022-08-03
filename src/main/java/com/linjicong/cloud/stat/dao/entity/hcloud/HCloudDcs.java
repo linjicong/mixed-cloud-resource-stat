@@ -23,10 +23,7 @@
  */
 package com.linjicong.cloud.stat.dao.entity.hcloud;
 
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.date.DateUtil;
 import com.huaweicloud.sdk.dcs.v2.model.Features;
-import com.huaweicloud.sdk.dcs.v2.model.InstanceListInfo;
 import com.huaweicloud.sdk.dcs.v2.model.ResourceTag;
 import com.linjicong.cloud.stat.dao.entity.BasicEntity;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
@@ -137,15 +134,4 @@ public class HCloudDcs extends BasicEntity {
     private Features features;
 
     private String subStatus;
-
-    /**
-     * 接口数据转换
-     *
-     */
-    public static HCloudDcs fromInstanceListInfo(InstanceListInfo instanceListInfo) {
-        HCloudDcs hCloudDcs = new HCloudDcs();
-        BeanUtil.copyProperties(instanceListInfo, hCloudDcs);
-        hCloudDcs.setStatDate(DateUtil.today());
-        return hCloudDcs;
-    }
 }

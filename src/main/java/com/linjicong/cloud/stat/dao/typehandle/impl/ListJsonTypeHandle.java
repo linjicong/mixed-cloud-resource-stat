@@ -23,7 +23,6 @@
  */
 package com.linjicong.cloud.stat.dao.typehandle.impl;
 
-import com.huaweicloud.sdk.ecs.v2.model.ServerImage;
 import com.linjicong.cloud.stat.dao.typehandle.JsonTypeHandler;
 
 import java.util.List;

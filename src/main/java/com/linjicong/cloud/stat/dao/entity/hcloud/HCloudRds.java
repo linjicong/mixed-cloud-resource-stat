@@ -23,10 +23,6 @@
  */
 package com.linjicong.cloud.stat.dao.entity.hcloud;
 
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.date.DateUtil;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.huaweicloud.sdk.rds.v3.model.*;
 import com.linjicong.cloud.stat.dao.entity.BasicEntity;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
@@ -34,10 +30,10 @@ import lombok.Data;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * 关系型数据
@@ -151,16 +147,4 @@ public class HCloudRds extends BasicEntity {
     private Long maxIops;
 
     private String expirationTime;
-
-    /**
-     * 接口数据转换
-     * @param instanceResponse instanceResponse
-     * @return HCloudEcs
-     */
-    public static HCloudRds fromInstanceResponse(InstanceResponse instanceResponse) {
-        HCloudRds hCloudRds = new HCloudRds();
-        BeanUtil.copyProperties(instanceResponse, hCloudRds);
-        hCloudRds.setStatDate(DateUtil.today());
-        return hCloudRds;
-    }
 }

@@ -23,7 +23,6 @@
  */
 package com.linjicong.cloud.stat.dao.mapper;
 
-import org.apache.ibatis.annotations.DeleteProvider;
 import tk.mybatis.mapper.common.BaseMapper;
 import tk.mybatis.mapper.common.special.InsertListMapper;
 

@@ -23,11 +23,6 @@
  */
 package com.linjicong.cloud.stat.dao.entity.hcloud;
 
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.date.DateUtil;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.huaweicloud.sdk.dcs.v2.model.InstanceListInfo;
 import com.huaweicloud.sdk.sfsturbo.v1.model.ActionProgress;
 import com.huaweicloud.sdk.sfsturbo.v1.model.Shares;
 import com.linjicong.cloud.stat.dao.entity.BasicEntity;
@@ -99,15 +94,4 @@ public class HCloudSfs extends BasicEntity {
     private String subnetId;
 
     private String vpcId;
-
-    /**
-     * 接口数据转换
-     *
-     */
-    public static HCloudSfs fromShares(Shares shares) {
-        HCloudSfs hCloudSfs = new HCloudSfs();
-        BeanUtil.copyProperties(shares, hCloudSfs);
-        hCloudSfs.setStatDate(DateUtil.today());
-        return hCloudSfs;
-    }
 }

@@ -25,7 +25,6 @@ package com.linjicong.cloud.stat.task;
 
 import com.linjicong.cloud.stat.dao.entity.CloudConf;
 import com.linjicong.cloud.stat.dao.mapper.HCloudConfMapper;
-import com.linjicong.cloud.stat.dao.mapper.HCloudEcsMapper;
 import com.linjicong.cloud.stat.service.CloudFactory;
 import com.linjicong.cloud.stat.service.CloudService;
 import lombok.extern.slf4j.Slf4j;
