@@ -21,34 +21,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.linjicong.cloud.stat.service;
+package com.linjicong.cloud.stat.dao.entity.hcloud;
 
-import cn.hutool.core.date.DateUtil;
-import com.linjicong.cloud.stat.client.HCloudClient;
-import com.linjicong.cloud.stat.dao.entity.CloudConf;
-import com.linjicong.cloud.stat.dao.entity.hcloud.HCloudEcs;
-import com.linjicong.cloud.stat.dao.mapper.hcloud.HCloudEcsMapper;
-import org.springframework.stereotype.Service;
+import com.huaweicloud.sdk.ces.v1.model.MetricsDimension;
+import com.linjicong.cloud.stat.dao.entity.BasicEntity;
+import com.vladmihalcea.hibernate.type.json.JsonStringType;
+import lombok.Data;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
 
-import javax.annotation.Resource;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.List;
 
 /**
+ * 华为云-云监控-指标
  * @author linjicong
- * @date 2022-07-28-14:36
  * @version 1.0.0
+ * @date 2022-08-03-10:17
  */
-@Service
-public class HCloudService implements CloudService{
+@Data
+@Table(name = "h_cloud_ces_metric")
+@Entity
+@TypeDef(name = "json",typeClass = JsonStringType.class)
+public class HCloudCesMetric extends BasicEntity {
 
-    @Resource
-    private HCloudEcsMapper hCloudEcsMapper;
+    @Column(columnDefinition="json")
+    @Type(type = "json")
+    private List<MetricsDimension> dimensions = null;
 
-    @Override
-    public int syncEcs(CloudConf cloudConf) {
-        HCloudClient hCloudClient = new HCloudClient(cloudConf);
-        List<HCloudEcs> hCloudEcs = hCloudClient.listEcs();
-        hCloudEcsMapper.deleteByStatDate(DateUtil.today());
-        return hCloudEcsMapper.insertList(hCloudEcs);
-    }
+    private String metricName;
+
+    private String namespace;
+
+    private String unit;
 }

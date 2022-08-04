@@ -1,10 +1,16 @@
 package com.linjicong.cloud.stat.client;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.ListUtil;
+import cn.hutool.core.date.DateUtil;
+import com.huaweicloud.sdk.ces.v1.model.MetricInfo;
 import com.huaweicloud.sdk.ecs.v2.model.ServerDetail;
 import com.linjicong.cloud.stat.dao.entity.CloudConf;
 import com.linjicong.cloud.stat.dao.entity.hcloud.*;
-import com.linjicong.cloud.stat.dao.mapper.*;
+import com.linjicong.cloud.stat.dao.mapper.CloudConfMapper;
+import com.linjicong.cloud.stat.dao.mapper.hcloud.*;
+import com.linjicong.cloud.stat.util.BeanUtils;
+import com.obs.services.model.BucketTypeEnum;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,7 +29,7 @@ class HCloudClientTest {
     private HCloudClient hCloudClient;
 
     @Resource
-    private HCloudConfMapper hCloudConfMapper;
+    private CloudConfMapper cloudConfMapper;
     @Resource
     private HCloudEcsMapper hCloudEcsMapper;
     @Resource
@@ -36,10 +42,20 @@ class HCloudClientTest {
     private HCloudObsMapper hCloudObsMapper;
     @Resource
     private HCloudSfsMapper hCloudSfsMapper;
+    @Resource
+    private HCloudElbMapper hCloudElbMapper;
+    @Resource
+    private HCloudVpcMapper hCloudVpcMapper;
+    @Resource
+    private HCloudEvsMapper hCloudEvsMapper;
+    @Resource
+    private HCloudCesMetricMapper hCloudCesMetricMapper;
+    @Resource
+    private HCloudCesMetricDataMapper hCloudCesMetricDataMapper;
 
     @BeforeEach
     public void init(){
-        CloudConf cloudConf = hCloudConfMapper.selectByPrimaryKey(1);
+        CloudConf cloudConf = cloudConfMapper.selectByPrimaryKey(1);
         hCloudClient = new HCloudClient(cloudConf);
     }
 
@@ -80,25 +96,62 @@ class HCloudClientTest {
     }
 
     @Test
+    void syncElb() {
+        List<HCloudElb> hCloudElb = hCloudClient.listElb();
+        hCloudElbMapper.insertList(hCloudElb);
+    }
+
+    @Test
+    void syncVpc() {
+        List<HCloudVpc> hCloudVpcs = hCloudClient.listVpc();
+        hCloudVpcMapper.insertList(hCloudVpcs);
+    }
+
+    @Test
+    void syncEvs() {
+        List<HCloudEvs> hCloudEvs = hCloudClient.listEvs();
+        hCloudEvsMapper.insertList(hCloudEvs);
+    }
+
+    @Test
+    void syncCesMetric() {
+        List<HCloudCesMetric> hCloudCesMetrics = hCloudClient.listCesMetric();
+        hCloudCesMetricMapper.insertList(hCloudCesMetrics);
+    }
+
+    @Test
+    void syncCesMetricData() {
+        List<HCloudCesMetric> hCloudCesMetricList = hCloudCesMetricMapper.selectAll();
+        // 接口一次只能传500个指标进行查询
+        List<List<HCloudCesMetric>> splitHCloudCesMetrics = ListUtil.split(hCloudCesMetricList, 500);
+
+        for (List<HCloudCesMetric> hCloudCesMetrics : splitHCloudCesMetrics) {
+            List<MetricInfo> metricInfos = BeanUtils.cgLibCopyList(hCloudCesMetrics, MetricInfo::new);
+            List<HCloudCesMetricData> hCloudCesMetricData = hCloudClient.listCesMetricData(metricInfos);
+            hCloudCesMetricDataMapper.insertList(hCloudCesMetricData);
+        }
+    }
+    @Test
     void selectRds() {
         HCloudEcs hCloudEcs = hCloudEcsMapper.selectByPrimaryKey(1);
         ServerDetail serverDetail = new ServerDetail();
         BeanUtil.copyProperties(hCloudEcs, serverDetail);
         System.out.println(serverDetail);
     }
-    //@Test
-    //void insertObs() {
-    //    HCloudObs hCloudObs = new HCloudObs();
-    //    hCloudObs.setBucketTypeEnum(BucketTypeEnum.OBJECT);
-    //    hCloudObsMapper.insert(hCloudObs);
-    //}
-    //@Test
-    //void deleteEcs() {
-    //    hCloudEcsMapper.deleteByStatDate(DateUtil.today());
-    //}
-    //
-    //@Test
-    //void deleteDcs() {
-    //    hCloudDcsMapper.deleteByStatDate(DateUtil.today());
-    //}
+
+    @Test
+    void insertObs() {
+        HCloudObs hCloudObs = new HCloudObs();
+        hCloudObs.setBucketTypeEnum(BucketTypeEnum.OBJECT);
+        hCloudObsMapper.insert(hCloudObs);
+    }
+    @Test
+    void deleteEcs() {
+        hCloudEcsMapper.deleteByStatDate(DateUtil.today());
+    }
+
+    @Test
+    void deleteDcs() {
+        hCloudDcsMapper.deleteByStatDate(DateUtil.today());
+    }
 }

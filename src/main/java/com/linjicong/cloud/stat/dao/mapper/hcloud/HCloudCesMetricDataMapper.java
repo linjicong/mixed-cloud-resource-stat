@@ -21,9 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.linjicong.cloud.stat.dao.mapper;
+package com.linjicong.cloud.stat.dao.mapper.hcloud;
 
-import com.linjicong.cloud.stat.dao.entity.hcloud.HCloudSfs;
+import com.linjicong.cloud.stat.dao.entity.hcloud.HCloudCesMetricData;
+import com.linjicong.cloud.stat.dao.mapper.CommonMapper;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -32,5 +33,5 @@ import org.springframework.stereotype.Repository;
  * @version 1.0.0
  */
 @Repository
-public interface HCloudSfsMapper extends CommonMapper<HCloudSfs> {
+public interface HCloudCesMetricDataMapper extends CommonMapper<HCloudCesMetricData> {
 }

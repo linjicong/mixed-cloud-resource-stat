@@ -21,16 +21,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.linjicong.cloud.stat.dao.mapper;
+package com.linjicong.cloud.stat.dao.typehandle.impl.huawei.elb;
 
-import com.linjicong.cloud.stat.dao.entity.hcloud.HCloudDcs;
-import org.springframework.stereotype.Repository;
+import com.huaweicloud.sdk.elb.v3.model.LoadBalancer;
+import com.linjicong.cloud.stat.dao.typehandle.JsonTypeHandler;
 
 /**
  * @author linjicong
  * @date 2022-07-28-14:36
  * @version 1.0.0
  */
-@Repository
-public interface HCloudDcsMapper extends CommonMapper<HCloudDcs> {
+public class ElbVirsubnetTypeEnumJsonTypeHandle extends JsonTypeHandler<LoadBalancer.ElbVirsubnetTypeEnum> {
+    public ElbVirsubnetTypeEnumJsonTypeHandle() {
+        super(LoadBalancer.ElbVirsubnetTypeEnum.class);
+    }
 }

@@ -21,34 +21,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.linjicong.cloud.stat.service;
+package com.linjicong.cloud.stat;
 
 import cn.hutool.core.date.DateUtil;
-import com.linjicong.cloud.stat.client.HCloudClient;
-import com.linjicong.cloud.stat.dao.entity.CloudConf;
-import com.linjicong.cloud.stat.dao.entity.hcloud.HCloudEcs;
-import com.linjicong.cloud.stat.dao.mapper.hcloud.HCloudEcsMapper;
-import org.springframework.stereotype.Service;
+import org.junit.jupiter.api.Test;
 
-import javax.annotation.Resource;
-import java.util.List;
+import java.util.Date;
 
 /**
  * @author linjicong
- * @date 2022-07-28-14:36
  * @version 1.0.0
+ * @date 2022-08-04-15:04
  */
-@Service
-public class HCloudService implements CloudService{
-
-    @Resource
-    private HCloudEcsMapper hCloudEcsMapper;
-
-    @Override
-    public int syncEcs(CloudConf cloudConf) {
-        HCloudClient hCloudClient = new HCloudClient(cloudConf);
-        List<HCloudEcs> hCloudEcs = hCloudClient.listEcs();
-        hCloudEcsMapper.deleteByStatDate(DateUtil.today());
-        return hCloudEcsMapper.insertList(hCloudEcs);
+public class HutoolTest {
+    @Test
+    void dateUtil() {
+        System.out.println(DateUtil.offsetDay(DateUtil.beginOfDay(new Date()), -1));
+        System.out.println(DateUtil.offsetDay(DateUtil.endOfDay(new Date()), -1));
+        System.out.println(DateUtil.offsetDay(DateUtil.beginOfDay(new Date()), -1).getTime());
+        System.out.println(DateUtil.offsetDay(DateUtil.endOfDay(new Date()), -1).getTime());
     }
 }

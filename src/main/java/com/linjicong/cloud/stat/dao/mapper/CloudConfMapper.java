@@ -23,7 +23,7 @@
  */
 package com.linjicong.cloud.stat.dao.mapper;
 
-import com.linjicong.cloud.stat.dao.entity.hcloud.HCloudRds;
+import com.linjicong.cloud.stat.dao.entity.CloudConf;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -32,5 +32,6 @@ import org.springframework.stereotype.Repository;
  * @version 1.0.0
  */
 @Repository
-public interface HCloudRdsMapper extends CommonMapper<HCloudRds> {
+public interface CloudConfMapper extends MultiMapper<CloudConf> {
+
 }

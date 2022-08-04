@@ -21,16 +21,45 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.linjicong.cloud.stat.dao.mapper;
+package com.linjicong.cloud.stat.dao.entity.hcloud;
 
-import com.linjicong.cloud.stat.dao.entity.hcloud.HCloudDds;
-import org.springframework.stereotype.Repository;
+import com.huaweicloud.sdk.ces.v1.model.DatapointForBatchMetric;
+import com.huaweicloud.sdk.ces.v1.model.MetricsDimension;
+import com.linjicong.cloud.stat.dao.entity.BasicEntity;
+import com.vladmihalcea.hibernate.type.json.JsonStringType;
+import lombok.Data;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import java.util.List;
 
 /**
+ *
+ * 华为云-云监控-数据
  * @author linjicong
- * @date 2022-07-28-14:36
  * @version 1.0.0
+ * @date 2022-08-03-10:17
  */
-@Repository
-public interface HCloudDdsMapper extends CommonMapper<HCloudDds> {
+@Data
+@Table(name = "h_cloud_ces_metric_data")
+@Entity
+@TypeDef(name = "json",typeClass = JsonStringType.class)
+public class HCloudCesMetricData extends BasicEntity {
+
+    private String unit;
+
+    @Column(columnDefinition="json")
+    @Type(type = "json")
+    private List<DatapointForBatchMetric> datapoints = null;
+
+    private String namespace;
+
+    private String metricName;
+
+    @Column(columnDefinition="json")
+    @Type(type = "json")
+    private List<MetricsDimension> dimensions = null;
 }

@@ -23,6 +23,11 @@
  */
 package com.linjicong.cloud.stat.client;
 
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.StrUtil;
+import com.huaweicloud.sdk.ces.v1.CesClient;
+import com.huaweicloud.sdk.ces.v1.model.*;
+import com.huaweicloud.sdk.ces.v1.region.CesRegion;
 import com.huaweicloud.sdk.core.auth.BasicCredentials;
 import com.huaweicloud.sdk.core.auth.ICredential;
 import com.huaweicloud.sdk.dcs.v2.DcsClient;
@@ -35,12 +40,18 @@ import com.huaweicloud.sdk.ecs.v2.region.EcsRegion;
 import com.huaweicloud.sdk.elb.v3.ElbClient;
 import com.huaweicloud.sdk.elb.v3.model.ListLoadBalancersRequest;
 import com.huaweicloud.sdk.elb.v3.region.ElbRegion;
+import com.huaweicloud.sdk.evs.v2.EvsClient;
+import com.huaweicloud.sdk.evs.v2.model.ListVolumesRequest;
+import com.huaweicloud.sdk.evs.v2.region.EvsRegion;
 import com.huaweicloud.sdk.rds.v3.RdsClient;
 import com.huaweicloud.sdk.rds.v3.model.ListInstancesRequest;
 import com.huaweicloud.sdk.rds.v3.region.RdsRegion;
 import com.huaweicloud.sdk.sfsturbo.v1.SFSTurboClient;
 import com.huaweicloud.sdk.sfsturbo.v1.model.ListSharesRequest;
 import com.huaweicloud.sdk.sfsturbo.v1.region.SFSTurboRegion;
+import com.huaweicloud.sdk.vpc.v3.VpcClient;
+import com.huaweicloud.sdk.vpc.v3.model.ListVpcsRequest;
+import com.huaweicloud.sdk.vpc.v3.region.VpcRegion;
 import com.linjicong.cloud.stat.dao.constant.hcloud.ObsEndpoint;
 import com.linjicong.cloud.stat.dao.entity.CloudConf;
 import com.linjicong.cloud.stat.dao.entity.hcloud.*;
@@ -48,6 +59,7 @@ import com.linjicong.cloud.stat.util.BeanUtils;
 import com.obs.services.ObsClient;
 import com.obs.services.model.ListBucketsRequest;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -127,5 +139,57 @@ public class HCloudClient{
                 .build();
 
         return BeanUtils.cgLibCopyList(client.listLoadBalancers(new ListLoadBalancersRequest().withLimit(200)).getLoadbalancers(), HCloudElb::new);
+    }
+
+    public List<HCloudVpc> listVpc() {
+        VpcClient client = VpcClient.newBuilder()
+                .withCredential(auth)
+                .withRegion(VpcRegion.CN_SOUTH_1)
+                .build();
+
+        return BeanUtils.cgLibCopyList(client.listVpcs(new ListVpcsRequest().withLimit(200)).getVpcs(), HCloudVpc::new);
+    }
+
+    public List<HCloudEvs> listEvs() {
+        EvsClient client = EvsClient.newBuilder()
+                .withCredential(auth)
+                .withRegion(EvsRegion.CN_SOUTH_1)
+                .build();
+
+        return BeanUtils.cgLibCopyList(client.listVolumes(new ListVolumesRequest().withLimit(200)).getVolumes(), HCloudEvs::new);
+    }
+
+    public List<HCloudCesMetric> listCesMetric() {
+        CesClient client = CesClient.newBuilder()
+                .withCredential(auth)
+                .withRegion(CesRegion.CN_SOUTH_1)
+                .build();
+
+        ListMetricsResponse listMetricsResponse = client.listMetrics(new ListMetricsRequest());
+        String start = listMetricsResponse.getMetaData().getMarker();
+        List<MetricInfoList> metrics = listMetricsResponse.getMetrics();
+        while (StrUtil.isNotBlank(start)){
+            ListMetricsResponse listMetricsResponse1 = client.listMetrics(new ListMetricsRequest().withStart(start));
+            start = listMetricsResponse1.getMetaData().getMarker();
+            metrics.addAll(listMetricsResponse1.getMetrics());
+        }
+        return BeanUtils.cgLibCopyList(metrics, HCloudCesMetric::new);
+    }
+
+    public List<HCloudCesMetricData> listCesMetricData(List<MetricInfo> metricInfos) {
+        CesClient client = CesClient.newBuilder()
+                .withCredential(auth)
+                .withRegion(CesRegion.CN_SOUTH_1)
+                .build();
+
+        BatchListMetricDataRequest batchListMetricDataRequest = new BatchListMetricDataRequest();
+        BatchListMetricDataRequestBody batchListMetricDataRequestBody = new BatchListMetricDataRequestBody();
+        batchListMetricDataRequestBody.setMetrics(metricInfos);
+        batchListMetricDataRequestBody.setPeriod("14400"); //查询1天的数据:500个指标最多设置间隔4小时,10个指标间隔5分钟
+        batchListMetricDataRequestBody.setFilter("average");
+        batchListMetricDataRequestBody.setFrom(DateUtil.offsetDay(DateUtil.beginOfDay(new Date()),-1).getTime());
+        batchListMetricDataRequestBody.setTo(DateUtil.offsetDay(DateUtil.endOfDay(new Date()),-1).getTime());
+        batchListMetricDataRequest.setBody(batchListMetricDataRequestBody);
+        return BeanUtils.cgLibCopyList(client.batchListMetricData(batchListMetricDataRequest).getMetrics(), HCloudCesMetricData::new);
     }
 }

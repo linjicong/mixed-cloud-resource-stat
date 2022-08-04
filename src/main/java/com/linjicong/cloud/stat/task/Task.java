@@ -24,7 +24,7 @@
 package com.linjicong.cloud.stat.task;
 
 import com.linjicong.cloud.stat.dao.entity.CloudConf;
-import com.linjicong.cloud.stat.dao.mapper.HCloudConfMapper;
+import com.linjicong.cloud.stat.dao.mapper.CloudConfMapper;
 import com.linjicong.cloud.stat.service.CloudFactory;
 import com.linjicong.cloud.stat.service.CloudService;
 import lombok.extern.slf4j.Slf4j;
@@ -44,11 +44,11 @@ import java.util.List;
 public class Task {
 
     @Resource
-    private HCloudConfMapper hCloudConfMapper;
+    private CloudConfMapper cloudConfMapper;
 
     @Scheduled(cron="* * 1 * * ?")
     public void syncEcs(){
-        List<CloudConf> cloudConf = hCloudConfMapper.selectAll();
+        List<CloudConf> cloudConf = cloudConfMapper.selectAll();
         cloudConf.forEach(conf->{
             CloudService service = CloudFactory.getService(conf);
             int result = service.syncEcs(conf);
