@@ -44,8 +44,8 @@ import java.util.Map;
  */
 //@NoArgsConstructor
 @Data
-@Table(name = "h_cloud_ecs")
 @Entity
+@Table(name = "h_cloud_ecs")
 @TypeDef(name = "json",typeClass = JsonStringType.class)
 public class HCloudEcs extends BasicEntity {
 

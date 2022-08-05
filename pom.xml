@@ -68,13 +68,11 @@
             <artifactId>esdk-obs-java-bundle</artifactId>
             <version>3.22.3</version>
         </dependency>
-
+        <!-- 4.0.11版本是废弃的,https://gitee.com/tencentcloud/tencentcloud-sdk-java -->
         <dependency>
             <groupId>com.tencentcloudapi</groupId>
             <artifactId>tencentcloud-sdk-java</artifactId>
-            <!-- go to https://search.maven.org/search?q=tencentcloud-sdk-java and get the latest version. -->
-            <!-- 请到https://search.maven.org/search?q=tencentcloud-sdk-java查询所有版本，最新版本如下 -->
-            <version>4.0.11</version>
+            <version>3.1.564</version>
         </dependency>
 
         <dependency>
@@ -96,7 +94,7 @@
         <dependency>
             <groupId>com.vladmihalcea</groupId>
             <artifactId>hibernate-types-52</artifactId>
-            <version>2.16.2</version>
+            <version>2.17.0</version>
         </dependency>
 
         <dependency>

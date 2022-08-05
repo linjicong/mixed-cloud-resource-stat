@@ -138,6 +138,11 @@ class HCloudClientTest {
         BeanUtil.copyProperties(hCloudEcs, serverDetail);
         System.out.println(serverDetail);
     }
+    @Test
+    void selectEcsByStatDate() {
+        List<HCloudEcs> hCloudEcs = hCloudEcsMapper.selectByStatDate(DateUtil.today());
+        System.out.println(hCloudEcs.size());
+    }
 
     @Test
     void insertObs() {

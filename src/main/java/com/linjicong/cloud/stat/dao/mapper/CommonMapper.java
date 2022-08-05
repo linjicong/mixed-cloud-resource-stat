@@ -24,6 +24,9 @@
 package com.linjicong.cloud.stat.dao.mapper;
 
 import org.apache.ibatis.annotations.DeleteProvider;
+import org.apache.ibatis.annotations.SelectProvider;
+
+import java.util.List;
 
 /**
  * 通用Mapper接口
@@ -43,4 +46,11 @@ public interface CommonMapper <T> extends MultiMapper<T> {
      */
     @DeleteProvider(type = CommonSelectProvider.class, method = "dynamicSQL")
     int deleteByStatDate(String statDate);
+
+    /**
+     * 获取某天的数据
+     *
+     */
+    @SelectProvider(type = CommonSelectProvider.class, method = "dynamicSQL")
+    List<T> selectByStatDate(String statDate);
 }

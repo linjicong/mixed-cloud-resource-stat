@@ -46,4 +46,14 @@ public class CommonSelectProvider extends MapperTemplate {
         sql.append("WHERE date_format(stat_date,'%Y-%m-%d') = #{statDate}");
         return sql.toString();
     }
+
+    public String selectByStatDate(MappedStatement ms) {
+        final Class<?> entityClass = getEntityClass(ms);
+        //开始拼sql
+        StringBuilder sql = new StringBuilder();
+        sql.append(SqlHelper.selectAllColumns(entityClass));
+        sql.append(SqlHelper.fromTable(entityClass, tableName(entityClass)));
+        sql.append("WHERE date_format(stat_date,'%Y-%m-%d') = #{statDate}");
+        return sql.toString();
+    }
 }
