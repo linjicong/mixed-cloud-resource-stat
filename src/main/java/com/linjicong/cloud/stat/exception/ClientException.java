@@ -21,27 +21,40 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.linjicong.cloud.stat;
+package com.linjicong.cloud.stat.exception;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
-import org.springframework.context.annotation.Import;
-import org.springframework.scheduling.annotation.EnableScheduling;
-import tk.mybatis.spring.annotation.MapperScan;
+import cn.hutool.core.exceptions.ExceptionUtil;
+import cn.hutool.core.util.StrUtil;
 
-@SpringBootApplication
-@MapperScan("com.linjicong.cloud.stat.dao.mapper")
-@EntityScan("com.linjicong.cloud.stat.dao.entity")
-@EnableScheduling
-@Import(cn.hutool.extra.spring.SpringUtil.class)
-public class MixedCloudResourceStatApplication {
+/**
+ * @author linjicong
+ * @version 1.0.0
+ * @date 2022-08-05-17:33
+ */
+public class ClientException extends RuntimeException{
+    private static final long serialVersionUID = 8247610127853014183L;
 
-    public static void main(String[] args) {
-        SpringApplication.run(MixedCloudResourceStatApplication.class, args);
-        //ConfigurableApplicationContext run = SpringApplication.run(MixedCloudResourceStatApplication.class, args);
-        //String[] beanDefinitionNames = run.getBeanDefinitionNames();
-        //System.out.println(ArrayUtil.toString(beanDefinitionNames));
+    public ClientException(Throwable e) {
+        super(ExceptionUtil.getMessage(e), e);
     }
 
+    public ClientException(String message) {
+        super(message);
+    }
+
+    public ClientException(String messageTemplate, Object... params) {
+        super(StrUtil.format(messageTemplate, params));
+    }
+
+    public ClientException(String message, Throwable throwable) {
+        super(message, throwable);
+    }
+
+    public ClientException(String message, Throwable throwable, boolean enableSuppression, boolean writableStackTrace) {
+        super(message, throwable, enableSuppression, writableStackTrace);
+    }
+
+    public ClientException(Throwable throwable, String messageTemplate, Object... params) {
+        super(StrUtil.format(messageTemplate, params), throwable);
+    }
 }

@@ -21,27 +21,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.linjicong.cloud.stat;
+package com.linjicong.cloud.stat.dao.typehandle.impl;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
-import org.springframework.context.annotation.Import;
-import org.springframework.scheduling.annotation.EnableScheduling;
-import tk.mybatis.spring.annotation.MapperScan;
+import com.linjicong.cloud.stat.dao.typehandle.JsonTypeHandler;
 
-@SpringBootApplication
-@MapperScan("com.linjicong.cloud.stat.dao.mapper")
-@EntityScan("com.linjicong.cloud.stat.dao.entity")
-@EnableScheduling
-@Import(cn.hutool.extra.spring.SpringUtil.class)
-public class MixedCloudResourceStatApplication {
+import java.util.List;
 
-    public static void main(String[] args) {
-        SpringApplication.run(MixedCloudResourceStatApplication.class, args);
-        //ConfigurableApplicationContext run = SpringApplication.run(MixedCloudResourceStatApplication.class, args);
-        //String[] beanDefinitionNames = run.getBeanDefinitionNames();
-        //System.out.println(ArrayUtil.toString(beanDefinitionNames));
+/**
+ * @author linjicong
+ * @date 2022-07-28-14:36
+ * @version 1.0.0
+ */
+public class StringJsonTypeHandle extends JsonTypeHandler<String[]> {
+    public StringJsonTypeHandle() {
+        super(String[].class);
     }
-
 }

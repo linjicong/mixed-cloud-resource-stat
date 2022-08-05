@@ -23,9 +23,24 @@
  */
 package com.linjicong.cloud.stat.client;
 
+import cn.hutool.core.collection.ListUtil;
+import cn.hutool.core.exceptions.UtilException;
+import cn.hutool.core.util.ArrayUtil;
 import com.huaweicloud.sdk.core.auth.BasicCredentials;
 import com.huaweicloud.sdk.core.auth.ICredential;
 import com.linjicong.cloud.stat.dao.entity.CloudConf;
+import com.linjicong.cloud.stat.dao.entity.hcloud.HCloudEcs;
+import com.linjicong.cloud.stat.dao.entity.qcloud.QCloudCvm;
+import com.linjicong.cloud.stat.exception.ClientException;
+import com.linjicong.cloud.stat.util.BeanUtils;
+import com.tencentcloudapi.common.Credential;
+import com.tencentcloudapi.common.exception.TencentCloudSDKException;
+import com.tencentcloudapi.common.profile.Region;
+import com.tencentcloudapi.cvm.v20170312.CvmClient;
+import com.tencentcloudapi.cvm.v20170312.models.DescribeInstancesRequest;
+import com.tencentcloudapi.cvm.v20170312.models.Instance;
+
+import java.util.List;
 
 /**
  * @author linjicong
@@ -33,16 +48,22 @@ import com.linjicong.cloud.stat.dao.entity.CloudConf;
  * @version 1.0.0
  */
 public class QCloudClient{
-    private static ICredential auth;
+    private static Credential credential;
 
     public QCloudClient(CloudConf cloudConf) {
-        auth = new BasicCredentials()
-                .withAk(cloudConf.getAccessKey())
-                .withSk(cloudConf.getSecretKey());
+        this.credential = new Credential(cloudConf.getAccessKey(),cloudConf.getSecretKey());
     }
 
 
-    public void syncEcs() {
+    public List<QCloudCvm> listCvm() {
+        CvmClient client = new CvmClient(credential, Region.Guangzhou.getValue());
+        DescribeInstancesRequest describeInstancesRequest = new DescribeInstancesRequest();
+        describeInstancesRequest.setLimit(100L);
+        try {
+            return BeanUtils.cgLibCopyList(client.DescribeInstances(describeInstancesRequest).getInstanceSet(), QCloudCvm::new);
+        } catch (TencentCloudSDKException e) {
+            throw new ClientException(e);
+        }
     }
 
     public void syncRds() {

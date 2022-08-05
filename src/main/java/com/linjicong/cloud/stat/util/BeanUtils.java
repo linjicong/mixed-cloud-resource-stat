@@ -1,5 +1,8 @@
 package com.linjicong.cloud.stat.util;
 
+import cn.hutool.core.collection.ListUtil;
+import org.springframework.cglib.beans.BeanCopier;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -16,7 +19,7 @@ public class BeanUtils {
     /**
      * 缓存BeanCopier 对象 提升性能
      */
-    private static final ConcurrentHashMap<String, org.springframework.cglib.beans.BeanCopier> BEAN_COPIER_MAP = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, BeanCopier> BEAN_COPIER_MAP = new ConcurrentHashMap<>();
 
 
     /**
@@ -26,7 +29,7 @@ public class BeanUtils {
      */
     public static <S, T> List<T> cgLibCopyList(List<S> sources, Supplier<T> supplier) {
         List<T> list = new ArrayList<>(sources.size());
-        org.springframework.cglib.beans.BeanCopier beanCopier = null;
+        BeanCopier beanCopier = null;
         for (S source : sources) {
             T t = supplier.get();
             if (beanCopier == null) {
@@ -36,6 +39,16 @@ public class BeanUtils {
             list.add(t);
         }
         return list;
+    }
+
+    /**
+     * Bean属性复制工具方法。
+     * @param sources   原始集合
+     * @param supplier: 目标类::new(eg: UserVO::new)
+     */
+    public static <S, T> List<T> cgLibCopyList(S[] sources, Supplier<T> supplier) {
+        ArrayList<S> sourceList = ListUtil.toList(sources);
+        return cgLibCopyList(sourceList, supplier);
     }
 
     /**
@@ -51,12 +64,12 @@ public class BeanUtils {
 
 
     //获取BeanCopier对象 如果缓存中有从缓存中获取 如果没有则新创建对象并加入缓存
-    private static org.springframework.cglib.beans.BeanCopier getBeanCopier(Class<?> sourceClass, Class<?> targetClass) {
+    private static BeanCopier getBeanCopier(Class<?> sourceClass, Class<?> targetClass) {
         String key = getKey(sourceClass.getName(), targetClass.getName());
-        org.springframework.cglib.beans.BeanCopier beanCopier;
+        BeanCopier beanCopier;
         beanCopier = BEAN_COPIER_MAP.get(key);
         if (beanCopier == null) {
-            beanCopier = org.springframework.cglib.beans.BeanCopier.create(sourceClass, targetClass, false);
+            beanCopier = BeanCopier.create(sourceClass, targetClass, false);
             BEAN_COPIER_MAP.put(key, beanCopier);
         }
         return beanCopier;

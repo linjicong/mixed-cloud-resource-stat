@@ -76,5 +76,19 @@ spring:
 ```
 4. 非基本类型需要自定义TypeHandle,继承JsonTypeHandle
 
+# 参考
+
+华为云:
+- https://sdkcenter.developer.huaweicloud.com/?language=java
+- https://github.com/huaweicloud/huaweicloud-sdk-java-v3
+- https://apiexplorer.developer.huaweicloud.com/apiexplorer/overview
+
+腾讯云:
+- https://cloud.tencent.com/document/sdk
+- https://github.com/TencentCloud/tencentcloud-sdk-java
+- https://console.cloud.tencent.com/api/explorer
+# 问题
 华为云:
 缺失SFS的SDK,只有SFS Turbo,可以考虑使用OpenStackSDK替代
+腾讯云:
+没有链式调用,组装比较麻烦
