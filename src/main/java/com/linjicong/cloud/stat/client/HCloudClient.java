@@ -46,6 +46,8 @@ import com.huaweicloud.sdk.evs.v2.region.EvsRegion;
 import com.huaweicloud.sdk.rds.v3.RdsClient;
 import com.huaweicloud.sdk.rds.v3.model.ListInstancesRequest;
 import com.huaweicloud.sdk.rds.v3.region.RdsRegion;
+import com.huaweicloud.sdk.rms.v1.RmsClient;
+import com.huaweicloud.sdk.rms.v1.region.RmsRegion;
 import com.huaweicloud.sdk.sfsturbo.v1.SFSTurboClient;
 import com.huaweicloud.sdk.sfsturbo.v1.model.ListSharesRequest;
 import com.huaweicloud.sdk.sfsturbo.v1.region.SFSTurboRegion;
@@ -73,19 +75,23 @@ public class HCloudClient{
 
     private final ObsClient obsClient;
 
+    private final String region;
+
     public HCloudClient(CloudConf cloudConf) {
         String accessKey = cloudConf.getAccessKey();
         String secretKey = cloudConf.getSecretKey();
+        this.region = cloudConf.getRegion();
         this.auth = new BasicCredentials()
                 .withAk(accessKey)
                 .withSk(secretKey);
         this.obsClient = new ObsClient(accessKey, secretKey, ObsEndpoint.CN_SOUTH_1);
     }
 
+
     public List<HCloudEcs> listEcs() {
         EcsClient client = EcsClient.newBuilder()
                 .withCredential(auth)
-                .withRegion(EcsRegion.CN_SOUTH_1)
+                .withRegion(EcsRegion.valueOf(region))
                 .build();
 
         return BeanUtils.cgLibCopyList(client.listServersDetails(new ListServersDetailsRequest().withLimit(1000)).getServers(), HCloudEcs::new);
@@ -94,7 +100,7 @@ public class HCloudClient{
     public List<HCloudRds> listRds() {
         RdsClient client = RdsClient.newBuilder()
                 .withCredential(auth)
-                .withRegion(RdsRegion.CN_SOUTH_1)
+                .withRegion(RdsRegion.valueOf(region))
                 .build();
 
         return BeanUtils.cgLibCopyList(client.listInstances(new ListInstancesRequest().withLimit(100)).getInstances(),HCloudRds::new);
@@ -103,7 +109,7 @@ public class HCloudClient{
     public List<HCloudDcs> listDcs() {
         DcsClient client = DcsClient.newBuilder()
                 .withCredential(auth)
-                .withRegion(DcsRegion.CN_SOUTH_1)
+                .withRegion(DcsRegion.valueOf(region))
                 .build();
 
         return BeanUtils.cgLibCopyList(client.listInstances(new com.huaweicloud.sdk.dcs.v2.model.ListInstancesRequest().withLimit(1000)).getInstances(),HCloudDcs::new);
@@ -113,7 +119,7 @@ public class HCloudClient{
     public List<HCloudDds> listDds() {
         DdsClient client = DdsClient.newBuilder()
                 .withCredential(auth)
-                .withRegion(DdsRegion.CN_SOUTH_1)
+                .withRegion(DdsRegion.valueOf(region))
                 .build();
 
         return BeanUtils.cgLibCopyList(client.listInstances(new com.huaweicloud.sdk.dds.v3.model.ListInstancesRequest().withLimit(100)).getInstances(),HCloudDds::new);
@@ -126,7 +132,7 @@ public class HCloudClient{
     public List<HCloudSfs> listSfs() {
         SFSTurboClient client = SFSTurboClient.newBuilder()
                 .withCredential(auth)
-                .withRegion(SFSTurboRegion.CN_SOUTH_1)
+                .withRegion(SFSTurboRegion.valueOf(region))
                 .build();
 
         return BeanUtils.cgLibCopyList(client.listShares(new ListSharesRequest().withLimit(200)).getShares(),HCloudSfs::new);
@@ -135,7 +141,7 @@ public class HCloudClient{
     public List<HCloudElb> listElb() {
         ElbClient client = ElbClient.newBuilder()
                 .withCredential(auth)
-                .withRegion(ElbRegion.CN_SOUTH_1)
+                .withRegion(ElbRegion.valueOf(region))
                 .build();
 
         return BeanUtils.cgLibCopyList(client.listLoadBalancers(new ListLoadBalancersRequest().withLimit(200)).getLoadbalancers(), HCloudElb::new);
@@ -144,7 +150,7 @@ public class HCloudClient{
     public List<HCloudVpc> listVpc() {
         VpcClient client = VpcClient.newBuilder()
                 .withCredential(auth)
-                .withRegion(VpcRegion.CN_SOUTH_1)
+                .withRegion(VpcRegion.valueOf(region))
                 .build();
 
         return BeanUtils.cgLibCopyList(client.listVpcs(new ListVpcsRequest().withLimit(200)).getVpcs(), HCloudVpc::new);
@@ -153,7 +159,7 @@ public class HCloudClient{
     public List<HCloudEvs> listEvs() {
         EvsClient client = EvsClient.newBuilder()
                 .withCredential(auth)
-                .withRegion(EvsRegion.CN_SOUTH_1)
+                .withRegion(EvsRegion.valueOf(region))
                 .build();
 
         return BeanUtils.cgLibCopyList(client.listVolumes(new ListVolumesRequest().withLimit(200)).getVolumes(), HCloudEvs::new);
@@ -162,7 +168,7 @@ public class HCloudClient{
     public List<HCloudCesMetric> listCesMetric() {
         CesClient client = CesClient.newBuilder()
                 .withCredential(auth)
-                .withRegion(CesRegion.CN_SOUTH_1)
+                .withRegion(CesRegion.valueOf(region))
                 .build();
 
         ListMetricsResponse listMetricsResponse = client.listMetrics(new ListMetricsRequest());
@@ -179,7 +185,7 @@ public class HCloudClient{
     public List<HCloudCesMetricData> listCesMetricData(List<MetricInfo> metricInfos) {
         CesClient client = CesClient.newBuilder()
                 .withCredential(auth)
-                .withRegion(CesRegion.CN_SOUTH_1)
+                .withRegion(CesRegion.valueOf(region))
                 .build();
 
         BatchListMetricDataRequest batchListMetricDataRequest = new BatchListMetricDataRequest();

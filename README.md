@@ -91,7 +91,10 @@ spring:
 - https://github.com/TencentCloud/tencentcloud-sdk-java
 - https://console.cloud.tencent.com/api/explorer
 # 问题
+
 华为云:
 缺失SFS的SDK,只有SFS Turbo,可以考虑使用OpenStackSDK替代
+资源管理服务(RMS)接口暂只支持北京区域
 腾讯云:
 没有链式调用,组装比较麻烦
+无资源管理服务接口

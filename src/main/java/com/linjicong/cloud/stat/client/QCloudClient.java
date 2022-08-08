@@ -48,15 +48,17 @@ import java.util.List;
  * @version 1.0.0
  */
 public class QCloudClient{
-    private static Credential credential;
+    private final Credential credential;
+    private final String region;
 
     public QCloudClient(CloudConf cloudConf) {
         this.credential = new Credential(cloudConf.getAccessKey(),cloudConf.getSecretKey());
+        this.region=cloudConf.getRegion();
     }
 
 
     public List<QCloudCvm> listCvm() {
-        CvmClient client = new CvmClient(credential, Region.Guangzhou.getValue());
+        CvmClient client = new CvmClient(credential, region);
         DescribeInstancesRequest describeInstancesRequest = new DescribeInstancesRequest();
         describeInstancesRequest.setLimit(100L);
         try {
