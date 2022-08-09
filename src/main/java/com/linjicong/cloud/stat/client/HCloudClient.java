@@ -25,6 +25,9 @@ package com.linjicong.cloud.stat.client;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
+import com.huaweicloud.sdk.bss.v2.BssClient;
+import com.huaweicloud.sdk.bss.v2.model.ListCustomerBillsFeeRecordsRequest;
+import com.huaweicloud.sdk.bss.v2.region.BssRegion;
 import com.huaweicloud.sdk.ces.v1.CesClient;
 import com.huaweicloud.sdk.ces.v1.model.*;
 import com.huaweicloud.sdk.ces.v1.region.CesRegion;
@@ -47,6 +50,7 @@ import com.huaweicloud.sdk.rds.v3.RdsClient;
 import com.huaweicloud.sdk.rds.v3.model.ListInstancesRequest;
 import com.huaweicloud.sdk.rds.v3.region.RdsRegion;
 import com.huaweicloud.sdk.rms.v1.RmsClient;
+import com.huaweicloud.sdk.rms.v1.model.ListAllResourcesRequest;
 import com.huaweicloud.sdk.rms.v1.region.RmsRegion;
 import com.huaweicloud.sdk.sfsturbo.v1.SFSTurboClient;
 import com.huaweicloud.sdk.sfsturbo.v1.model.ListSharesRequest;
@@ -197,5 +201,23 @@ public class HCloudClient{
         batchListMetricDataRequestBody.setTo(DateUtil.offsetDay(DateUtil.endOfDay(new Date()),-1).getTime());
         batchListMetricDataRequest.setBody(batchListMetricDataRequestBody);
         return BeanUtils.cgLibCopyList(client.batchListMetricData(batchListMetricDataRequest).getMetrics(), HCloudCesMetricData::new);
+    }
+
+    public List<HCloudBillsFeeRecords> listBillsFeeRecords() {
+        BssClient client = BssClient.newBuilder()
+                .withCredential(auth)
+                .withRegion(BssRegion.valueOf(region))
+                .build();
+
+        return BeanUtils.cgLibCopyList(client.listCustomerBillsFeeRecords(new ListCustomerBillsFeeRecordsRequest().withLimit(200)).getRecords(), HCloudBillsFeeRecords::new);
+    }
+
+    public List<HCloudResources> listResources() {
+        RmsClient client = RmsClient.newBuilder()
+                .withCredential(auth)
+                .withRegion(BssRegion.valueOf(region))
+                .build();
+
+        return BeanUtils.cgLibCopyList(client.listAllResources(new ListAllResourcesRequest().withLimit(200)).getResources(), HCloudResources::new);
     }
 }

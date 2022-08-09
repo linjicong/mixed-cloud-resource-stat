@@ -52,6 +52,10 @@ class HCloudClientTest {
     private HCloudCesMetricMapper hCloudCesMetricMapper;
     @Resource
     private HCloudCesMetricDataMapper hCloudCesMetricDataMapper;
+    @Resource
+    private HCloudBillsFeeRecordsMapper hCloudBillsFeeRecordsMapper;
+    @Resource
+    private HCloudResourcesMapper hCloudResourcesMapper;
 
     @BeforeEach
     public void init(){
@@ -131,6 +135,19 @@ class HCloudClientTest {
             hCloudCesMetricDataMapper.insertList(hCloudCesMetricData);
         }
     }
+
+    @Test
+    void syncBillsFeeRecords() {
+        List<HCloudBillsFeeRecords> hCloudBillsFeeRecords = hCloudClient.listBillsFeeRecords();
+        hCloudBillsFeeRecordsMapper.insertList(hCloudBillsFeeRecords);
+    }
+
+    @Test
+    void syncResources() {
+        List<HCloudResources> hCloudResources = hCloudClient.listResources();
+        hCloudResourcesMapper.insertList(hCloudResources);
+    }
+
     @Test
     void selectRds() {
         HCloudEcs hCloudEcs = hCloudEcsMapper.selectByPrimaryKey(1);
@@ -150,6 +167,7 @@ class HCloudClientTest {
         hCloudObs.setBucketTypeEnum(BucketTypeEnum.OBJECT);
         hCloudObsMapper.insert(hCloudObs);
     }
+
     @Test
     void deleteEcs() {
         hCloudEcsMapper.deleteByStatDate(DateUtil.today());
