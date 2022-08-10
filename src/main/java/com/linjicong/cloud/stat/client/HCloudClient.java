@@ -32,6 +32,7 @@ import com.huaweicloud.sdk.ces.v1.CesClient;
 import com.huaweicloud.sdk.ces.v1.model.*;
 import com.huaweicloud.sdk.ces.v1.region.CesRegion;
 import com.huaweicloud.sdk.core.auth.BasicCredentials;
+import com.huaweicloud.sdk.core.auth.GlobalCredentials;
 import com.huaweicloud.sdk.core.auth.ICredential;
 import com.huaweicloud.sdk.dcs.v2.DcsClient;
 import com.huaweicloud.sdk.dcs.v2.region.DcsRegion;
@@ -51,6 +52,8 @@ import com.huaweicloud.sdk.rds.v3.model.ListInstancesRequest;
 import com.huaweicloud.sdk.rds.v3.region.RdsRegion;
 import com.huaweicloud.sdk.rms.v1.RmsClient;
 import com.huaweicloud.sdk.rms.v1.model.ListAllResourcesRequest;
+import com.huaweicloud.sdk.rms.v1.model.ListAllResourcesResponse;
+import com.huaweicloud.sdk.rms.v1.model.ResourceEntity;
 import com.huaweicloud.sdk.rms.v1.region.RmsRegion;
 import com.huaweicloud.sdk.sfsturbo.v1.SFSTurboClient;
 import com.huaweicloud.sdk.sfsturbo.v1.model.ListSharesRequest;
@@ -77,6 +80,8 @@ public class HCloudClient{
 
     private final ICredential auth;
 
+    private final ICredential globalAuth;
+
     private final ObsClient obsClient;
 
     private final String region;
@@ -86,6 +91,9 @@ public class HCloudClient{
         String secretKey = cloudConf.getSecretKey();
         this.region = cloudConf.getRegion();
         this.auth = new BasicCredentials()
+                .withAk(accessKey)
+                .withSk(secretKey);
+        this.globalAuth = new GlobalCredentials()
                 .withAk(accessKey)
                 .withSk(secretKey);
         this.obsClient = new ObsClient(accessKey, secretKey, ObsEndpoint.CN_SOUTH_1);
@@ -205,19 +213,30 @@ public class HCloudClient{
 
     public List<HCloudBillsFeeRecords> listBillsFeeRecords() {
         BssClient client = BssClient.newBuilder()
-                .withCredential(auth)
-                .withRegion(BssRegion.valueOf(region))
+                .withCredential(globalAuth)
+                .withRegion(BssRegion.CN_NORTH_1)
                 .build();
 
-        return BeanUtils.cgLibCopyList(client.listCustomerBillsFeeRecords(new ListCustomerBillsFeeRecordsRequest().withLimit(200)).getRecords(), HCloudBillsFeeRecords::new);
+        return BeanUtils.cgLibCopyList(client.listCustomerBillsFeeRecords(new ListCustomerBillsFeeRecordsRequest().withLimit(200).withBillCycle(DateUtil.format(new Date(),"yyyy-MM"))).getRecords(), HCloudBillsFeeRecords::new);
     }
 
     public List<HCloudResources> listResources() {
         RmsClient client = RmsClient.newBuilder()
-                .withCredential(auth)
-                .withRegion(BssRegion.valueOf(region))
+                .withCredential(globalAuth)
+                .withRegion(RmsRegion.CN_NORTH_4)
                 .build();
+        ListAllResourcesRequest listAllResourcesRequest = new ListAllResourcesRequest();
+        listAllResourcesRequest.withLimit(200);
 
-        return BeanUtils.cgLibCopyList(client.listAllResources(new ListAllResourcesRequest().withLimit(200)).getResources(), HCloudResources::new);
+        ListAllResourcesResponse listAllResourcesResponse = client.listAllResources(listAllResourcesRequest.withLimit(200));
+        List<ResourceEntity> resources = listAllResourcesResponse.getResources();
+        String nextMarker = listAllResourcesResponse.getPageInfo().getNextMarker();
+
+        while (StrUtil.isNotBlank(nextMarker)){
+            ListAllResourcesResponse listAllResourcesResponseNext = client.listAllResources(listAllResourcesRequest.withMarker(nextMarker));
+            nextMarker = listAllResourcesResponseNext.getPageInfo().getNextMarker();
+            resources.addAll(listAllResourcesResponseNext.getResources());
+        }
+        return BeanUtils.cgLibCopyList(resources, HCloudResources::new);
     }
 }
