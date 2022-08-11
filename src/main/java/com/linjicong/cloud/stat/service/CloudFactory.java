@@ -37,7 +37,7 @@ import java.util.Map;
  */
 public class CloudFactory {
 
-    public static final Map<Integer, CloudService> cachedServiceMap = new HashMap<>();
+    private static final Map<Integer, CloudService> cachedServiceMap = new HashMap<>();
 
     public static CloudService getService(CloudConf cloudConf) {
         switch (cloudConf.getProvider()) {
