@@ -26,7 +26,7 @@ package com.linjicong.cloud.stat.client;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import com.huaweicloud.sdk.bss.v2.BssClient;
-import com.huaweicloud.sdk.bss.v2.model.ListCustomerBillsFeeRecordsRequest;
+import com.huaweicloud.sdk.bss.v2.model.*;
 import com.huaweicloud.sdk.bss.v2.region.BssRegion;
 import com.huaweicloud.sdk.ces.v1.CesClient;
 import com.huaweicloud.sdk.ces.v1.model.*;
@@ -211,13 +211,36 @@ public class HCloudClient{
         return BeanUtils.cgLibCopyList(client.batchListMetricData(batchListMetricDataRequest).getMetrics(), HCloudCesMetricData::new);
     }
 
-    public List<HCloudBillsFeeRecords> listBillsFeeRecords() {
+    public List<HCloudBillsFeeRecords> listBillsFeeRecords(String billCycle) {
+        BssClient client = BssClient.newBuilder()
+                .withCredential(globalAuth)
+                .withRegion(BssRegion.CN_NORTH_1)
+                .build();
+        ListCustomerBillsFeeRecordsRequest request = new ListCustomerBillsFeeRecordsRequest().withLimit(1000).withBillCycle(billCycle);
+        ListCustomerBillsFeeRecordsResponse response = client.listCustomerBillsFeeRecords(request);
+        List<MonthlyBillRecord> records = response.getRecords();
+        while (records.size() % 1000 == 0){
+            ListCustomerBillsFeeRecordsResponse responseNext = client.listCustomerBillsFeeRecords(request.withOffset(records.size()));
+            records.addAll(responseNext.getRecords());
+        }
+        return BeanUtils.cgLibCopyList(records, HCloudBillsFeeRecords::new);
+    }
+
+    public List<HCloudBillsMonthlyBreakDown> listBillsMonthlyBreakDown(String shardMonth) {
         BssClient client = BssClient.newBuilder()
                 .withCredential(globalAuth)
                 .withRegion(BssRegion.CN_NORTH_1)
                 .build();
 
-        return BeanUtils.cgLibCopyList(client.listCustomerBillsFeeRecords(new ListCustomerBillsFeeRecordsRequest().withLimit(200).withBillCycle(DateUtil.format(new Date(),"yyyy-MM"))).getRecords(), HCloudBillsFeeRecords::new);
+        ListCustomerBillsMonthlyBreakDownRequest request = new ListCustomerBillsMonthlyBreakDownRequest().withLimit(1000).withSharedMonth(shardMonth);
+
+        ListCustomerBillsMonthlyBreakDownResponse response = client.listCustomerBillsMonthlyBreakDown(request);
+        List<NvlCostAnalysedBillDetail> details = response.getDetails();
+        while (details.size() % 1000 ==0){
+            ListCustomerBillsMonthlyBreakDownResponse responseNext = client.listCustomerBillsMonthlyBreakDown(request.withOffset(details.size()));
+            details.addAll(responseNext.getDetails());
+        }
+        return BeanUtils.cgLibCopyList(details, HCloudBillsMonthlyBreakDown::new);
     }
 
     public List<HCloudResources> listResources() {

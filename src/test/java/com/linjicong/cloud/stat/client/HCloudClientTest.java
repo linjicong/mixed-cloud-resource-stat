@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -56,6 +57,8 @@ class HCloudClientTest {
     private HCloudBillsFeeRecordsMapper hCloudBillsFeeRecordsMapper;
     @Resource
     private HCloudResourcesMapper hCloudResourcesMapper;
+    @Resource
+    private HCloudBillsMonthlyBreakDownMapper hCloudBillsMonthlyBreakDownMapper;
 
     @BeforeEach
     public void init(){
@@ -138,8 +141,14 @@ class HCloudClientTest {
 
     @Test
     void syncBillsFeeRecords() {
-        List<HCloudBillsFeeRecords> hCloudBillsFeeRecords = hCloudClient.listBillsFeeRecords();
+        List<HCloudBillsFeeRecords> hCloudBillsFeeRecords = hCloudClient.listBillsFeeRecords(DateUtil.format(new Date(), "yyyy-MM"));
         hCloudBillsFeeRecordsMapper.insertList(hCloudBillsFeeRecords);
+    }
+
+    @Test
+    void syncBillsMonthlyBreakDown() {
+        List<HCloudBillsMonthlyBreakDown> hCloudBillsMonthlyBreakDowns = hCloudClient.listBillsMonthlyBreakDown(DateUtil.format(new Date(), "yyyy-MM"));
+        hCloudBillsMonthlyBreakDownMapper.insertList(hCloudBillsMonthlyBreakDowns);
     }
 
     @Test
