@@ -25,6 +25,7 @@ package com.linjicong.cloud.stat.dao.entity.hcloud;
 
 import com.huaweicloud.sdk.vpc.v3.model.CloudResource;
 import com.huaweicloud.sdk.vpc.v3.model.Tag;
+import com.huaweicloud.sdk.vpc.v3.model.Vpc;
 import com.linjicong.cloud.stat.dao.entity.BasicEntity;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.Data;
@@ -41,6 +42,7 @@ import java.util.List;
  * @author linjicong
  * @version 1.0.0
  * @date 2022-08-03-10:17
+ * @see Vpc
  */
 @Data
 @Table(name = "h_cloud_vpc")

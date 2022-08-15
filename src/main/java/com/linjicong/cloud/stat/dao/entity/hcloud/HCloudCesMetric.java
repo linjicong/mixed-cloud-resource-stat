@@ -23,6 +23,7 @@
  */
 package com.linjicong.cloud.stat.dao.entity.hcloud;
 
+import com.huaweicloud.sdk.ces.v1.model.MetricInfoList;
 import com.huaweicloud.sdk.ces.v1.model.MetricsDimension;
 import com.linjicong.cloud.stat.dao.entity.BasicEntity;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
@@ -40,6 +41,7 @@ import java.util.List;
  * @author linjicong
  * @version 1.0.0
  * @date 2022-08-03-10:17
+ * @see MetricInfoList
  */
 @Data
 @Table(name = "h_cloud_ces_metric")

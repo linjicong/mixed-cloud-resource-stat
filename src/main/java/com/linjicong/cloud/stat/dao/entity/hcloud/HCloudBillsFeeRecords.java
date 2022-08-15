@@ -25,6 +25,7 @@ package com.linjicong.cloud.stat.dao.entity.hcloud;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.huaweicloud.sdk.bss.v2.model.MonthlyBillRecord;
 import com.linjicong.cloud.stat.dao.entity.BasicEntity;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.Data;
@@ -37,6 +38,7 @@ import javax.persistence.Table;
  * @author linjicong
  * @version 1.0.0
  * @date 2022-08-09-17:28
+ * @see MonthlyBillRecord
  */
 @Data
 @Table(name = "h_cloud_bills_fee_records")

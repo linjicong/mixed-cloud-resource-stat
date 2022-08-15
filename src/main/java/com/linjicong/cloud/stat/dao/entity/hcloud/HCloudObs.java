@@ -24,10 +24,7 @@
 package com.linjicong.cloud.stat.dao.entity.hcloud;
 
 import com.linjicong.cloud.stat.dao.entity.BasicEntity;
-import com.obs.services.model.AccessControlList;
-import com.obs.services.model.BucketTypeEnum;
-import com.obs.services.model.Owner;
-import com.obs.services.model.StorageClassEnum;
+import com.obs.services.model.*;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.Data;
 import org.hibernate.annotations.Type;
@@ -43,6 +40,7 @@ import java.util.Map;
  * @author linjicong
  * @date 2022-07-28-14:36
  * @version 1.0.0
+ * @see ObsBucket
  */
 @Data
 @Table(name = "h_cloud_obs")

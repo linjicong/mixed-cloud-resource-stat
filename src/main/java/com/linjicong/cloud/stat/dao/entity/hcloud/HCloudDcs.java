@@ -24,6 +24,7 @@
 package com.linjicong.cloud.stat.dao.entity.hcloud;
 
 import com.huaweicloud.sdk.dcs.v2.model.Features;
+import com.huaweicloud.sdk.dcs.v2.model.InstanceListInfo;
 import com.huaweicloud.sdk.dcs.v2.model.ResourceTag;
 import com.linjicong.cloud.stat.dao.entity.BasicEntity;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
@@ -42,6 +43,7 @@ import java.util.List;
  * @author linjicong
  * @date 2022-07-28-14:36
  * @version 1.0.0
+ * @see InstanceListInfo
  */
 @Data
 @Table(name = "h_cloud_dcs")

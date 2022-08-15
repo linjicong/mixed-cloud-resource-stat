@@ -40,6 +40,7 @@ import javax.persistence.Table;
  * @author linjicong
  * @date 2022-07-28-14:36
  * @version 1.0.0
+ * @see Instance
  */
 @Data
 @Entity

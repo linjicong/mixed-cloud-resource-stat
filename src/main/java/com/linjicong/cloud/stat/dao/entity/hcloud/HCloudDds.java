@@ -23,10 +23,7 @@
  */
 package com.linjicong.cloud.stat.dao.entity.hcloud;
 
-import com.huaweicloud.sdk.dds.v3.model.BackupStrategyForItemResponse;
-import com.huaweicloud.sdk.dds.v3.model.DatastoreItem;
-import com.huaweicloud.sdk.dds.v3.model.GroupResponseItem;
-import com.huaweicloud.sdk.dds.v3.model.TagResponse;
+import com.huaweicloud.sdk.dds.v3.model.*;
 import com.linjicong.cloud.stat.dao.entity.BasicEntity;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.Data;
@@ -44,6 +41,7 @@ import java.util.List;
  * @author linjicong
  * @date 2022-07-28-14:36
  * @version 1.0.0
+ * @see QueryInstanceResponse
  */
 @Data
 @Table(name = "h_cloud_dds")

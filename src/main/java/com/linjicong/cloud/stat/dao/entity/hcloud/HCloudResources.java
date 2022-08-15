@@ -25,6 +25,7 @@ package com.linjicong.cloud.stat.dao.entity.hcloud;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.huaweicloud.sdk.rms.v1.model.ResourceEntity;
 import com.linjicong.cloud.stat.dao.entity.BasicEntity;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.Data;
@@ -40,6 +41,7 @@ import java.util.Map;
  * @author linjicong
  * @version 1.0.0
  * @date 2022-08-09-18:09
+ * @see ResourceEntity
  */
 @Data
 @Table(name = "h_cloud_resources")

@@ -26,6 +26,7 @@ package com.linjicong.cloud.stat.dao.entity.hcloud;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.huaweicloud.sdk.bss.v2.model.CostUnitPair;
+import com.huaweicloud.sdk.bss.v2.model.NvlCostAnalysedBillDetail;
 import com.huaweicloud.sdk.bss.v2.model.TagPair;
 import com.linjicong.cloud.stat.dao.entity.BasicEntity;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
@@ -42,6 +43,7 @@ import java.util.List;
  * @author linjicong
  * @version 1.0.0
  * @date 2022-08-11-9:33
+ * @see NvlCostAnalysedBillDetail
  */
 @Data
 @Table(name = "h_cloud_bills_monthly_break_down")

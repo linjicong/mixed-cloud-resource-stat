@@ -25,6 +25,7 @@ package com.linjicong.cloud.stat.dao.entity.hcloud;
 
 import com.huaweicloud.sdk.evs.v2.model.Attachment;
 import com.huaweicloud.sdk.evs.v2.model.Link;
+import com.huaweicloud.sdk.evs.v2.model.VolumeDetail;
 import com.huaweicloud.sdk.evs.v2.model.VolumeMetadata;
 import com.linjicong.cloud.stat.dao.entity.BasicEntity;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
@@ -42,6 +43,7 @@ import java.util.Map;
  * @author linjicong
  * @version 1.0.0
  * @date 2022-08-03-10:17
+ * @see VolumeDetail
  */
 @Data
 @Table(name = "h_cloud_evs")
