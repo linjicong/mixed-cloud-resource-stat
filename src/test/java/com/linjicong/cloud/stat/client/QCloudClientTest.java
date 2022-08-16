@@ -7,9 +7,11 @@ import com.huaweicloud.sdk.ces.v1.model.MetricInfo;
 import com.huaweicloud.sdk.ecs.v2.model.ServerDetail;
 import com.linjicong.cloud.stat.dao.entity.CloudConf;
 import com.linjicong.cloud.stat.dao.entity.hcloud.*;
+import com.linjicong.cloud.stat.dao.entity.qcloud.QCloudBillResourceSummary;
 import com.linjicong.cloud.stat.dao.entity.qcloud.QCloudCvm;
 import com.linjicong.cloud.stat.dao.mapper.CloudConfMapper;
 import com.linjicong.cloud.stat.dao.mapper.hcloud.*;
+import com.linjicong.cloud.stat.dao.mapper.qcloud.QCloudBillResourceSummaryMapper;
 import com.linjicong.cloud.stat.dao.mapper.qcloud.QCloudCvmMapper;
 import com.linjicong.cloud.stat.util.BeanUtils;
 import com.obs.services.model.BucketTypeEnum;
@@ -18,6 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -35,6 +38,8 @@ class QCloudClientTest {
 
     @Resource
     private QCloudCvmMapper qCloudCvmMapper;
+    @Resource
+    private QCloudBillResourceSummaryMapper qCloudBillResourceSummaryMapper;
 
     @BeforeEach
     public void init(){
@@ -48,5 +53,10 @@ class QCloudClientTest {
         qCloudCvmMapper.insertList(qCloudCvms);
     }
 
+    @Test
+    void listBillResourceSummary() {
+        List<QCloudBillResourceSummary> qCloudBillResourceSummaries = qCloudClient.listBillResourceSummary(DateUtil.format(new Date(), "yyyy-MM"));
+        qCloudBillResourceSummaryMapper.insertList(qCloudBillResourceSummaries);
+    }
 
 }

@@ -92,7 +92,7 @@ public class HCloudDds extends BasicEntity {
 
     private String maintenanceWindow;
 
-    @Column(columnDefinition="json")
+    @Column(name = "`groups`",columnDefinition="json")
     @Type(type = "json")
     private List<GroupResponseItem> groups ;
 

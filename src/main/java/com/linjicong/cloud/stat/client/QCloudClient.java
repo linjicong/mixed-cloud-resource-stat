@@ -30,9 +30,14 @@ import com.huaweicloud.sdk.core.auth.BasicCredentials;
 import com.huaweicloud.sdk.core.auth.ICredential;
 import com.linjicong.cloud.stat.dao.entity.CloudConf;
 import com.linjicong.cloud.stat.dao.entity.hcloud.HCloudEcs;
+import com.linjicong.cloud.stat.dao.entity.qcloud.QCloudBillResourceSummary;
 import com.linjicong.cloud.stat.dao.entity.qcloud.QCloudCvm;
 import com.linjicong.cloud.stat.exception.ClientException;
 import com.linjicong.cloud.stat.util.BeanUtils;
+import com.tencentcloudapi.billing.v20180709.BillingClient;
+import com.tencentcloudapi.billing.v20180709.models.BillResourceSummary;
+import com.tencentcloudapi.billing.v20180709.models.DescribeBillResourceSummaryRequest;
+import com.tencentcloudapi.billing.v20180709.models.DescribeBillResourceSummaryResponse;
 import com.tencentcloudapi.common.Credential;
 import com.tencentcloudapi.common.exception.TencentCloudSDKException;
 import com.tencentcloudapi.common.profile.Region;
@@ -40,6 +45,7 @@ import com.tencentcloudapi.cvm.v20170312.CvmClient;
 import com.tencentcloudapi.cvm.v20170312.models.DescribeInstancesRequest;
 import com.tencentcloudapi.cvm.v20170312.models.Instance;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -68,8 +74,24 @@ public class QCloudClient{
         }
     }
 
-    public void syncRds() {
-
+    public List<QCloudBillResourceSummary> listBillResourceSummary(String month) {
+        BillingClient client = new BillingClient(credential,region);
+        DescribeBillResourceSummaryRequest request = new DescribeBillResourceSummaryRequest();
+        request.setOffset(0L);
+        request.setLimit(1000L);
+        request.setMonth(month);
+        try {
+            DescribeBillResourceSummaryResponse response = client.DescribeBillResourceSummary(request);
+            List<BillResourceSummary> billResourceSummaries = ListUtil.toList(response.getResourceSummarySet());
+            while (billResourceSummaries.size() % 1000 == 0){
+                request.setOffset((long) billResourceSummaries.size());
+                DescribeBillResourceSummaryResponse responseNext = client.DescribeBillResourceSummary(request);
+                billResourceSummaries.addAll(ListUtil.toList(responseNext.getResourceSummarySet()));
+            }
+            return BeanUtils.cgLibCopyList(billResourceSummaries, QCloudBillResourceSummary::new);
+        } catch (TencentCloudSDKException e) {
+            throw new ClientException(e);
+        }
     }
 
     public void syncDcs() {
