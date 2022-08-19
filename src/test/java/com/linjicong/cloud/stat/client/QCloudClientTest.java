@@ -8,10 +8,12 @@ import com.huaweicloud.sdk.ecs.v2.model.ServerDetail;
 import com.linjicong.cloud.stat.dao.entity.CloudConf;
 import com.linjicong.cloud.stat.dao.entity.hcloud.*;
 import com.linjicong.cloud.stat.dao.entity.qcloud.QCloudBillResourceSummary;
+import com.linjicong.cloud.stat.dao.entity.qcloud.QCloudCdb;
 import com.linjicong.cloud.stat.dao.entity.qcloud.QCloudCvm;
 import com.linjicong.cloud.stat.dao.mapper.CloudConfMapper;
 import com.linjicong.cloud.stat.dao.mapper.hcloud.*;
 import com.linjicong.cloud.stat.dao.mapper.qcloud.QCloudBillResourceSummaryMapper;
+import com.linjicong.cloud.stat.dao.mapper.qcloud.QCloudCdbMapper;
 import com.linjicong.cloud.stat.dao.mapper.qcloud.QCloudCvmMapper;
 import com.linjicong.cloud.stat.util.BeanUtils;
 import com.obs.services.model.BucketTypeEnum;
@@ -40,6 +42,8 @@ class QCloudClientTest {
     private QCloudCvmMapper qCloudCvmMapper;
     @Resource
     private QCloudBillResourceSummaryMapper qCloudBillResourceSummaryMapper;
+    @Resource
+    private QCloudCdbMapper qCloudCdbMapper;
 
     @BeforeEach
     public void init(){
@@ -59,4 +63,9 @@ class QCloudClientTest {
         qCloudBillResourceSummaryMapper.insertList(qCloudBillResourceSummaries);
     }
 
+    @Test
+    void listCdb() {
+        List<QCloudCdb> qCloudCdbs = qCloudClient.listCdb();
+        qCloudCdbMapper.insertList(qCloudCdbs);
+    }
 }

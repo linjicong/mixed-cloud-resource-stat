@@ -31,6 +31,7 @@ import com.huaweicloud.sdk.core.auth.ICredential;
 import com.linjicong.cloud.stat.dao.entity.CloudConf;
 import com.linjicong.cloud.stat.dao.entity.hcloud.HCloudEcs;
 import com.linjicong.cloud.stat.dao.entity.qcloud.QCloudBillResourceSummary;
+import com.linjicong.cloud.stat.dao.entity.qcloud.QCloudCdb;
 import com.linjicong.cloud.stat.dao.entity.qcloud.QCloudCvm;
 import com.linjicong.cloud.stat.exception.ClientException;
 import com.linjicong.cloud.stat.util.BeanUtils;
@@ -38,6 +39,9 @@ import com.tencentcloudapi.billing.v20180709.BillingClient;
 import com.tencentcloudapi.billing.v20180709.models.BillResourceSummary;
 import com.tencentcloudapi.billing.v20180709.models.DescribeBillResourceSummaryRequest;
 import com.tencentcloudapi.billing.v20180709.models.DescribeBillResourceSummaryResponse;
+import com.tencentcloudapi.cdb.v20170320.CdbClient;
+import com.tencentcloudapi.cdb.v20170320.models.DescribeDBInstancesRequest;
+import com.tencentcloudapi.cdb.v20170320.models.DescribeDBInstancesResponse;
 import com.tencentcloudapi.common.Credential;
 import com.tencentcloudapi.common.exception.TencentCloudSDKException;
 import com.tencentcloudapi.common.profile.Region;
@@ -94,7 +98,14 @@ public class QCloudClient{
         }
     }
 
-    public void syncDcs() {
-
+    public List<QCloudCdb> listCdb() {
+        CdbClient client = new CdbClient(credential,region);
+        DescribeDBInstancesRequest request = new DescribeDBInstancesRequest();
+        try {
+            DescribeDBInstancesResponse response = client.DescribeDBInstances(request);
+            return BeanUtils.cgLibCopyList(ListUtil.toList(response.getItems()), QCloudCdb::new);
+        } catch (TencentCloudSDKException e) {
+            throw new ClientException(e);
+        }
     }
 }
