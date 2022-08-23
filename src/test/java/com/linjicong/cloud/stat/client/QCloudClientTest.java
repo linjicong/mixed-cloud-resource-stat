@@ -9,11 +9,13 @@ import com.linjicong.cloud.stat.dao.entity.CloudConf;
 import com.linjicong.cloud.stat.dao.entity.hcloud.*;
 import com.linjicong.cloud.stat.dao.entity.qcloud.QCloudBillResourceSummary;
 import com.linjicong.cloud.stat.dao.entity.qcloud.QCloudCdb;
+import com.linjicong.cloud.stat.dao.entity.qcloud.QCloudCfs;
 import com.linjicong.cloud.stat.dao.entity.qcloud.QCloudCvm;
 import com.linjicong.cloud.stat.dao.mapper.CloudConfMapper;
 import com.linjicong.cloud.stat.dao.mapper.hcloud.*;
 import com.linjicong.cloud.stat.dao.mapper.qcloud.QCloudBillResourceSummaryMapper;
 import com.linjicong.cloud.stat.dao.mapper.qcloud.QCloudCdbMapper;
+import com.linjicong.cloud.stat.dao.mapper.qcloud.QCloudCfsMapper;
 import com.linjicong.cloud.stat.dao.mapper.qcloud.QCloudCvmMapper;
 import com.linjicong.cloud.stat.util.BeanUtils;
 import com.obs.services.model.BucketTypeEnum;
@@ -44,6 +46,8 @@ class QCloudClientTest {
     private QCloudBillResourceSummaryMapper qCloudBillResourceSummaryMapper;
     @Resource
     private QCloudCdbMapper qCloudCdbMapper;
+    @Resource
+    private QCloudCfsMapper qCloudCfsMapper;
 
     @BeforeEach
     public void init(){
@@ -67,5 +71,11 @@ class QCloudClientTest {
     void listCdb() {
         List<QCloudCdb> qCloudCdbs = qCloudClient.listCdb();
         qCloudCdbMapper.insertList(qCloudCdbs);
+    }
+
+    @Test
+    void listCfs() {
+        List<QCloudCfs> qCloudCfs = qCloudClient.listCfs();
+        qCloudCfsMapper.insertList(qCloudCfs);
     }
 }

@@ -32,6 +32,7 @@ import com.linjicong.cloud.stat.dao.entity.CloudConf;
 import com.linjicong.cloud.stat.dao.entity.hcloud.HCloudEcs;
 import com.linjicong.cloud.stat.dao.entity.qcloud.QCloudBillResourceSummary;
 import com.linjicong.cloud.stat.dao.entity.qcloud.QCloudCdb;
+import com.linjicong.cloud.stat.dao.entity.qcloud.QCloudCfs;
 import com.linjicong.cloud.stat.dao.entity.qcloud.QCloudCvm;
 import com.linjicong.cloud.stat.exception.ClientException;
 import com.linjicong.cloud.stat.util.BeanUtils;
@@ -42,6 +43,9 @@ import com.tencentcloudapi.billing.v20180709.models.DescribeBillResourceSummaryR
 import com.tencentcloudapi.cdb.v20170320.CdbClient;
 import com.tencentcloudapi.cdb.v20170320.models.DescribeDBInstancesRequest;
 import com.tencentcloudapi.cdb.v20170320.models.DescribeDBInstancesResponse;
+import com.tencentcloudapi.cfs.v20190719.CfsClient;
+import com.tencentcloudapi.cfs.v20190719.models.DescribeCfsFileSystemsRequest;
+import com.tencentcloudapi.cfs.v20190719.models.DescribeCfsFileSystemsResponse;
 import com.tencentcloudapi.common.Credential;
 import com.tencentcloudapi.common.exception.TencentCloudSDKException;
 import com.tencentcloudapi.common.profile.Region;
@@ -104,6 +108,17 @@ public class QCloudClient{
         try {
             DescribeDBInstancesResponse response = client.DescribeDBInstances(request);
             return BeanUtils.cgLibCopyList(ListUtil.toList(response.getItems()), QCloudCdb::new);
+        } catch (TencentCloudSDKException e) {
+            throw new ClientException(e);
+        }
+    }
+
+    public List<QCloudCfs> listCfs() {
+        CfsClient client = new CfsClient(credential,region);
+        DescribeCfsFileSystemsRequest request = new DescribeCfsFileSystemsRequest();
+        try {
+            DescribeCfsFileSystemsResponse response = client.DescribeCfsFileSystems(request);
+            return BeanUtils.cgLibCopyList(ListUtil.toList(response.getFileSystems()), QCloudCfs::new);
         } catch (TencentCloudSDKException e) {
             throw new ClientException(e);
         }
