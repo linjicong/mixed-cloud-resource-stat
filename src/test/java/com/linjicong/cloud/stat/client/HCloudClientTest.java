@@ -59,6 +59,8 @@ class HCloudClientTest {
     private HCloudResourcesMapper hCloudResourcesMapper;
     @Resource
     private HCloudBillsMonthlyBreakDownMapper hCloudBillsMonthlyBreakDownMapper;
+    @Resource
+    private HCloudDnsPrivateMapper hCloudDnsPrivateMapper;
 
     @BeforeEach
     public void init(){
@@ -155,6 +157,12 @@ class HCloudClientTest {
     void syncResources() {
         List<HCloudResources> hCloudResources = hCloudClient.listResources();
         hCloudResourcesMapper.insertList(hCloudResources);
+    }
+
+    @Test
+    void listDnsPrivate() {
+        List<HCloudDnsPrivate> hCloudDnsPrivates = hCloudClient.listDnsPrivate();
+        hCloudDnsPrivateMapper.insertList(hCloudDnsPrivates);
     }
 
     @Test
