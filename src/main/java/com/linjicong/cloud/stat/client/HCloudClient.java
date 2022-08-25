@@ -197,7 +197,7 @@ public class HCloudClient{
         return BeanUtils.cgLibCopyList(metrics, HCloudCesMetric::new);
     }
 
-    public List<HCloudCesMetricData> listCesMetricData(List<MetricInfo> metricInfos) {
+    public List<HCloudCesMetricData> listCesMetricData(List<MetricInfo> metricInfos,Date start,Date end) {
         CesClient client = CesClient.newBuilder()
                 .withCredential(auth)
                 .withRegion(CesRegion.valueOf(region))
@@ -208,8 +208,8 @@ public class HCloudClient{
         batchListMetricDataRequestBody.setMetrics(metricInfos);
         batchListMetricDataRequestBody.setPeriod("14400"); //查询1天的数据:500个指标最多设置间隔4小时,10个指标间隔5分钟
         batchListMetricDataRequestBody.setFilter("average");
-        batchListMetricDataRequestBody.setFrom(DateUtil.offsetDay(DateUtil.beginOfDay(new Date()),-1).getTime());
-        batchListMetricDataRequestBody.setTo(DateUtil.offsetDay(DateUtil.endOfDay(new Date()),-1).getTime());
+        batchListMetricDataRequestBody.setFrom(start.getTime());
+        batchListMetricDataRequestBody.setTo(end.getTime());
         batchListMetricDataRequest.setBody(batchListMetricDataRequestBody);
         return BeanUtils.cgLibCopyList(client.batchListMetricData(batchListMetricDataRequest).getMetrics(), HCloudCesMetricData::new);
     }

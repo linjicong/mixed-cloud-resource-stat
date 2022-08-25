@@ -16,8 +16,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.annotation.Resource;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author linjicong
@@ -133,10 +135,11 @@ class HCloudClientTest {
         List<HCloudCesMetric> hCloudCesMetricList = hCloudCesMetricMapper.selectAll();
         // 接口一次只能传500个指标进行查询
         List<List<HCloudCesMetric>> splitHCloudCesMetrics = ListUtil.split(hCloudCesMetricList, 500);
+        Date date = new Date();
 
         for (List<HCloudCesMetric> hCloudCesMetrics : splitHCloudCesMetrics) {
             List<MetricInfo> metricInfos = BeanUtils.cgLibCopyList(hCloudCesMetrics, MetricInfo::new);
-            List<HCloudCesMetricData> hCloudCesMetricData = hCloudClient.listCesMetricData(metricInfos);
+            List<HCloudCesMetricData> hCloudCesMetricData = hCloudClient.listCesMetricData(metricInfos,DateUtil.offsetDay(DateUtil.beginOfDay(date),-1),DateUtil.offsetDay(DateUtil.endOfDay(date),-1));
             hCloudCesMetricDataMapper.insertList(hCloudCesMetricData);
         }
     }
