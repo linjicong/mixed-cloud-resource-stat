@@ -63,6 +63,8 @@ class HCloudClientTest {
     private HCloudBillsMonthlyBreakDownMapper hCloudBillsMonthlyBreakDownMapper;
     @Resource
     private HCloudDnsPrivateMapper hCloudDnsPrivateMapper;
+    @Resource
+    private HCloudDnsPrivateRecordSetsMapper hCloudDnsPrivateRecordSetsMapper;
 
     @BeforeEach
     public void init(){
@@ -166,6 +168,12 @@ class HCloudClientTest {
     void listDnsPrivate() {
         List<HCloudDnsPrivate> hCloudDnsPrivates = hCloudClient.listDnsPrivate();
         hCloudDnsPrivateMapper.insertList(hCloudDnsPrivates);
+    }
+
+    @Test
+    void listDnsPrivateRecordSets() {
+        List<HCloudDnsPrivateRecordSets> hCloudDnsPrivateRecordSets = hCloudClient.listDnsPrivateRecordSets();
+        hCloudDnsPrivateRecordSetsMapper.insertList(hCloudDnsPrivateRecordSets);
     }
 
     @Test

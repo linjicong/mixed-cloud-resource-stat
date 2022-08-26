@@ -40,6 +40,7 @@ import com.huaweicloud.sdk.dds.v3.DdsClient;
 import com.huaweicloud.sdk.dds.v3.region.DdsRegion;
 import com.huaweicloud.sdk.dns.v2.DnsClient;
 import com.huaweicloud.sdk.dns.v2.model.ListPrivateZonesRequest;
+import com.huaweicloud.sdk.dns.v2.model.ListRecordSetsRequest;
 import com.huaweicloud.sdk.dns.v2.region.DnsRegion;
 import com.huaweicloud.sdk.ecs.v2.EcsClient;
 import com.huaweicloud.sdk.ecs.v2.model.ListServersDetailsRequest;
@@ -272,5 +273,13 @@ public class HCloudClient{
                 .withRegion(DnsRegion.valueOf(region))
                 .build();
         return BeanUtils.cgLibCopyList(client.listPrivateZones(new ListPrivateZonesRequest().withLimit(500).withType("private")).getZones(), HCloudDnsPrivate::new);
+    }
+
+    public List<HCloudDnsPrivateRecordSets> listDnsPrivateRecordSets() {
+        DnsClient client = DnsClient.newBuilder()
+                .withCredential(auth)
+                .withRegion(DnsRegion.valueOf(region))
+                .build();
+        return BeanUtils.cgLibCopyList(client.listRecordSets(new ListRecordSetsRequest().withLimit(500).withZoneType("private")).getRecordsets(), HCloudDnsPrivateRecordSets::new);
     }
 }
