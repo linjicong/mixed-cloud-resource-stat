@@ -41,6 +41,7 @@ import javax.persistence.Table;
 import java.util.List;
 
 /**
+ * DNS 解析
  * @author linjicong
  * @version 1.0.0
  * @date 2022-08-24-9:51
