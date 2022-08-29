@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -134,7 +135,7 @@ class HCloudClientTest {
 
     @Test
     void syncCesMetricData() {
-        List<HCloudCesMetric> hCloudCesMetricList = hCloudCesMetricMapper.selectAll();
+        List<HCloudCesMetric> hCloudCesMetricList = hCloudCesMetricMapper.selectByStatDate(DateUtil.today());
         // 接口一次只能传500个指标进行查询
         List<List<HCloudCesMetric>> splitHCloudCesMetrics = ListUtil.split(hCloudCesMetricList, 500);
         Date date = new Date();
@@ -143,6 +144,25 @@ class HCloudClientTest {
             List<MetricInfo> metricInfos = BeanUtils.cgLibCopyList(hCloudCesMetrics, MetricInfo::new);
             List<HCloudCesMetricData> hCloudCesMetricData = hCloudClient.listCesMetricData(metricInfos,DateUtil.offsetDay(DateUtil.beginOfDay(date),-1),DateUtil.offsetDay(DateUtil.endOfDay(date),-1));
             hCloudCesMetricDataMapper.insertList(hCloudCesMetricData);
+        }
+    }
+
+    @Test
+    void syncCesMetricDataEcs() {
+        List<HCloudCesMetric> hCloudCesMetricList = hCloudCesMetricMapper.selectByStatDate(DateUtil.today());
+        // 接口一次只能传500个指标进行查询
+        List<List<HCloudCesMetric>> splitHCloudCesMetrics = ListUtil.split(hCloudCesMetricList, 500);
+        Date date = new Date();
+        date=DateUtil.offsetMonth(date, -1);
+        List<String> namespaces = Arrays.asList("SYS.ECS","AGT.ECS");
+        List<String> metrics = Arrays.asList("mem_usedPercent","cpu_usage");
+        for (List<HCloudCesMetric> hCloudCesMetrics : splitHCloudCesMetrics) {
+            hCloudCesMetrics = hCloudCesMetrics.stream().filter(m -> metrics.contains(m.getMetricName()) && namespaces.contains(m.getNamespace())).collect(Collectors.toList());
+            if(hCloudCesMetrics.size() > 0) {
+                List<MetricInfo> metricInfos = BeanUtils.cgLibCopyList(hCloudCesMetrics, MetricInfo::new);
+                List<HCloudCesMetricData> hCloudCesMetricData = hCloudClient.listCesMetricData(metricInfos,DateUtil.offsetDay(DateUtil.beginOfDay(date),-1),DateUtil.offsetDay(DateUtil.endOfDay(date),-1));
+                hCloudCesMetricDataMapper.insertList(hCloudCesMetricData);
+            }
         }
     }
 
