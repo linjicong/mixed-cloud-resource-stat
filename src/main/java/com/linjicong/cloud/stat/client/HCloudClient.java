@@ -103,7 +103,10 @@ public class HCloudClient{
         this.obsClient = new ObsClient(accessKey, secretKey, ObsEndpoint.CN_SOUTH_1);
     }
 
-
+    /**
+     * 查询华为云-弹性云服务器列表
+     * @return 弹性云服务器列表
+     */
     public List<HCloudEcs> listEcs() {
         EcsClient client = EcsClient.newBuilder()
                 .withCredential(auth)
