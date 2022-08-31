@@ -105,7 +105,6 @@ public class HCloudClient{
 
     /**
      * 查询华为云-弹性云服务器列表
-     * @return 弹性云服务器列表
      */
     public List<HCloudEcs> listEcs() {
         EcsClient client = EcsClient.newBuilder()
@@ -116,6 +115,9 @@ public class HCloudClient{
         return BeanUtils.cgLibCopyList(client.listServersDetails(new ListServersDetailsRequest().withLimit(1000)).getServers(), HCloudEcs::new);
     }
 
+    /**
+     * 查询华为云-云数据库列表
+     */
     public List<HCloudRds> listRds() {
         RdsClient client = RdsClient.newBuilder()
                 .withCredential(auth)
