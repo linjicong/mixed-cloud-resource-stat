@@ -127,6 +127,9 @@ public class HCloudClient{
         return BeanUtils.cgLibCopyList(client.listInstances(new ListInstancesRequest().withLimit(100)).getInstances(),HCloudRds::new);
     }
 
+    /**
+     * 查询华为云-文档数据库列表
+     */
     public List<HCloudDcs> listDcs() {
         DcsClient client = DcsClient.newBuilder()
                 .withCredential(auth)
