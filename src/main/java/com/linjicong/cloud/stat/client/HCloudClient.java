@@ -128,7 +128,7 @@ public class HCloudClient{
     }
 
     /**
-     * 查询华为云-文档数据库列表
+     * 查询华为云-分布式缓存数据库列表
      */
     public List<HCloudDcs> listDcs() {
         DcsClient client = DcsClient.newBuilder()
@@ -140,6 +140,10 @@ public class HCloudClient{
 
     }
 
+    /**
+     * 查询华为云-文档数据库
+     * @return
+     */
     public List<HCloudDds> listDds() {
         DdsClient client = DdsClient.newBuilder()
                 .withCredential(auth)
