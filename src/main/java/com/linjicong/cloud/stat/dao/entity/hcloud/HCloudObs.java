@@ -71,4 +71,14 @@ public class HCloudObs extends BasicEntity {
 
     @Column(name="bucket_type_enum")
     private BucketTypeEnum bucketTypeEnum;
+
+    /**
+     * @see BucketStorageInfo
+     */
+    private Long size;
+
+    /**
+     * @see BucketStorageInfo
+     */
+    private Long objectNum;
 }

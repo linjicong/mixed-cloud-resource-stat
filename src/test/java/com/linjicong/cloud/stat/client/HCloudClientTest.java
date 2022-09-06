@@ -10,10 +10,12 @@ import com.linjicong.cloud.stat.dao.entity.hcloud.*;
 import com.linjicong.cloud.stat.dao.mapper.CloudConfMapper;
 import com.linjicong.cloud.stat.dao.mapper.hcloud.*;
 import com.linjicong.cloud.stat.util.BeanUtils;
+import com.obs.services.model.BucketStorageInfo;
 import com.obs.services.model.BucketTypeEnum;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.RedisTemplate;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -31,6 +33,9 @@ import java.util.stream.Collectors;
 class HCloudClientTest {
 
     private HCloudClient hCloudClient;
+
+    @Resource
+    RedisTemplate redisTemplate;
 
     @Resource
     private CloudConfMapper cloudConfMapper;
@@ -100,7 +105,18 @@ class HCloudClientTest {
     @Test
     void syncObs() {
         List<HCloudObs> hCloudObs = hCloudClient.listObs();
+        hCloudObs.forEach(e->{
+            BucketStorageInfo info = hCloudClient.listObsInfo(e.getBucketName());
+            e.setObjectNum(info.getObjectNumber());
+            e.setSize(info.getSize());
+        });
         hCloudObsMapper.insertList(hCloudObs);
+    }
+
+    @Test
+    void syncObsInfo() {
+        BucketStorageInfo info = hCloudClient.listObsInfo("velero-ph-k8s19-sz");
+        System.out.println(info);
     }
 
     @Test
@@ -224,5 +240,10 @@ class HCloudClientTest {
     @Test
     void deleteDcs() {
         hCloudDcsMapper.deleteByStatDate(DateUtil.today());
+    }
+
+    @Test
+    void testRedis() {
+        redisTemplate.opsForValue().set("test","123");
     }
 }

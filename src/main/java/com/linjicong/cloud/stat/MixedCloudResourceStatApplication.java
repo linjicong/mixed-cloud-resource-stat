@@ -34,6 +34,7 @@ import tk.mybatis.spring.annotation.MapperScan;
 @MapperScan("com.linjicong.cloud.stat.dao.mapper")
 @EntityScan("com.linjicong.cloud.stat.dao.entity")
 @EnableScheduling
+//@EnableCaching
 @Import(cn.hutool.extra.spring.SpringUtil.class)
 public class MixedCloudResourceStatApplication {
 

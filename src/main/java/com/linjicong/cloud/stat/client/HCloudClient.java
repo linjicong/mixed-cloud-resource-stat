@@ -23,7 +23,6 @@
  */
 package com.linjicong.cloud.stat.client;
 
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import com.huaweicloud.sdk.bss.v2.BssClient;
 import com.huaweicloud.sdk.bss.v2.model.*;
@@ -70,6 +69,7 @@ import com.linjicong.cloud.stat.dao.entity.CloudConf;
 import com.linjicong.cloud.stat.dao.entity.hcloud.*;
 import com.linjicong.cloud.stat.util.BeanUtils;
 import com.obs.services.ObsClient;
+import com.obs.services.model.BucketStorageInfo;
 import com.obs.services.model.ListBucketsRequest;
 
 import java.util.Date;
@@ -155,6 +155,10 @@ public class HCloudClient{
 
     public List<HCloudObs> listObs() {
         return BeanUtils.cgLibCopyList(obsClient.listBucketsV2(new ListBucketsRequest()).getBuckets(),HCloudObs::new);
+    }
+
+    public BucketStorageInfo listObsInfo(String bucketName) {
+        return BeanUtils.cgLibCopyBean(obsClient.getBucketStorageInfo(bucketName), BucketStorageInfo::new);
     }
 
     public List<HCloudSfs> listSfs() {
