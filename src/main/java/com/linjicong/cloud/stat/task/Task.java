@@ -50,7 +50,7 @@ public class Task {
     public void syncEcs(){
         List<CloudConf> cloudConf = cloudConfMapper.selectAll();
         cloudConf.forEach(conf->{
-            CloudService service = CloudFactory.getService(conf);
+            CloudService service = CloudFactory.getService(conf.getProvider());
             int result = service.syncEcs(conf);
             log.info("成功同步ECS: "+result+"");
         });

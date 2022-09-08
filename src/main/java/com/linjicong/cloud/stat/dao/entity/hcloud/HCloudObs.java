@@ -70,6 +70,7 @@ public class HCloudObs extends BasicEntity {
     private AccessControlList acl;
 
     @Column(name="bucket_type_enum")
+    @Enumerated(EnumType.STRING)
     private BucketTypeEnum bucketTypeEnum;
 
     /**

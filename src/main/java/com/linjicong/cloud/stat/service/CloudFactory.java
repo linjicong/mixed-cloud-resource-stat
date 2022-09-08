@@ -27,6 +27,7 @@ import cn.hutool.extra.spring.SpringUtil;
 import com.linjicong.cloud.stat.dao.constant.CloudConstant;
 import com.linjicong.cloud.stat.dao.entity.CloudConf;
 
+import javax.swing.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,8 +40,8 @@ public class CloudFactory {
 
     private static final Map<Integer, CloudService> cachedServiceMap = new HashMap<>();
 
-    public static CloudService getService(CloudConf cloudConf) {
-        switch (cloudConf.getProvider()) {
+    public static CloudService getService(String provider) {
+        switch (provider) {
             case CloudConstant.H_CLOUD:
                 return SpringUtil.getBean("HCloudService");
             case CloudConstant.Q_CLOUD:

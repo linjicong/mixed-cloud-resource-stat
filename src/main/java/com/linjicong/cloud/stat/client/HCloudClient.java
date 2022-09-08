@@ -33,6 +33,7 @@ import com.huaweicloud.sdk.ces.v1.region.CesRegion;
 import com.huaweicloud.sdk.core.auth.BasicCredentials;
 import com.huaweicloud.sdk.core.auth.GlobalCredentials;
 import com.huaweicloud.sdk.core.auth.ICredential;
+import com.huaweicloud.sdk.core.http.HttpConfig;
 import com.huaweicloud.sdk.dcs.v2.DcsClient;
 import com.huaweicloud.sdk.dcs.v2.region.DcsRegion;
 import com.huaweicloud.sdk.dds.v3.DdsClient;
@@ -65,9 +66,11 @@ import com.huaweicloud.sdk.vpc.v3.VpcClient;
 import com.huaweicloud.sdk.vpc.v3.model.ListVpcsRequest;
 import com.huaweicloud.sdk.vpc.v3.region.VpcRegion;
 import com.linjicong.cloud.stat.dao.constant.hcloud.ObsEndpoint;
+import com.linjicong.cloud.stat.dao.entity.BasicEntityExtend;
 import com.linjicong.cloud.stat.dao.entity.CloudConf;
 import com.linjicong.cloud.stat.dao.entity.hcloud.*;
 import com.linjicong.cloud.stat.util.BeanUtils;
+import com.linjicong.cloud.stat.util.ThreadLocalUtil;
 import com.obs.services.ObsClient;
 import com.obs.services.model.BucketStorageInfo;
 import com.obs.services.model.ListBucketsRequest;
@@ -93,7 +96,13 @@ public class HCloudClient{
     public HCloudClient(CloudConf cloudConf) {
         String accessKey = cloudConf.getAccessKey();
         String secretKey = cloudConf.getSecretKey();
+        String name = cloudConf.getName();
+        String provider = cloudConf.getProvider();
         this.region = cloudConf.getRegion();
+        // 先存入共享变量,后面mybatis拦截器要使用,插入公共字段
+        BasicEntityExtend entityExtend=new BasicEntityExtend(name,provider,region);
+        ThreadLocalUtil.put("entityExtend",entityExtend);
+
         this.auth = new BasicCredentials()
                 .withAk(accessKey)
                 .withSk(secretKey);

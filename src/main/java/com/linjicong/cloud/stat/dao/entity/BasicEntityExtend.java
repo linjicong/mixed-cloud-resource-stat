@@ -26,7 +26,6 @@ package com.linjicong.cloud.stat.dao.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -38,11 +37,13 @@ import java.util.Date;
  */
 @Data
 @MappedSuperclass
-public class BasicEntity extends BasicEntityExtend{
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer pk;
+@AllArgsConstructor
+@NoArgsConstructor
+public class BasicEntityExtend {
 
-    @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP",nullable = false,insertable = false,updatable = false)
-    private Date statDate;
+    private String confName;
+
+    private String confProvider;
+
+    private String confRegion;
 }
