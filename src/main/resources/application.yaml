@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3307/cloud_resource?useUnicode=true&useSSL=false&serverTimezone=UTC
+    url: jdbc:mysql://localhost:3306/cloud_resource?useUnicode=true&useSSL=false&serverTimezone=UTC
     username: root
     password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -15,3 +15,5 @@ mybatis:
   type-aliases-package: com.linjicong.cloud.stat.dao.entity
   type-handlers-package: com.linjicong.cloud.stat.dao.typehandle.impl
 
+aes:
+  key: 123456
