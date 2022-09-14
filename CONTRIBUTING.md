@@ -100,6 +100,6 @@ https://gitee.com/free/Mapper/issues/I1XMD2#note_11943350
 无资源管理服务接口
 
 TODO:
-- [ ] 表增加3个字段,账号名称,云厂商类型,区域
-- [ ] CloudConf加密
+- [x] 表增加3个字段,账号名称,云厂商类型,区域
+- [x] CloudConf加密
 - [ ] 完善分页获取数据

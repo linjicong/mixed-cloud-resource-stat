@@ -21,40 +21,54 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.linjicong.cloud.stat.dao.entity;
+package com.linjicong.cloud.stat.util;
 
-import com.linjicong.cloud.stat.dao.typehandle.AESEncryptHandler;
-import lombok.Data;
-import tk.mybatis.mapper.annotation.ColumnType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import javax.persistence.Id;
-import java.util.Date;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 
 /**
+ * 配置文件工具
  * @author linjicong
- * @date 2022-07-28-14:36
  * @version 1.0.0
+ * @date 2022-09-14-17:19
  */
-@Data
-public class CloudConf {
-    @Id
-    private Integer pk;
+public class PropertyUtil {
 
-    private String name;
+    private static final Logger LOGGER = LoggerFactory.getLogger(PropertyUtil.class);
 
-    private String provider;
+    private static Properties props;
 
-    private String region;
+    static {
+        loadProps();
+    }
 
-    @ColumnType(typeHandler = AESEncryptHandler.class)
-    private String accessKey;
+    private PropertyUtil() {
+    }
 
-    @ColumnType(typeHandler = AESEncryptHandler.class)
-    private String secretKey;
+    private static void loadProps() {
+        props = new Properties();
+        try (InputStream in = PropertyUtil.class.getClassLoader().getResourceAsStream("application.yaml")) {
+            props.load(in);
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage(), e);
+        }
+    }
 
-    private Boolean enable;
+    public static String getProperty(String key) {
+        if (null == props) {
+            loadProps();
+        }
+        return props.getProperty(key);
+    }
 
-    private Date createTime;
-
-    private Date updateTime;
+    public static String getProperty(String key, String defaultValue) {
+        if (null == props) {
+            loadProps();
+        }
+        return props.getProperty(key, defaultValue);
+    }
 }

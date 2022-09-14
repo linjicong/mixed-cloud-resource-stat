@@ -23,6 +23,7 @@
  */
 package com.linjicong.cloud.stat.dao.interceptor;
 
+import com.linjicong.cloud.stat.dao.entity.BasicEntityExtend;
 import com.linjicong.cloud.stat.util.BeanUtils;
 import com.linjicong.cloud.stat.util.ThreadLocalUtil;
 import org.apache.ibatis.binding.MapperMethod;
@@ -55,13 +56,26 @@ public class MybatisBaseEntityInterceptor implements Interceptor {
             Object arg = invocation.getArgs()[1];
             if(arg instanceof MapperMethod.ParamMap){
                 List parameter = (List) ((MapperMethod.ParamMap) arg).get("list");
-                for (Object o : parameter) {
-                    BeanUtils.cgLibCopyBean(ThreadLocalUtil.get("entityExtend"),()->o);
+                for (Object obj : parameter) {
+                    if(needFill(obj)){
+                        BeanUtils.cgLibCopyBean(ThreadLocalUtil.get("entityExtend"),()->obj);
+                    }
                 }
             }else{
-                BeanUtils.cgLibCopyBean(ThreadLocalUtil.get("entityExtend"),()->arg);
+                if(needFill(arg)) {
+                    BeanUtils.cgLibCopyBean(ThreadLocalUtil.get("entityExtend"), () -> arg);
+                }
             }
         }
         return invocation.proceed();
+    }
+
+    /**
+     * 是否需要填充字段处理
+     */
+    private boolean needFill(Object obj){
+        return obj.getClass().getSuperclass() != null
+                && obj.getClass().getSuperclass().getSuperclass() != null
+                && obj.getClass().getSuperclass().getSuperclass().equals(BasicEntityExtend.class);
     }
 }

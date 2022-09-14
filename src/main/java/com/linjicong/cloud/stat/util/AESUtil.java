@@ -21,40 +21,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.linjicong.cloud.stat.dao.entity;
+package com.linjicong.cloud.stat.util;
 
-import com.linjicong.cloud.stat.dao.typehandle.AESEncryptHandler;
-import lombok.Data;
-import tk.mybatis.mapper.annotation.ColumnType;
+import cn.hutool.core.util.CharsetUtil;
+import cn.hutool.crypto.SecureUtil;
+import cn.hutool.crypto.symmetric.AES;
+import org.yaml.snakeyaml.introspector.PropertyUtils;
 
-import javax.persistence.Id;
-import java.util.Date;
+import java.nio.charset.StandardCharsets;
 
 /**
  * @author linjicong
- * @date 2022-07-28-14:36
  * @version 1.0.0
+ * @date 2022-09-08-17:19
  */
-@Data
-public class CloudConf {
-    @Id
-    private Integer pk;
+public class AESUtil {
+    public static final String AES_KEY = YamlPropertyUtil.getProperty("aes.key");
 
-    private String name;
+    public static String encrypt(String content){
+        AES aes = SecureUtil.aes(AES_KEY.getBytes(StandardCharsets.UTF_8));
+        return aes.encryptHex(content);
+    }
 
-    private String provider;
-
-    private String region;
-
-    @ColumnType(typeHandler = AESEncryptHandler.class)
-    private String accessKey;
-
-    @ColumnType(typeHandler = AESEncryptHandler.class)
-    private String secretKey;
-
-    private Boolean enable;
-
-    private Date createTime;
-
-    private Date updateTime;
+    public static String decrypt(String content){
+        AES aes = SecureUtil.aes(AES_KEY.getBytes(StandardCharsets.UTF_8));
+        return aes.decryptStr(content, CharsetUtil.CHARSET_UTF_8);
+    }
 }

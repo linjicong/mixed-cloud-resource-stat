@@ -68,7 +68,7 @@ class HCloudClientTest {
     private HCloudDnsPrivateRecordSetsMapper hCloudDnsPrivateRecordSetsMapper;
 
     @BeforeEach
-    public void init(){
+    public void beforeEach(){
         CloudConf cloudConf = cloudConfMapper.selectByPrimaryKey(1);
         hCloudClient = new HCloudClient(cloudConf);
     }
@@ -226,6 +226,24 @@ class HCloudClientTest {
         hCloudObs.setBucketTypeEnum(BucketTypeEnum.OBJECT);
         hCloudObsMapper.insert(hCloudObs);
     }
+
+    @Test
+    void insertCloudConf() {
+        CloudConf cloudConf = new CloudConf();
+        cloudConf.setName("name");
+        cloudConf.setProvider("provider");
+        cloudConf.setRegion("region");
+        cloudConf.setAccessKey("accessKey");
+        cloudConf.setSecretKey("secretKey");
+        cloudConfMapper.insert(cloudConf);
+    }
+
+    @Test
+    void selectCloudConf() {
+        CloudConf cloudConf = cloudConfMapper.selectByPrimaryKey(1);
+        System.out.println(cloudConf);
+    }
+
 
     @Test
     void deleteEcs() {
