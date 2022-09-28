@@ -56,7 +56,12 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-
+        <!--避免出现java.lang.NoSuchFieldError: Companion报错-->
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+            <version>4.10.0</version>
+        </dependency>
         <dependency>
             <groupId>com.huaweicloud.sdk</groupId>
             <artifactId>huaweicloud-sdk-all</artifactId>
@@ -68,6 +73,7 @@
             <artifactId>esdk-obs-java-bundle</artifactId>
             <version>3.22.3</version>
         </dependency>
+
         <!-- 4.0.11版本是废弃的,https://gitee.com/tencentcloud/tencentcloud-sdk-java -->
         <dependency>
             <groupId>com.tencentcloudapi</groupId>
