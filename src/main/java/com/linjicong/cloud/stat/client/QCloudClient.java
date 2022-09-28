@@ -28,18 +28,21 @@ import cn.hutool.core.exceptions.UtilException;
 import cn.hutool.core.util.ArrayUtil;
 import com.huaweicloud.sdk.core.auth.BasicCredentials;
 import com.huaweicloud.sdk.core.auth.ICredential;
+import com.linjicong.cloud.stat.dao.entity.BasicEntityExtend;
 import com.linjicong.cloud.stat.dao.entity.CloudConf;
 import com.linjicong.cloud.stat.dao.entity.hcloud.HCloudEcs;
-import com.linjicong.cloud.stat.dao.entity.qcloud.QCloudBillResourceSummary;
-import com.linjicong.cloud.stat.dao.entity.qcloud.QCloudCdb;
-import com.linjicong.cloud.stat.dao.entity.qcloud.QCloudCfs;
-import com.linjicong.cloud.stat.dao.entity.qcloud.QCloudCvm;
+import com.linjicong.cloud.stat.dao.entity.qcloud.*;
 import com.linjicong.cloud.stat.exception.ClientException;
 import com.linjicong.cloud.stat.util.BeanUtils;
+import com.linjicong.cloud.stat.util.ThreadLocalUtil;
 import com.tencentcloudapi.billing.v20180709.BillingClient;
 import com.tencentcloudapi.billing.v20180709.models.BillResourceSummary;
 import com.tencentcloudapi.billing.v20180709.models.DescribeBillResourceSummaryRequest;
 import com.tencentcloudapi.billing.v20180709.models.DescribeBillResourceSummaryResponse;
+import com.tencentcloudapi.cbs.v20170312.CbsClient;
+import com.tencentcloudapi.cbs.v20170312.models.DescribeDisksRequest;
+import com.tencentcloudapi.cbs.v20170312.models.DescribeDisksResponse;
+import com.tencentcloudapi.cbs.v20170312.models.Disk;
 import com.tencentcloudapi.cdb.v20170320.CdbClient;
 import com.tencentcloudapi.cdb.v20170320.models.DescribeDBInstancesRequest;
 import com.tencentcloudapi.cdb.v20170320.models.DescribeDBInstancesResponse;
@@ -68,6 +71,12 @@ public class QCloudClient{
     public QCloudClient(CloudConf cloudConf) {
         this.credential = new Credential(cloudConf.getAccessKey(),cloudConf.getSecretKey());
         this.region=cloudConf.getRegion();
+
+        String name = cloudConf.getName();
+        String provider = cloudConf.getProvider();
+        // 先存入共享变量,后面mybatis拦截器要使用,插入公共字段
+        BasicEntityExtend entityExtend=new BasicEntityExtend(name,provider,region);
+        ThreadLocalUtil.put("entityExtend",entityExtend);
     }
 
 
@@ -77,6 +86,24 @@ public class QCloudClient{
         describeInstancesRequest.setLimit(100L);
         try {
             return BeanUtils.cgLibCopyList(client.DescribeInstances(describeInstancesRequest).getInstanceSet(), QCloudCvm::new);
+        } catch (TencentCloudSDKException e) {
+            throw new ClientException(e);
+        }
+    }
+
+    public List<QCloudCbs> listCbs() {
+        CbsClient client = new CbsClient(credential, region);
+        DescribeDisksRequest request = new DescribeDisksRequest();
+        request.setLimit(100L);
+        try {
+            DescribeDisksResponse response = client.DescribeDisks(request);
+            ArrayList<Disk> disks = ListUtil.toList(response.getDiskSet());
+            while (disks.size() % 100 ==0){
+                request.setOffset((long) disks.size());
+                DescribeDisksResponse responseNext = client.DescribeDisks(request);
+                disks.addAll(ListUtil.toList(responseNext.getDiskSet()));
+            }
+            return BeanUtils.cgLibCopyList(disks, QCloudCbs::new);
         } catch (TencentCloudSDKException e) {
             throw new ClientException(e);
         }

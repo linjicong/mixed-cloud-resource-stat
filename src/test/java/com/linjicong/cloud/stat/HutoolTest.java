@@ -81,13 +81,4 @@ public class HutoolTest {
         Type genericSuperclass = list.getClass().getGenericSuperclass();
         System.out.println(((ParameterizedType) list.getClass().getGenericSuperclass()).getActualTypeArguments()[0]);
     }
-
-    //@Test
-    //void envTest(){
-    //    System.out.println(System.getenv("aes.key"));
-    //}
-    @Test
-    void envTest(){
-        System.out.println(SpringUtil.getProperty("aes.key"));
-    }
 }

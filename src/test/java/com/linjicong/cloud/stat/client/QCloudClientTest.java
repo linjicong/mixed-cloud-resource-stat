@@ -7,16 +7,10 @@ import com.huaweicloud.sdk.ces.v1.model.MetricInfo;
 import com.huaweicloud.sdk.ecs.v2.model.ServerDetail;
 import com.linjicong.cloud.stat.dao.entity.CloudConf;
 import com.linjicong.cloud.stat.dao.entity.hcloud.*;
-import com.linjicong.cloud.stat.dao.entity.qcloud.QCloudBillResourceSummary;
-import com.linjicong.cloud.stat.dao.entity.qcloud.QCloudCdb;
-import com.linjicong.cloud.stat.dao.entity.qcloud.QCloudCfs;
-import com.linjicong.cloud.stat.dao.entity.qcloud.QCloudCvm;
+import com.linjicong.cloud.stat.dao.entity.qcloud.*;
 import com.linjicong.cloud.stat.dao.mapper.CloudConfMapper;
 import com.linjicong.cloud.stat.dao.mapper.hcloud.*;
-import com.linjicong.cloud.stat.dao.mapper.qcloud.QCloudBillResourceSummaryMapper;
-import com.linjicong.cloud.stat.dao.mapper.qcloud.QCloudCdbMapper;
-import com.linjicong.cloud.stat.dao.mapper.qcloud.QCloudCfsMapper;
-import com.linjicong.cloud.stat.dao.mapper.qcloud.QCloudCvmMapper;
+import com.linjicong.cloud.stat.dao.mapper.qcloud.*;
 import com.linjicong.cloud.stat.util.BeanUtils;
 import com.obs.services.model.BucketTypeEnum;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,6 +37,8 @@ class QCloudClientTest {
     @Resource
     private QCloudCvmMapper qCloudCvmMapper;
     @Resource
+    private QCloudCbsMapper qCloudCbsMapper;
+    @Resource
     private QCloudBillResourceSummaryMapper qCloudBillResourceSummaryMapper;
     @Resource
     private QCloudCdbMapper qCloudCdbMapper;
@@ -56,9 +52,15 @@ class QCloudClientTest {
     }
 
     @Test
-    void syncCvm() {
+    void listCvm() {
         List<QCloudCvm> qCloudCvms = qCloudClient.listCvm();
         qCloudCvmMapper.insertList(qCloudCvms);
+    }
+
+    @Test
+    void listCbs() {
+        List<QCloudCbs> qCloudCbs = qCloudClient.listCbs();
+        qCloudCbsMapper.insertList(qCloudCbs);
     }
 
     @Test
