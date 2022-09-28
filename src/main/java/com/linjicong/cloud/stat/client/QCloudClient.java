@@ -49,6 +49,10 @@ import com.tencentcloudapi.cdb.v20170320.models.DescribeDBInstancesResponse;
 import com.tencentcloudapi.cfs.v20190719.CfsClient;
 import com.tencentcloudapi.cfs.v20190719.models.DescribeCfsFileSystemsRequest;
 import com.tencentcloudapi.cfs.v20190719.models.DescribeCfsFileSystemsResponse;
+import com.tencentcloudapi.clb.v20180317.ClbClient;
+import com.tencentcloudapi.clb.v20180317.models.DescribeLoadBalancersRequest;
+import com.tencentcloudapi.clb.v20180317.models.DescribeLoadBalancersResponse;
+import com.tencentcloudapi.clb.v20180317.models.LoadBalancer;
 import com.tencentcloudapi.common.Credential;
 import com.tencentcloudapi.common.exception.TencentCloudSDKException;
 import com.tencentcloudapi.common.profile.Region;
@@ -135,6 +139,24 @@ public class QCloudClient{
         try {
             DescribeDBInstancesResponse response = client.DescribeDBInstances(request);
             return BeanUtils.cgLibCopyList(ListUtil.toList(response.getItems()), QCloudCdb::new);
+        } catch (TencentCloudSDKException e) {
+            throw new ClientException(e);
+        }
+    }
+
+    public List<QCloudClb> listClb() {
+        ClbClient client = new ClbClient(credential, region);
+        DescribeLoadBalancersRequest request = new DescribeLoadBalancersRequest();
+        request.setLimit(100L);
+        try {
+            DescribeLoadBalancersResponse response = client.DescribeLoadBalancers(request);
+            ArrayList<LoadBalancer> loadBalancers = ListUtil.toList(response.getLoadBalancerSet());
+            while (loadBalancers.size() % 100 ==0){
+                request.setOffset((long) loadBalancers.size());
+                DescribeLoadBalancersResponse responseNext = client.DescribeLoadBalancers(request);
+                loadBalancers.addAll(ListUtil.toList(responseNext.getLoadBalancerSet()));
+            }
+            return BeanUtils.cgLibCopyList(loadBalancers, QCloudClb::new);
         } catch (TencentCloudSDKException e) {
             throw new ClientException(e);
         }

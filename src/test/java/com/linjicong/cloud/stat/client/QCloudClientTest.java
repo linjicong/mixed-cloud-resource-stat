@@ -39,6 +39,8 @@ class QCloudClientTest {
     @Resource
     private QCloudCbsMapper qCloudCbsMapper;
     @Resource
+    private QCloudClbMapper qCloudClbMapper;
+    @Resource
     private QCloudBillResourceSummaryMapper qCloudBillResourceSummaryMapper;
     @Resource
     private QCloudCdbMapper qCloudCdbMapper;
@@ -61,6 +63,12 @@ class QCloudClientTest {
     void listCbs() {
         List<QCloudCbs> qCloudCbs = qCloudClient.listCbs();
         qCloudCbsMapper.insertList(qCloudCbs);
+    }
+
+    @Test
+    void listClb() {
+        List<QCloudClb> qCloudClbs = qCloudClient.listClb();
+        qCloudClbMapper.insertList(qCloudClbs);
     }
 
     @Test
