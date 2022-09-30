@@ -1,6 +1,6 @@
 # Getting Started
 
-基于云厂商提供的SDK，实现三大云厂商资源的统一管理。
+基于云厂商提供的SDK，实现三大云厂商资源的统一数据获取。
 
 ## 主要功能：
 
@@ -50,4 +50,8 @@
 - https://github.com/TencentCloud/tencentcloud-sdk-java
 - https://console.cloud.tencent.com/api/explorer
   
+阿里云:
 
+- https://next.api.aliyun.com/api-tools/sdk
+- https://github.com/aliyun/alibabacloud-sdk
+- https://next.api.aliyun.com/api/Alidns/2015-01-09/DescribeGtmInstances
