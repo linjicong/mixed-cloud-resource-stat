@@ -45,9 +45,12 @@ import java.util.List;
  * @version 1.0.0
  */
 public class ACloudClient {
+
     private final String region;
     private final String accessKey;
     private final String secretKey;
+
+    public static final String ALIDNS = "alidns";
 
     public ACloudClient(CloudConf cloudConf) {
         String name = cloudConf.getName();
@@ -63,10 +66,8 @@ public class ACloudClient {
     }
 
     public List<ACloudDnsDomain> listDnsDomain() {
-        Config config=new Config().setAccessKeyId(accessKey).setAccessKeySecret(secretKey);
-        config.setEndpoint("alidns." + region + ".aliyuncs.com");
         try {
-            Client client = new Client(config);
+            Client client = new Client(generateConfig(ALIDNS));
             return BeanUtils.cgLibCopyList(client.describeDomainsWithOptions(new DescribeDomainsRequest(),new RuntimeOptions()).getBody().getDomains().getDomain(), ACloudDnsDomain::new);
         } catch (Exception e) {
             e.printStackTrace();
@@ -74,11 +75,15 @@ public class ACloudClient {
         }
     }
 
-    public List<ACloudDnsDomainRecords> listDnsDomainRecords(String domainName) {
+    private Config generateConfig(String service) {
         Config config=new Config().setAccessKeyId(accessKey).setAccessKeySecret(secretKey);
-        config.setEndpoint("alidns." + region + ".aliyuncs.com");
+        config.setEndpoint(service + "."+region + ".aliyuncs.com");
+        return config;
+    }
+
+    public List<ACloudDnsDomainRecords> listDnsDomainRecords(String domainName) {
         try {
-            Client client = new Client(config);
+            Client client = new Client(generateConfig(ALIDNS));
             return BeanUtils.cgLibCopyList(client.describeDomainRecords(new DescribeDomainRecordsRequest().setDomainName(domainName)).getBody().getDomainRecords().getRecord(), ACloudDnsDomainRecords::new);
         } catch (Exception e) {
             e.printStackTrace();
