@@ -53,32 +53,32 @@ import java.util.List;
 @TypeDef(name = "json",typeClass = JsonStringType.class)
 public class ACloudDnsDomainRecords extends BasicEntity {
 
-    public String domainName;
+    private String domainName;
 
-    public String line;
+    private String line;
 
-    public Boolean locked;
+    private Boolean locked;
 
-    public Long priority;
+    private Long priority;
 
     /**
      * 主机记录
      */
     @Column(name = "rr")
-    public String RR;
+    private String RR;
 
-    public String recordId;
+    private String recordId;
 
-    public String remark;
+    private String remark;
 
-    public String status;
+    private String status;
 
     @Column(name = "ttl")
-    public Long TTL;
+    private Long TTL;
 
-    public String type;
+    private String type;
 
-    public String value;
+    private String value;
 
-    public Integer weight;
+    private Integer weight;
 }

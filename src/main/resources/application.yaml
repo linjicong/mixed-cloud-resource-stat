@@ -14,6 +14,8 @@ mybatis:
   mapper-locations: classpath:mapping/*Mapper.xml
   type-aliases-package: com.linjicong.cloud.stat.dao.entity
   type-handlers-package: com.linjicong.cloud.stat.dao.typehandle.impl
+  configuration:
+    map-underscore-to-camel-case: true
 
 aes:
   key: 123456

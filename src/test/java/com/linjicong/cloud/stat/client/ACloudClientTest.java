@@ -35,7 +35,7 @@ class ACloudClientTest {
 
     @BeforeEach
     public void init(){
-        CloudConf cloudConf = cloudConfMapper.selectByPrimaryKey(5);
+        CloudConf cloudConf = cloudConfMapper.selectByPrimaryKey(4);
         aCloudClient = new ACloudClient(cloudConf);
     }
 
@@ -47,7 +47,7 @@ class ACloudClientTest {
 
     @Test
     void listDnsDomainRecords() {
-        List<ACloudDnsDomain> aCloudDnsDomains = aCloudDnsDomainMapper.selectAll();
+        List<ACloudDnsDomain> aCloudDnsDomains = aCloudDnsDomainMapper.selectByConfName("aliyun-fb");
         List<ACloudDnsDomainRecords> aCloudDnsDomainRecords =new ArrayList<>();
         for (ACloudDnsDomain aCloudDnsDomain : aCloudDnsDomains) {
             aCloudDnsDomainRecords.addAll(aCloudClient.listDnsDomainRecords(aCloudDnsDomain.getDomainName()));

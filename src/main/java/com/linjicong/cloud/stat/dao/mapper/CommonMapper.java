@@ -53,4 +53,11 @@ public interface CommonMapper <T> extends MultiMapper<T> {
      */
     @SelectProvider(type = CommonSelectProvider.class, method = "dynamicSQL")
     List<T> selectByStatDate(String statDate);
+
+    /**
+     * 获取某个配置的数据
+     *
+     */
+    @SelectProvider(type = CommonSelectProvider.class, method = "dynamicSQL")
+    List<T> selectByConfName(String confName);
 }

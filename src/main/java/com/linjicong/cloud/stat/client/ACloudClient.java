@@ -59,32 +59,34 @@ public class ACloudClient {
         this.secretKey = cloudConf.getSecretKey();
         this.region = cloudConf.getRegion();
 
-
         // 先存入共享变量,后面mybatis拦截器要使用,插入公共字段
         BasicEntityExtend entityExtend=new BasicEntityExtend(name,provider,region);
         ThreadLocalUtil.put("entityExtend",entityExtend);
     }
 
+    /**
+     * 构造配置
+     */
+    private Config generateConfig(String serviceName) {
+        Config config=new Config().setAccessKeyId(accessKey).setAccessKeySecret(secretKey);
+        config.setEndpoint(serviceName + "."+region + ".aliyuncs.com");
+        return config;
+    }
+
     public List<ACloudDnsDomain> listDnsDomain() {
         try {
             Client client = new Client(generateConfig(ALIDNS));
-            return BeanUtils.cgLibCopyList(client.describeDomainsWithOptions(new DescribeDomainsRequest(),new RuntimeOptions()).getBody().getDomains().getDomain(), ACloudDnsDomain::new);
+            return BeanUtils.cgLibCopyList(client.describeDomainsWithOptions(new DescribeDomainsRequest().setPageSize(100L),new RuntimeOptions()).getBody().getDomains().getDomain(), ACloudDnsDomain::new);
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
 
-    private Config generateConfig(String service) {
-        Config config=new Config().setAccessKeyId(accessKey).setAccessKeySecret(secretKey);
-        config.setEndpoint(service + "."+region + ".aliyuncs.com");
-        return config;
-    }
-
     public List<ACloudDnsDomainRecords> listDnsDomainRecords(String domainName) {
         try {
             Client client = new Client(generateConfig(ALIDNS));
-            return BeanUtils.cgLibCopyList(client.describeDomainRecords(new DescribeDomainRecordsRequest().setDomainName(domainName)).getBody().getDomainRecords().getRecord(), ACloudDnsDomainRecords::new);
+            return BeanUtils.cgLibCopyList(client.describeDomainRecords(new DescribeDomainRecordsRequest().setPageSize(500L).setDomainName(domainName)).getBody().getDomainRecords().getRecord(), ACloudDnsDomainRecords::new);
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);

@@ -41,19 +41,23 @@ public class CommonSelectProvider extends MapperTemplate {
     public String deleteByStatDate(MappedStatement ms) {
         final Class<?> entityClass = getEntityClass(ms);
         //开始拼sql
-        StringBuilder sql = new StringBuilder();
-        sql.append(SqlHelper.deleteFromTable(entityClass, tableName(entityClass)));
-        sql.append("WHERE date_format(stat_date,'%Y-%m-%d') = #{statDate}");
-        return sql.toString();
+        return SqlHelper.deleteFromTable(entityClass, tableName(entityClass)) +
+                "WHERE date_format(stat_date,'%Y-%m-%d') = #{statDate}";
     }
 
     public String selectByStatDate(MappedStatement ms) {
         final Class<?> entityClass = getEntityClass(ms);
         //开始拼sql
-        StringBuilder sql = new StringBuilder();
-        sql.append(SqlHelper.selectAllColumns(entityClass));
-        sql.append(SqlHelper.fromTable(entityClass, tableName(entityClass)));
-        sql.append("WHERE date_format(stat_date,'%Y-%m-%d') = #{statDate}");
-        return sql.toString();
+        return SqlHelper.selectAllColumns(entityClass) +
+                SqlHelper.fromTable(entityClass, tableName(entityClass)) +
+                "WHERE date_format(stat_date,'%Y-%m-%d') = #{statDate}";
+    }
+
+    public String selectByConfName(MappedStatement ms) {
+        final Class<?> entityClass = getEntityClass(ms);
+        //开始拼sql
+        return SqlHelper.selectAllColumns(entityClass) +
+                SqlHelper.fromTable(entityClass, tableName(entityClass)) +
+                "WHERE conf_name = #{confName}";
     }
 }
