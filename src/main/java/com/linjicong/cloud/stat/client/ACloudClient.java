@@ -40,6 +40,7 @@ import java.util.List;
 
 
 /**
+ * 阿里云-客户端
  * @author linjicong
  * @date 2022-07-28-14:36
  * @version 1.0.0
@@ -73,6 +74,9 @@ public class ACloudClient {
         return config;
     }
 
+    /**
+     * 阿里云-查询域名列表
+     */
     public List<ACloudDnsDomain> listDnsDomain() {
         try {
             Client client = new Client(generateConfig(ALIDNS));
@@ -83,6 +87,10 @@ public class ACloudClient {
         }
     }
 
+    /**
+     * 阿里云-获取解析记录列表
+     * @param domainName 域名
+     */
     public List<ACloudDnsDomainRecords> listDnsDomainRecords(String domainName) {
         try {
             Client client = new Client(generateConfig(ALIDNS));

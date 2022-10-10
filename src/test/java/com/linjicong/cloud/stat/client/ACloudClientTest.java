@@ -47,7 +47,7 @@ class ACloudClientTest {
 
     @Test
     void listDnsDomainRecords() {
-        List<ACloudDnsDomain> aCloudDnsDomains = aCloudDnsDomainMapper.selectByConfName("aliyun-fb");
+        List<ACloudDnsDomain> aCloudDnsDomains = aCloudDnsDomainMapper.selectByConfName("aliyun-lc");
         List<ACloudDnsDomainRecords> aCloudDnsDomainRecords =new ArrayList<>();
         for (ACloudDnsDomain aCloudDnsDomain : aCloudDnsDomains) {
             aCloudDnsDomainRecords.addAll(aCloudClient.listDnsDomainRecords(aCloudDnsDomain.getDomainName()));

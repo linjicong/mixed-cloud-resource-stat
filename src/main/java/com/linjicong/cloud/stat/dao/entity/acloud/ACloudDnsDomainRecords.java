@@ -23,29 +23,22 @@
  */
 package com.linjicong.cloud.stat.dao.entity.acloud;
 
-import com.aliyun.alidns20150109.models.DescribeDnsGtmInstancesResponseBody;
-import com.aliyun.tea.NameInMap;
-import com.huaweicloud.sdk.dns.v2.model.PageLink;
-import com.huaweicloud.sdk.dns.v2.model.PrivateZoneResp;
-import com.huaweicloud.sdk.dns.v2.model.RouterWithStatus;
-import com.huaweicloud.sdk.dns.v2.model.Tag;
+import com.aliyun.alidns20150109.models.DescribeDomainRecordsResponseBody;
 import com.linjicong.cloud.stat.dao.entity.BasicEntity;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.Data;
-import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import java.util.List;
 
 /**
- * DNS 解析
+ * 阿里云-解析
  * @author linjicong
  * @version 1.0.0
  * @date 2022-08-24-9:51
- * @see PrivateZoneResp
+ * @see DescribeDomainRecordsResponseBody.DescribeDomainRecordsResponseBodyDomainRecordsRecord
  */
 @Data
 @Entity

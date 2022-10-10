@@ -79,6 +79,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
+ * 华为云-客户端
  * @author linjicong
  * @date 2022-07-28-14:36
  * @version 1.0.0
@@ -113,7 +114,7 @@ public class HCloudClient{
     }
 
     /**
-     * 查询华为云-弹性云服务器列表
+     * 华为云-弹性云服务器列表
      */
     public List<HCloudEcs> listEcs() {
         EcsClient client = EcsClient.newBuilder()
@@ -125,7 +126,7 @@ public class HCloudClient{
     }
 
     /**
-     * 查询华为云-云数据库列表
+     * 华为云-云数据库列表
      */
     public List<HCloudRds> listRds() {
         RdsClient client = RdsClient.newBuilder()
@@ -137,7 +138,7 @@ public class HCloudClient{
     }
 
     /**
-     * 查询华为云-分布式缓存数据库列表
+     * 华为云-分布式缓存数据库列表
      */
     public List<HCloudDcs> listDcs() {
         DcsClient client = DcsClient.newBuilder()
@@ -150,8 +151,7 @@ public class HCloudClient{
     }
 
     /**
-     * 查询华为云-文档数据库
-     * @return
+     * 华为云-文档数据库列表
      */
     public List<HCloudDds> listDds() {
         DdsClient client = DdsClient.newBuilder()
@@ -162,14 +162,23 @@ public class HCloudClient{
         return BeanUtils.cgLibCopyList(client.listInstances(new com.huaweicloud.sdk.dds.v3.model.ListInstancesRequest().withLimit(100)).getInstances(),HCloudDds::new);
     }
 
+    /**
+     * 华为云-对象存储列表
+     */
     public List<HCloudObs> listObs() {
         return BeanUtils.cgLibCopyList(obsClient.listBucketsV2(new ListBucketsRequest()).getBuckets(),HCloudObs::new);
     }
 
+    /**
+     * 华为云-对象存储详情
+     */
     public BucketStorageInfo listObsInfo(String bucketName) {
         return BeanUtils.cgLibCopyBean(obsClient.getBucketStorageInfo(bucketName), BucketStorageInfo::new);
     }
 
+    /**
+     * 华为云-文件存储
+     */
     public List<HCloudSfs> listSfs() {
         SFSTurboClient client = SFSTurboClient.newBuilder()
                 .withCredential(auth)
@@ -179,6 +188,9 @@ public class HCloudClient{
         return BeanUtils.cgLibCopyList(client.listShares(new ListSharesRequest().withLimit(200)).getShares(),HCloudSfs::new);
     }
 
+    /**
+     * 华为云-负载均衡
+     */
     public List<HCloudElb> listElb() {
         ElbClient client = ElbClient.newBuilder()
                 .withCredential(auth)
@@ -188,6 +200,9 @@ public class HCloudClient{
         return BeanUtils.cgLibCopyList(client.listLoadBalancers(new ListLoadBalancersRequest().withLimit(200)).getLoadbalancers(), HCloudElb::new);
     }
 
+    /**
+     * 华为云-虚拟私有云
+     */
     public List<HCloudVpc> listVpc() {
         VpcClient client = VpcClient.newBuilder()
                 .withCredential(auth)
@@ -197,6 +212,9 @@ public class HCloudClient{
         return BeanUtils.cgLibCopyList(client.listVpcs(new ListVpcsRequest().withLimit(200)).getVpcs(), HCloudVpc::new);
     }
 
+    /**
+     * 华为云-云硬盘
+     */
     public List<HCloudEvs> listEvs() {
         EvsClient client = EvsClient.newBuilder()
                 .withCredential(auth)
@@ -206,6 +224,9 @@ public class HCloudClient{
         return BeanUtils.cgLibCopyList(client.listVolumes(new ListVolumesRequest().withLimit(200)).getVolumes(), HCloudEvs::new);
     }
 
+    /**
+     * 华为云-监控指标
+     */
     public List<HCloudCesMetric> listCesMetric() {
         CesClient client = CesClient.newBuilder()
                 .withCredential(auth)
@@ -223,6 +244,9 @@ public class HCloudClient{
         return BeanUtils.cgLibCopyList(metrics, HCloudCesMetric::new);
     }
 
+    /**
+     * 华为云-监控数据
+     */
     public List<HCloudCesMetricData> listCesMetricData(List<MetricInfo> metricInfos,Date start,Date end) {
         CesClient client = CesClient.newBuilder()
                 .withCredential(auth)
@@ -240,6 +264,9 @@ public class HCloudClient{
         return BeanUtils.cgLibCopyList(client.batchListMetricData(batchListMetricDataRequest).getMetrics(), HCloudCesMetricData::new);
     }
 
+    /**
+     * 华为云-查询流水账单
+     */
     public List<HCloudBillsFeeRecords> listBillsFeeRecords(String billCycle) {
         BssClient client = BssClient.newBuilder()
                 .withCredential(globalAuth)
@@ -255,6 +282,9 @@ public class HCloudClient{
         return BeanUtils.cgLibCopyList(records, HCloudBillsFeeRecords::new);
     }
 
+    /**
+     * 华为云-查询月度成本
+     */
     public List<HCloudBillsMonthlyBreakDown> listBillsMonthlyBreakDown(String shardMonth) {
         BssClient client = BssClient.newBuilder()
                 .withCredential(globalAuth)
@@ -272,6 +302,10 @@ public class HCloudClient{
         return BeanUtils.cgLibCopyList(details, HCloudBillsMonthlyBreakDown::new);
     }
 
+    /**
+     * 华为云-列举所有资源
+     * @see RmsClient#listAllResources(com.huaweicloud.sdk.rms.v1.model.ListAllResourcesRequest)
+     */
     public List<HCloudResources> listResources() {
         RmsClient client = RmsClient.newBuilder()
                 .withCredential(globalAuth)
@@ -292,6 +326,9 @@ public class HCloudClient{
         return BeanUtils.cgLibCopyList(resources, HCloudResources::new);
     }
 
+    /**
+     * 华为云-查询内网Zone的列表
+     */
     public List<HCloudDnsPrivate> listDnsPrivate() {
         DnsClient client = DnsClient.newBuilder()
                 .withCredential(auth)
@@ -300,6 +337,9 @@ public class HCloudClient{
         return BeanUtils.cgLibCopyList(client.listPrivateZones(new ListPrivateZonesRequest().withLimit(500).withType("private")).getZones(), HCloudDnsPrivate::new);
     }
 
+    /**
+     * 华为云-查询租户Record Set资源列表
+     */
     public List<HCloudDnsPrivateRecordSets> listDnsPrivateRecordSets() {
         DnsClient client = DnsClient.newBuilder()
                 .withCredential(auth)

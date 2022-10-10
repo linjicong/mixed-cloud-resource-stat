@@ -23,6 +23,7 @@
  */
 package com.linjicong.cloud.stat.dao.entity.acloud;
 
+import com.aliyun.alidns20150109.models.DescribeDomainsResponseBody;
 import com.huaweicloud.sdk.dns.v2.model.PrivateZoneResp;
 import com.linjicong.cloud.stat.dao.entity.BasicEntity;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
@@ -34,11 +35,11 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 /**
- * DNS 解析
+ * 阿里云-域名
  * @author linjicong
  * @version 1.0.0
  * @date 2022-08-24-9:51
- * @see DescribeDomainsResponseBodyDomainsDomain
+ * @see DescribeDomainsResponseBody.DescribeDomainsResponseBodyDomainsDomain
  */
 @Data
 @Entity
