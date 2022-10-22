@@ -24,7 +24,6 @@
 package com.linjicong.cloud.stat.client;
 
 import com.aliyun.alidns20150109.Client;
-import com.aliyun.alidns20150109.models.DescribeDnsGtmInstancesRequest;
 import com.aliyun.alidns20150109.models.DescribeDomainRecordsRequest;
 import com.aliyun.alidns20150109.models.DescribeDomainsRequest;
 import com.aliyun.teaopenapi.models.Config;

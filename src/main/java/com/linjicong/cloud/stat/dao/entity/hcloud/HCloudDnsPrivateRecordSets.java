@@ -23,9 +23,9 @@
  */
 package com.linjicong.cloud.stat.dao.entity.hcloud;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.huaweicloud.sdk.dns.v2.model.*;
+import com.huaweicloud.sdk.dns.v2.model.ListRecordSetsWithTags;
+import com.huaweicloud.sdk.dns.v2.model.PageLink;
+import com.huaweicloud.sdk.dns.v2.model.Tag;
 import com.linjicong.cloud.stat.dao.entity.BasicEntity;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.Data;

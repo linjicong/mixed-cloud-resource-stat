@@ -24,7 +24,6 @@
 package com.linjicong.cloud.stat.dao.typehandle.impl.qcloud.cfs;
 
 import com.linjicong.cloud.stat.dao.typehandle.JsonTypeHandler;
-import com.tencentcloudapi.cfs.v20190719.models.PGroup;
 import com.tencentcloudapi.cfs.v20190719.models.TagInfo;
 
 /**

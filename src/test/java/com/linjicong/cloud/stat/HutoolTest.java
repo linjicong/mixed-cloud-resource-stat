@@ -28,7 +28,6 @@ import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.crypto.symmetric.AES;
 import cn.hutool.crypto.symmetric.SymmetricAlgorithm;
-import cn.hutool.extra.spring.SpringUtil;
 import com.linjicong.cloud.stat.dao.entity.hcloud.HCloudEcs;
 import org.junit.jupiter.api.Test;
 

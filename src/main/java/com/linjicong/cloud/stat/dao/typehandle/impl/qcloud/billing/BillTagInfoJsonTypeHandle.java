@@ -25,7 +25,6 @@ package com.linjicong.cloud.stat.dao.typehandle.impl.qcloud.billing;
 
 import com.linjicong.cloud.stat.dao.typehandle.JsonTypeHandler;
 import com.tencentcloudapi.billing.v20180709.models.BillTagInfo;
-import com.tencentcloudapi.cvm.v20170312.models.DataDisk;
 
 /**
  * @author linjicong

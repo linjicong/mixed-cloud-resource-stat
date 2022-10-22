@@ -23,7 +23,6 @@
  */
 package com.linjicong.cloud.stat.dao.typehandle.impl.qcloud.cvm;
 
-import com.huaweicloud.sdk.dcs.v2.model.Features;
 import com.linjicong.cloud.stat.dao.typehandle.JsonTypeHandler;
 import com.tencentcloudapi.cvm.v20170312.models.Placement;
 

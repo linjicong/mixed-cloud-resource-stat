@@ -24,7 +24,6 @@
 package com.linjicong.cloud.stat.dao.typehandle.impl.qcloud.clb;
 
 import com.linjicong.cloud.stat.dao.typehandle.JsonTypeHandler;
-import com.tencentcloudapi.clb.v20180317.models.TagInfo;
 import com.tencentcloudapi.clb.v20180317.models.TargetRegionInfo;
 
 /**

@@ -24,7 +24,6 @@
 package com.linjicong.cloud.stat.util;
 
 import cn.hutool.core.util.StrUtil;
-import com.vladmihalcea.hibernate.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
@@ -33,7 +32,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 /**
  * 配置文件工具

@@ -23,8 +23,6 @@
  */
 package com.linjicong.cloud.stat.dao.entity.qcloud;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
 import com.linjicong.cloud.stat.dao.entity.BasicEntity;
 import com.tencentcloudapi.cdb.v20170320.models.*;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;

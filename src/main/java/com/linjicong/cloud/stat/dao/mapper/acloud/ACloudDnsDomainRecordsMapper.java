@@ -24,7 +24,6 @@
 package com.linjicong.cloud.stat.dao.mapper.acloud;
 
 import com.linjicong.cloud.stat.dao.entity.acloud.ACloudDnsDomainRecords;
-import com.linjicong.cloud.stat.dao.entity.qcloud.QCloudCdb;
 import com.linjicong.cloud.stat.dao.mapper.CommonMapper;
 import org.springframework.stereotype.Repository;
 

@@ -1,18 +1,10 @@
 package com.linjicong.cloud.stat.client;
 
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.date.DateUtil;
-import com.huaweicloud.sdk.ces.v1.model.MetricInfo;
-import com.huaweicloud.sdk.ecs.v2.model.ServerDetail;
 import com.linjicong.cloud.stat.dao.entity.CloudConf;
-import com.linjicong.cloud.stat.dao.entity.hcloud.*;
 import com.linjicong.cloud.stat.dao.entity.qcloud.*;
 import com.linjicong.cloud.stat.dao.mapper.CloudConfMapper;
-import com.linjicong.cloud.stat.dao.mapper.hcloud.*;
 import com.linjicong.cloud.stat.dao.mapper.qcloud.*;
-import com.linjicong.cloud.stat.util.BeanUtils;
-import com.obs.services.model.BucketTypeEnum;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

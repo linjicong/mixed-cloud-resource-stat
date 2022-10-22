@@ -25,9 +25,7 @@ package com.linjicong.cloud.stat.service;
 
 import cn.hutool.extra.spring.SpringUtil;
 import com.linjicong.cloud.stat.dao.constant.CloudConstant;
-import com.linjicong.cloud.stat.dao.entity.CloudConf;
 
-import javax.swing.*;
 import java.util.HashMap;
 import java.util.Map;
 

@@ -23,7 +23,6 @@
  */
 package com.linjicong.cloud.stat.dao.typehandle.impl.hcloud.dns;
 
-import com.huaweicloud.sdk.dns.v2.model.PageLink;
 import com.huaweicloud.sdk.dns.v2.model.Tag;
 import com.linjicong.cloud.stat.dao.typehandle.JsonTypeHandler;
 

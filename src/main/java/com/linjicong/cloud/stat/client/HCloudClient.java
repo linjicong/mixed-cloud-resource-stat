@@ -33,7 +33,6 @@ import com.huaweicloud.sdk.ces.v1.region.CesRegion;
 import com.huaweicloud.sdk.core.auth.BasicCredentials;
 import com.huaweicloud.sdk.core.auth.GlobalCredentials;
 import com.huaweicloud.sdk.core.auth.ICredential;
-import com.huaweicloud.sdk.core.http.HttpConfig;
 import com.huaweicloud.sdk.dcs.v2.DcsClient;
 import com.huaweicloud.sdk.dcs.v2.region.DcsRegion;
 import com.huaweicloud.sdk.dds.v3.DdsClient;

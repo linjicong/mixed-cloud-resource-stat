@@ -23,8 +23,6 @@
  */
 package com.linjicong.cloud.stat.dao.entity.hcloud;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.huaweicloud.sdk.dns.v2.model.PageLink;
 import com.huaweicloud.sdk.dns.v2.model.PrivateZoneResp;
 import com.huaweicloud.sdk.dns.v2.model.RouterWithStatus;

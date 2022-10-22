@@ -23,8 +23,6 @@
  */
 package com.linjicong.cloud.stat.dao.entity.hcloud;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.huaweicloud.sdk.rms.v1.model.ResourceEntity;
 import com.linjicong.cloud.stat.dao.entity.BasicEntity;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;

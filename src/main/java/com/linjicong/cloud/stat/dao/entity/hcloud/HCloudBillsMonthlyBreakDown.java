@@ -23,8 +23,6 @@
  */
 package com.linjicong.cloud.stat.dao.entity.hcloud;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.huaweicloud.sdk.bss.v2.model.CostUnitPair;
 import com.huaweicloud.sdk.bss.v2.model.NvlCostAnalysedBillDetail;
 import com.huaweicloud.sdk.bss.v2.model.TagPair;

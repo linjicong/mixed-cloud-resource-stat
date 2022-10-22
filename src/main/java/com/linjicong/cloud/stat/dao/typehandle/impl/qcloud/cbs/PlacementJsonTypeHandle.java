@@ -23,7 +23,6 @@
  */
 package com.linjicong.cloud.stat.dao.typehandle.impl.qcloud.cbs;
 
-import com.huaweicloud.sdk.cbs.v1.model.Tag;
 import com.linjicong.cloud.stat.dao.typehandle.JsonTypeHandler;
 import com.tencentcloudapi.cbs.v20170312.models.Placement;
 
