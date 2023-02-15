@@ -80,4 +80,15 @@ public class HutoolTest {
         Type genericSuperclass = list.getClass().getGenericSuperclass();
         System.out.println(((ParameterizedType) list.getClass().getGenericSuperclass()).getActualTypeArguments()[0]);
     }
+
+    @Test
+    void testUUID(){
+        //UUID uuid = Generators.timeBasedGenerator().generate(); // Variant 1
+        //UUID uuid = Generators.randomBasedGenerator().generate(); // Variant 4
+        //UUID uuid = Generators.nameBasedgenerator().generate("string to hash"); // Variant 5
+        //UUID uuid = Generators.timeBasedReorderedGenerator().generate(); // Variant 6
+        //UUID uuid = Generators.timeBasedEpochGenerator().generate(); // Variant 7
+        //System.out.println(uuid.toString());
+        //System.out.println(uuid.timestamp());
+    }
 }

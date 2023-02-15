@@ -67,9 +67,15 @@ class HCloudClientTest {
     @Resource
     private HCloudDnsPrivateRecordSetsMapper hCloudDnsPrivateRecordSetsMapper;
 
+    @Resource
+    private HCloudCceMapper hCloudCceMapper;
+
+    @Resource
+    private HCloudUserMapper hCloudUserMapper;
+
     @BeforeEach
     public void beforeEach(){
-        CloudConf cloudConf = cloudConfMapper.selectByPrimaryKey(1);
+        CloudConf cloudConf = cloudConfMapper.selectByPrimaryKey(6);
         hCloudClient = new HCloudClient(cloudConf);
     }
 
@@ -208,6 +214,17 @@ class HCloudClientTest {
     }
 
     @Test
+    void listClusters() {
+        List<HCloudCce> hCloudCces = hCloudClient.listClusters();
+        hCloudCceMapper.insertList(hCloudCces);
+    }
+
+    @Test
+    void listUsers() {
+        List<HCloudUser> hCloudUsers = hCloudClient.listUsers();
+        hCloudUserMapper.insertList(hCloudUsers);
+    }
+    @Test
     void selectRds() {
         HCloudEcs hCloudEcs = hCloudEcsMapper.selectByPrimaryKey(1);
         ServerDetail serverDetail = new ServerDetail();
@@ -230,17 +247,17 @@ class HCloudClientTest {
     @Test
     void insertCloudConf() {
         CloudConf cloudConf = new CloudConf();
-        cloudConf.setName("name");
-        cloudConf.setProvider("provider");
-        cloudConf.setRegion("region");
-        cloudConf.setAccessKey("accessKey");
-        cloudConf.setSecretKey("secretKey");
+        cloudConf.setName("huawei-lin");
+        cloudConf.setProvider("HCloud");
+        cloudConf.setRegion("cn-north-4");
+        cloudConf.setAccessKey("QC45MITFDOFCQXLHDES1");
+        cloudConf.setSecretKey("xmwdYdkI0hTSjSAcZ2twLAy5fNN7TSo5xjE9hdff");
         cloudConfMapper.insert(cloudConf);
     }
 
     @Test
     void selectCloudConf() {
-        CloudConf cloudConf = cloudConfMapper.selectByPrimaryKey(1);
+        CloudConf cloudConf = cloudConfMapper.selectByPrimaryKey(6);
         System.out.println(cloudConf);
     }
 

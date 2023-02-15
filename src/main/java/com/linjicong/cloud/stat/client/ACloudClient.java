@@ -52,6 +52,10 @@ public class ACloudClient {
 
     public static final String ALIDNS = "alidns";
 
+    /**
+     * 阿里云客户端
+     * @param cloudConf
+     */
     public ACloudClient(CloudConf cloudConf) {
         String name = cloudConf.getName();
         String provider = cloudConf.getProvider();

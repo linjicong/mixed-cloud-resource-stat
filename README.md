@@ -46,6 +46,10 @@
 - https://github.com/huaweicloud/huaweicloud-sdk-java-v3
 - https://apiexplorer.developer.huaweicloud.com/apiexplorer/overview
 
+地区和终端节点:
+
+- https://developer.huaweicloud.com/endpoint
+
 腾讯云:
 
 - https://cloud.tencent.com/document/sdk

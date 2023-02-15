@@ -27,6 +27,9 @@ import cn.hutool.core.util.StrUtil;
 import com.huaweicloud.sdk.bss.v2.BssClient;
 import com.huaweicloud.sdk.bss.v2.model.*;
 import com.huaweicloud.sdk.bss.v2.region.BssRegion;
+import com.huaweicloud.sdk.cce.v3.CceClient;
+import com.huaweicloud.sdk.cce.v3.model.ListClustersRequest;
+import com.huaweicloud.sdk.cce.v3.region.CceRegion;
 import com.huaweicloud.sdk.ces.v1.CesClient;
 import com.huaweicloud.sdk.ces.v1.model.*;
 import com.huaweicloud.sdk.ces.v1.region.CesRegion;
@@ -50,6 +53,9 @@ import com.huaweicloud.sdk.elb.v3.region.ElbRegion;
 import com.huaweicloud.sdk.evs.v2.EvsClient;
 import com.huaweicloud.sdk.evs.v2.model.ListVolumesRequest;
 import com.huaweicloud.sdk.evs.v2.region.EvsRegion;
+import com.huaweicloud.sdk.iam.v3.IamClient;
+import com.huaweicloud.sdk.iam.v3.model.KeystoneListUsersRequest;
+import com.huaweicloud.sdk.iam.v3.region.IamRegion;
 import com.huaweicloud.sdk.rds.v3.RdsClient;
 import com.huaweicloud.sdk.rds.v3.model.ListInstancesRequest;
 import com.huaweicloud.sdk.rds.v3.region.RdsRegion;
@@ -93,6 +99,10 @@ public class HCloudClient{
 
     private final String region;
 
+    /**
+     * 华为云客户端
+     * @param cloudConf
+     */
     public HCloudClient(CloudConf cloudConf) {
         String accessKey = cloudConf.getAccessKey();
         String secretKey = cloudConf.getSecretKey();
@@ -184,7 +194,7 @@ public class HCloudClient{
                 .withRegion(SFSTurboRegion.valueOf(region))
                 .build();
 
-        return BeanUtils.cgLibCopyList(client.listShares(new ListSharesRequest().withLimit(200)).getShares(),HCloudSfs::new);
+        return BeanUtils.cgLibCopyList(client.listShares(new ListSharesRequest().withLimit(200L)).getShares(),HCloudSfs::new);
     }
 
     /**
@@ -313,7 +323,7 @@ public class HCloudClient{
         ListAllResourcesRequest listAllResourcesRequest = new ListAllResourcesRequest();
         listAllResourcesRequest.withLimit(200);
 
-        ListAllResourcesResponse listAllResourcesResponse = client.listAllResources(listAllResourcesRequest.withLimit(200));
+        ListAllResourcesResponse listAllResourcesResponse = client.listAllResources(listAllResourcesRequest);
         List<ResourceEntity> resources = listAllResourcesResponse.getResources();
         String nextMarker = listAllResourcesResponse.getPageInfo().getNextMarker();
 
@@ -346,4 +356,28 @@ public class HCloudClient{
                 .build();
         return BeanUtils.cgLibCopyList(client.listRecordSets(new ListRecordSetsRequest().withLimit(500).withZoneType("private")).getRecordsets(), HCloudDnsPrivateRecordSets::new);
     }
+
+    /**
+     * 华为云-查询CCE列表
+     */
+    public List<HCloudCce> listClusters() {
+        CceClient client = CceClient.newBuilder()
+                .withCredential(auth)
+                .withRegion(CceRegion.valueOf(region))
+                .build();
+        return BeanUtils.cgLibCopyList(client.listClusters(new ListClustersRequest()).getItems(), HCloudCce::new);
+    }
+
+    /**
+     * 华为云-查询用户列表
+     */
+    public List<HCloudUser> listUsers() {
+        IamClient client = IamClient.newBuilder()
+                .withCredential(globalAuth)
+                .withRegion(IamRegion.valueOf(region))
+                .build();
+        return BeanUtils.cgLibCopyList(client.keystoneListUsers(new KeystoneListUsersRequest().withDomainId("8897adb59c594176be043b237709837a")).getUsers(), HCloudUser::new);
+    }
+
+
 }

@@ -66,6 +66,10 @@ public class QCloudClient{
     private final Credential credential;
     private final String region;
 
+    /**
+     * 腾讯云客户端
+     * @param cloudConf
+     */
     public QCloudClient(CloudConf cloudConf) {
         this.credential = new Credential(cloudConf.getAccessKey(),cloudConf.getSecretKey());
         this.region=cloudConf.getRegion();
@@ -77,7 +81,10 @@ public class QCloudClient{
         ThreadLocalUtil.put("entityExtend",entityExtend);
     }
 
-
+    /**
+     * 腾讯云-虚拟机
+     * @return
+     */
     public List<QCloudCvm> listCvm() {
         CvmClient client = new CvmClient(credential, region);
         DescribeInstancesRequest describeInstancesRequest = new DescribeInstancesRequest();
