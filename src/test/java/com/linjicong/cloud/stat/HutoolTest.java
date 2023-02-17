@@ -29,13 +29,18 @@ import cn.hutool.crypto.SecureUtil;
 import cn.hutool.crypto.symmetric.AES;
 import cn.hutool.crypto.symmetric.SymmetricAlgorithm;
 import com.linjicong.cloud.stat.dao.entity.hcloud.HCloudEcs;
+import net.rubyeye.xmemcached.MemcachedClient;
+import net.rubyeye.xmemcached.XMemcachedClient;
+import net.rubyeye.xmemcached.exception.MemcachedException;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 /**
  * @author linjicong
@@ -90,5 +95,22 @@ public class HutoolTest {
         //UUID uuid = Generators.timeBasedEpochGenerator().generate(); // Variant 7
         //System.out.println(uuid.toString());
         //System.out.println(uuid.timestamp());
+    }
+
+    @Test
+    void testMemcached() throws IOException, InterruptedException, TimeoutException, MemcachedException {
+        MemcachedClient memcachedClient =
+                new XMemcachedClient("127.0.0.1",11211);
+
+        // 操作业务
+        String str = "Hello World!";
+        boolean isSuccess = memcachedClient.set("k1", 60, str);
+
+        String value = memcachedClient.get("k1");
+
+        System.out.println("value="+value);
+
+        // 关闭与服务端连接
+        memcachedClient.shutdown();
     }
 }

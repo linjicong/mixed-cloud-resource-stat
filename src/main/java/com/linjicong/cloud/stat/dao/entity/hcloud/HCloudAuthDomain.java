@@ -21,28 +21,49 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.linjicong.cloud.stat.dao.entity;
+package com.linjicong.cloud.stat.dao.entity.hcloud;
 
+import com.huaweicloud.sdk.bss.v2.model.MonthlyBillRecord;
+import com.huaweicloud.sdk.iam.v3.model.LinksSelf;
+import com.linjicong.cloud.stat.dao.entity.BasicEntity;
+import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.Data;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
 
-import javax.persistence.*;
-import java.util.Date;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Index;
+import javax.persistence.Table;
 
 /**
  * @author linjicong
  * @version 1.0.0
- * @date 2022-07-28-16:41
+ * @date 2022-08-09-17:28
+ * @see MonthlyBillRecord
  */
 @Data
-@MappedSuperclass
-public class BasicEntity extends BasicEntityExtend{
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer pk;
+@Table(name = "h_cloud_auth_domain",indexes = {@Index(columnList = "statDate")})
+@Entity
+@TypeDef(name = "json",typeClass = JsonStringType.class)
+public class HCloudAuthDomain extends BasicEntity {
 
-    @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP",nullable = false,insertable = false,updatable = false)
-    private Date statTime;
 
-    @Column(columnDefinition = "DATE DEFAULT (curdate())",nullable = false,insertable = false,updatable = false)
-    private Date statDate;
+
+    private Boolean enabled;
+
+
+    private String id;
+
+
+    private String name;
+
+
+    @Column(columnDefinition="json")
+    @Type(type = "json")
+    private LinksSelf links;
+
+
+    private String description;
+
 }

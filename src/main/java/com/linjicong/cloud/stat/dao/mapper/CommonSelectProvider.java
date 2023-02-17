@@ -53,6 +53,14 @@ public class CommonSelectProvider extends MapperTemplate {
                 "WHERE date_format(stat_date,'%Y-%m-%d') = #{statDate}";
     }
 
+    public String selectByMaxStatDate(MappedStatement ms) {
+        final Class<?> entityClass = getEntityClass(ms);
+        //开始拼sql
+        return SqlHelper.selectAllColumns(entityClass) +
+                SqlHelper.fromTable(entityClass, tableName(entityClass)) +
+                "WHERE date_format(stat_date,'%Y-%m-%d') = #{statDate}";
+    }
+
     public String selectByConfName(MappedStatement ms) {
         final Class<?> entityClass = getEntityClass(ms);
         //开始拼sql

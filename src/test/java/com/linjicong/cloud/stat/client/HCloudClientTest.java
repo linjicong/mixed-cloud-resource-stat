@@ -73,9 +73,13 @@ class HCloudClientTest {
     @Resource
     private HCloudUserMapper hCloudUserMapper;
 
+    @Resource
+    private HCloudPermanentAccessKeyMapper hCloudPermanentAccessKeyMapper;
+    @Resource
+    private HCloudAuthDomainMapper hCloudAuthDomainMapper;
     @BeforeEach
     public void beforeEach(){
-        CloudConf cloudConf = cloudConfMapper.selectByPrimaryKey(6);
+        CloudConf cloudConf = cloudConfMapper.selectByPrimaryKey(1);
         hCloudClient = new HCloudClient(cloudConf);
     }
 
@@ -270,5 +274,17 @@ class HCloudClientTest {
     @Test
     void deleteDcs() {
         hCloudDcsMapper.deleteByStatDate(DateUtil.today());
+    }
+
+    @Test
+    void listPermanentAccessKeys() {
+        List<HCloudPermanentAccessKey> hCloudPermanentAccessKeys = hCloudClient.listPermanentAccessKeys();
+        hCloudPermanentAccessKeyMapper.insertList(hCloudPermanentAccessKeys);
+    }
+
+    @Test
+    void listAuthDomains() {
+        List<HCloudAuthDomain> hCloudAuthDomains = hCloudClient.listAuthDomains();
+        hCloudAuthDomainMapper.insertList(hCloudAuthDomains);
     }
 }

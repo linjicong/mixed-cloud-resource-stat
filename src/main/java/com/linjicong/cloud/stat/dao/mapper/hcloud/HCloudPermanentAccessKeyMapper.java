@@ -21,28 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.linjicong.cloud.stat.dao.entity;
+package com.linjicong.cloud.stat.dao.mapper.hcloud;
 
-import lombok.Data;
-
-import javax.persistence.*;
-import java.util.Date;
+import com.linjicong.cloud.stat.dao.entity.hcloud.HCloudPermanentAccessKey;
+import com.linjicong.cloud.stat.dao.mapper.CommonMapper;
+import org.springframework.stereotype.Repository;
 
 /**
  * @author linjicong
+ * @date 2022-07-28-14:36
  * @version 1.0.0
- * @date 2022-07-28-16:41
  */
-@Data
-@MappedSuperclass
-public class BasicEntity extends BasicEntityExtend{
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer pk;
-
-    @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP",nullable = false,insertable = false,updatable = false)
-    private Date statTime;
-
-    @Column(columnDefinition = "DATE DEFAULT (curdate())",nullable = false,insertable = false,updatable = false)
-    private Date statDate;
+@Repository
+public interface HCloudPermanentAccessKeyMapper extends CommonMapper<HCloudPermanentAccessKey> {
 }
