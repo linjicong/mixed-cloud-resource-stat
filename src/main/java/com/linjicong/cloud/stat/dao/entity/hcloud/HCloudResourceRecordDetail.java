@@ -23,131 +23,64 @@
  */
 package com.linjicong.cloud.stat.dao.entity.hcloud;
 
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
-import com.huaweicloud.sdk.bss.v2.model.CostUnitPair;
-import com.huaweicloud.sdk.bss.v2.model.NvlCostAnalysedBillDetail;
-import com.huaweicloud.sdk.bss.v2.model.TagPair;
+import com.huaweicloud.sdk.bss.v2.model.MonthlyBillRes;
 import com.linjicong.cloud.stat.dao.entity.BasicEntity;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.Data;
-import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import java.util.List;
 
 /**
  * @author linjicong
  * @version 1.0.0
  * @date 2022-08-11-9:33
- * @see NvlCostAnalysedBillDetail
+ * @see MonthlyBillRes
  */
 @Data
-@Table(name = "h_cloud_bills_monthly_break_down")
+@Table(name = "h_cloud_resource_record_detail")
 @Entity
 @TypeDef(name = "json",typeClass = JsonStringType.class)
-public class HCloudBillsMonthlyBreakDown extends BasicEntity {
-
-    private String sharedMonth;
-
-    private String billCycle;
-
+public class HCloudResourceRecordDetail extends BasicEntity {
+    private String cycle;
+    private String billDate;
     private Integer billType;
-
     private String customerId;
-
-    private String regionCode;
-
+    private String region;
     private String regionName;
-
-    private String serviceTypeCode;
-
+    private String cloudServiceType;
     private String resourceTypeCode;
-
-    private String serviceTypeName;
-
+    private String cloudServiceTypeName;
     private String resourceTypeName;
-
-    private String effectiveTime;
-
-    private String expireTime;
-
-    private String resourceId;
-
+    private String resInstanceId;
     private String resourceName;
-
     private String resourceTag;
-
-    private String productSpecDesc;
-
+    private String skuCode;
     private String enterpriseProjectId;
-
     private String enterpriseProjectName;
-
-    private Integer chargingMode;
-
-    private String orderId;
-
-    private Integer periodType;
-
-    private String usageType;
-
-    @Column(name = "`usage`")
-    @TableField(value = "`usage`")
-    private Double usage;
-
-    private Integer usageMeasureId;
-
-    private Double freeResourceUsage;
-
-    private Integer freeResourceMeasureId;
-
-    private Double riUsage;
-
-    private Integer riUsageMeasureId;
-
+    private Integer chargeMode;
     private Double consumeAmount;
-
-    private Double pastMonthsAmortizedAmount;
-
-    private Double currentMonthAmortizedAmount;
-
-    private Double futureMonthsAmortizedAmount;
-
-    private Double amortizedCashAmount;
-
-    private Double amortizedCreditAmount;
-
-    private Double amortizedCouponAmount;
-
-    private Double amortizedFlexipurchaseCouponAmount;
-
-    private Double amortizedStoredValueCardAmount;
-
-    private Double amortizedBonusAmount;
-
+    private Double cashAmount;
+    private Double creditAmount;
+    private Double couponAmount;
+    private Double flexipurchaseCouponAmount;
+    private Double storedCardAmount;
+    private Double bonusAmount;
+    private Double debtAmount;
+    private Double adjustmentAmount;
+    private Double officialAmount;
+    private Double discountAmount;
+    private Integer measureId;
+    private Integer periodType;
+    private String rootResourceId;
+    private String parentResourceId;
+    private String tradeId;
+    private String productSpecDesc;
     private String subServiceTypeCode;
-
     private String subServiceTypeName;
-
     private String subResourceTypeCode;
-
     private String subResourceTypeName;
-
     private String subResourceId;
-
     private String subResourceName;
-
-    @Column(columnDefinition="json")
-    @Type(type = "json")
-    @TableField(typeHandler = JacksonTypeHandler.class)
-    private List<TagPair> effectiveTagPairs;
-
-    @Column(columnDefinition="json")
-    @Type(type = "json")
-    @TableField(typeHandler = JacksonTypeHandler.class)
-    private List<CostUnitPair> costUnitPairs;
 }

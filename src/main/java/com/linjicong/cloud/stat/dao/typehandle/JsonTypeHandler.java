@@ -23,8 +23,7 @@
  */
 package com.linjicong.cloud.stat.dao.typehandle;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import cn.hutool.json.JSONUtil;
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
 
@@ -39,7 +38,7 @@ import java.sql.SQLException;
  * @version 1.0.0
  */
 public class JsonTypeHandler<T> extends BaseTypeHandler<T> {
-    private static final ObjectMapper mapper = new ObjectMapper();
+    //private static final ObjectMapper mapper = new ObjectMapper();
     private final Class<T> clazz;
 
     public JsonTypeHandler(Class<T> clazz) {
@@ -51,7 +50,7 @@ public class JsonTypeHandler<T> extends BaseTypeHandler<T> {
 
     @Override
     public void setNonNullParameter(PreparedStatement ps, int i, T parameter, JdbcType jdbcType) throws SQLException {
-        ps.setString(i, this.toJson(parameter));
+        ps.setString(i, JSONUtil.toJsonStr(parameter));
     }
 
     @Override
@@ -69,28 +68,20 @@ public class JsonTypeHandler<T> extends BaseTypeHandler<T> {
         return this.toObject(cs.getString(columnIndex), clazz);
     }
 
-    private String toJson(T object) {
-        try {
-            return mapper.writeValueAsString(object);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
+    //private String toJson(T object) {
+    //    try {
+    //        return mapper.writeValueAsString(object);
+    //    } catch (Exception e) {
+    //        throw new RuntimeException(e);
+    //    }
+    //}
 
     @SuppressWarnings("unchecked")
     private T toObject(String content, Class<?> clazz) {
-        if (content != null && !content.isEmpty()) {
-            try {
-                return (T) mapper.readValue(content, clazz);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        } else {
-            return null;
-        }
+        return (T) JSONUtil.toBean(content, clazz);
     }
 
-    static {
-        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-    }
+    //static {
+    //    mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+    //}
 }

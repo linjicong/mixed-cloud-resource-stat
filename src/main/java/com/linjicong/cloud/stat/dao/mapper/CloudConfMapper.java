@@ -23,15 +23,15 @@
  */
 package com.linjicong.cloud.stat.dao.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.linjicong.cloud.stat.dao.entity.CloudConf;
-import org.springframework.stereotype.Repository;
 
 /**
  * @author linjicong
  * @date 2022-07-28-14:36
  * @version 1.0.0
  */
-@Repository
-public interface CloudConfMapper extends MultiMapper<CloudConf> {
+//@Repository
+public interface CloudConfMapper extends BaseMapper<CloudConf> {
 
 }

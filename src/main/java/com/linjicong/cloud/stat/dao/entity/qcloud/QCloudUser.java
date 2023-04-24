@@ -21,63 +21,81 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.linjicong.cloud.stat.dao.entity.hcloud;
+package com.linjicong.cloud.stat.dao.entity.qcloud;
 
-import com.huaweicloud.sdk.rms.v1.model.ResourceEntity;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.linjicong.cloud.stat.dao.entity.BasicEntity;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.Data;
-import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import java.util.Map;
 
 /**
+ * 腾讯-云数据库
+ *
  * @author linjicong
+ * @date 2022-07-28-14:36
  * @version 1.0.0
- * @date 2022-08-09-18:09
- * @see ResourceEntity
+ * @see
  */
 @Data
-@Table(name = "h_cloud_resources")
 @Entity
+@Table(name = "q_cloud_user")
+@TableName(value = "q_cloud_user",autoResultMap = true)
 @TypeDef(name = "json",typeClass = JsonStringType.class)
-public class HCloudResources extends BasicEntity {
+public class QCloudUser extends BasicEntity {
 
-    private String id;
+    /**
+     * 子用户用户 ID
+     */
+    private Long Uin;
 
-    private String name;
+    /**
+     * 子用户用户名
+     */
+    private String Name;
 
-    private String provider;
+    /**
+     * 子用户 UID
+     */
+    private Long Uid;
 
-    private String type;
+    /**
+     * 子用户备注
+     */
+    private String Remark;
 
-    private String regionId;
+    /**
+     * 子用户能否登录控制台
+     */
+    private Long ConsoleLogin;
 
-    private String projectId;
+    /**
+     * 手机号
+     */
+    private String PhoneNum;
 
-    private String projectName;
+    /**
+     * 区号
+     */
+    private String CountryCode;
 
-    private String epId;
+    /**
+     * 邮箱
+     */
+    private String Email;
 
-    private String epName;
+    /**
+     * 创建时间
+     注意：此字段可能返回 null，表示取不到有效值。
+     */
+    private String CreateTime;
 
-    private String checksum;
-
-    private String created;
-
-    private String updated;
-
-    private String provisioningState;
-
-    @Column(columnDefinition="json")
-    @Type(type = "json")
-    private Map<String, String> tags = null;
-
-    @Column(columnDefinition="json")
-    @Type(type = "json")
-    private Map<String, Object> properties = null;
+    /**
+     * 昵称
+     注意：此字段可能返回 null，表示取不到有效值。
+     */
+    private String NickName;
 }

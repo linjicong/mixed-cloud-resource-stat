@@ -21,50 +21,50 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.linjicong.cloud.stat.dao.entity;
+package com.linjicong.cloud.stat.dao.entity.hcloud;
 
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.linjicong.cloud.stat.dao.typehandle.AESEncryptHandler;
+import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
+import com.linjicong.cloud.stat.dao.entity.BasicEntity;
+import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.Data;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import java.util.Date;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import java.util.Map;
 
 /**
  * @author linjicong
- * @date 2022-07-28-14:36
  * @version 1.0.0
+ * @date 2023-04-24-14:58
  */
 @Data
-@TableName(autoResultMap = true)
-public class CloudConf {
-    @TableId(type = IdType.AUTO)
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer pk;
-
+@Table(name = "h_cloud_resource")
+@Entity
+@TypeDef(name = "json",typeClass = JsonStringType.class)
+public class HCloudResource extends BasicEntity {
+    private String id;
     private String name;
-
     private String provider;
-
-    private String region;
-
-    @TableField(typeHandler = AESEncryptHandler.class)
-    private String accessKey;
-
-    @TableField(typeHandler = AESEncryptHandler.class)
-    private String secretKey;
-
-    private Boolean enable;
-
-    private String remark;
-
-    private Date createTime;
-
-    private Date updateTime;
+    private String type;
+    private String regionId;
+    private String projectId;
+    private String projectName;
+    private String epId;
+    private String epName;
+    private String checksum;
+    private String created;
+    private String updated;
+    private String provisioningState;
+    @Column(columnDefinition="json")
+    @Type(type = "json")
+    @TableField(typeHandler = JacksonTypeHandler.class)
+    private Map<String, String> tags;
+    @Column(columnDefinition="json")
+    @Type(type = "json")
+    @TableField(typeHandler = JacksonTypeHandler.class)
+    private Map<String, Object> properties;
 }

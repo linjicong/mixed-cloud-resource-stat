@@ -49,6 +49,6 @@ public class HCloudService implements CloudService{
         HCloudClient hCloudClient = new HCloudClient(cloudConf);
         List<HCloudEcs> hCloudEcs = hCloudClient.listEcs();
         hCloudEcsMapper.deleteByStatDate(DateUtil.today());
-        return hCloudEcsMapper.insertList(hCloudEcs);
+        return hCloudEcsMapper.insertBatch(hCloudEcs);
     }
 }

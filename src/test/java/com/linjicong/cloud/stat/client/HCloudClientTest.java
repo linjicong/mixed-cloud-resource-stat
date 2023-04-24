@@ -59,8 +59,6 @@ class HCloudClientTest {
     @Resource
     private HCloudBillsFeeRecordsMapper hCloudBillsFeeRecordsMapper;
     @Resource
-    private HCloudResourcesMapper hCloudResourcesMapper;
-    @Resource
     private HCloudBillsMonthlyBreakDownMapper hCloudBillsMonthlyBreakDownMapper;
     @Resource
     private HCloudDnsPrivateMapper hCloudDnsPrivateMapper;
@@ -77,34 +75,40 @@ class HCloudClientTest {
     private HCloudPermanentAccessKeyMapper hCloudPermanentAccessKeyMapper;
     @Resource
     private HCloudAuthDomainMapper hCloudAuthDomainMapper;
+
+    @Resource
+    private HCloudResourceRecordDetailMapper hCloudResourceRecordDetailMapper;
+
+    @Resource
+    private HCloudResourceMapper hCloudResourceMapper;
     @BeforeEach
     public void beforeEach(){
-        CloudConf cloudConf = cloudConfMapper.selectByPrimaryKey(1);
+        CloudConf cloudConf = cloudConfMapper.selectById(1);
         hCloudClient = new HCloudClient(cloudConf);
     }
 
     @Test
     void syncEcs() {
         List<HCloudEcs> hCloudEcs = hCloudClient.listEcs();
-        hCloudEcsMapper.insertList(hCloudEcs);
+        hCloudEcsMapper.insertBatchSomeColumn(hCloudEcs);
     }
 
     @Test
     void syncRds() {
         List<HCloudRds> hCloudRds = hCloudClient.listRds();
-        hCloudRdsMapper.insertList(hCloudRds);
+        hCloudRdsMapper.insertBatch(hCloudRds);
     }
 
     @Test
     void syncDcs() {
         List<HCloudDcs> hCloudDcs = hCloudClient.listDcs();
-        hCloudDcsMapper.insertList(hCloudDcs);
+        hCloudDcsMapper.insertBatch(hCloudDcs);
     }
 
     @Test
     void syncDds() {
         List<HCloudDds> hCloudDds = hCloudClient.listDds();
-        hCloudDdsMapper.insertList(hCloudDds);
+        hCloudDdsMapper.insertBatch(hCloudDds);
     }
 
     @Test
@@ -115,7 +119,7 @@ class HCloudClientTest {
             e.setObjectNum(info.getObjectNumber());
             e.setSize(info.getSize());
         });
-        hCloudObsMapper.insertList(hCloudObs);
+        hCloudObsMapper.insertBatch(hCloudObs);
     }
 
     @Test
@@ -127,31 +131,31 @@ class HCloudClientTest {
     @Test
     void syncSfs() {
         List<HCloudSfs> hCloudSfs = hCloudClient.listSfs();
-        hCloudSfsMapper.insertList(hCloudSfs);
+        hCloudSfsMapper.insertBatch(hCloudSfs);
     }
 
     @Test
     void syncElb() {
         List<HCloudElb> hCloudElb = hCloudClient.listElb();
-        hCloudElbMapper.insertList(hCloudElb);
+        hCloudElbMapper.insertBatch(hCloudElb);
     }
 
     @Test
     void syncVpc() {
         List<HCloudVpc> hCloudVpcs = hCloudClient.listVpc();
-        hCloudVpcMapper.insertList(hCloudVpcs);
+        hCloudVpcMapper.insertBatch(hCloudVpcs);
     }
 
     @Test
     void syncEvs() {
         List<HCloudEvs> hCloudEvs = hCloudClient.listEvs();
-        hCloudEvsMapper.insertList(hCloudEvs);
+        hCloudEvsMapper.insertBatch(hCloudEvs);
     }
 
     @Test
     void syncCesMetric() {
         List<HCloudCesMetric> hCloudCesMetrics = hCloudClient.listCesMetric();
-        hCloudCesMetricMapper.insertList(hCloudCesMetrics);
+        hCloudCesMetricMapper.insertBatch(hCloudCesMetrics);
     }
 
     @Test
@@ -164,7 +168,7 @@ class HCloudClientTest {
         for (List<HCloudCesMetric> hCloudCesMetrics : splitHCloudCesMetrics) {
             List<MetricInfo> metricInfos = BeanUtils.cgLibCopyList(hCloudCesMetrics, MetricInfo::new);
             List<HCloudCesMetricData> hCloudCesMetricData = hCloudClient.listCesMetricData(metricInfos,DateUtil.offsetDay(DateUtil.beginOfDay(date),-1),DateUtil.offsetDay(DateUtil.endOfDay(date),-1));
-            hCloudCesMetricDataMapper.insertList(hCloudCesMetricData);
+            hCloudCesMetricDataMapper.insertBatch(hCloudCesMetricData);
         }
     }
 
@@ -182,7 +186,7 @@ class HCloudClientTest {
             if(hCloudCesMetrics.size() > 0) {
                 List<MetricInfo> metricInfos = BeanUtils.cgLibCopyList(hCloudCesMetrics, MetricInfo::new);
                 List<HCloudCesMetricData> hCloudCesMetricData = hCloudClient.listCesMetricData(metricInfos,DateUtil.offsetDay(DateUtil.beginOfDay(date),-1),DateUtil.offsetDay(DateUtil.endOfDay(date),-1));
-                hCloudCesMetricDataMapper.insertList(hCloudCesMetricData);
+                hCloudCesMetricDataMapper.insertBatch(hCloudCesMetricData);
             }
         }
     }
@@ -190,47 +194,41 @@ class HCloudClientTest {
     @Test
     void syncBillsFeeRecords() {
         List<HCloudBillsFeeRecords> hCloudBillsFeeRecords = hCloudClient.listBillsFeeRecords(DateUtil.format(new Date(), "yyyy-MM"));
-        hCloudBillsFeeRecordsMapper.insertList(hCloudBillsFeeRecords);
+        hCloudBillsFeeRecordsMapper.insertBatch(hCloudBillsFeeRecords);
     }
 
     @Test
     void syncBillsMonthlyBreakDown() {
-        List<HCloudBillsMonthlyBreakDown> hCloudBillsMonthlyBreakDowns = hCloudClient.listBillsMonthlyBreakDown(DateUtil.format(new Date(), "yyyy-MM"));
-        hCloudBillsMonthlyBreakDownMapper.insertList(hCloudBillsMonthlyBreakDowns);
-    }
-
-    @Test
-    void syncResources() {
-        List<HCloudResources> hCloudResources = hCloudClient.listResources();
-        hCloudResourcesMapper.insertList(hCloudResources);
+        List<HCloudBillsMonthlyBreakDown> hCloudBillsMonthlyBreakDowns = hCloudClient.listBillsMonthlyBreakDown("2023-03");
+        hCloudBillsMonthlyBreakDownMapper.insertBatch(hCloudBillsMonthlyBreakDowns);
     }
 
     @Test
     void listDnsPrivate() {
         List<HCloudDnsPrivate> hCloudDnsPrivates = hCloudClient.listDnsPrivate();
-        hCloudDnsPrivateMapper.insertList(hCloudDnsPrivates);
+        hCloudDnsPrivateMapper.insertBatch(hCloudDnsPrivates);
     }
 
     @Test
     void listDnsPrivateRecordSets() {
         List<HCloudDnsPrivateRecordSets> hCloudDnsPrivateRecordSets = hCloudClient.listDnsPrivateRecordSets();
-        hCloudDnsPrivateRecordSetsMapper.insertList(hCloudDnsPrivateRecordSets);
+        hCloudDnsPrivateRecordSetsMapper.insertBatch(hCloudDnsPrivateRecordSets);
     }
 
     @Test
     void listClusters() {
         List<HCloudCce> hCloudCces = hCloudClient.listClusters();
-        hCloudCceMapper.insertList(hCloudCces);
+        hCloudCceMapper.insertBatch(hCloudCces);
     }
 
     @Test
     void listUsers() {
         List<HCloudUser> hCloudUsers = hCloudClient.listUsers();
-        hCloudUserMapper.insertList(hCloudUsers);
+        hCloudUserMapper.insertBatch(hCloudUsers);
     }
     @Test
     void selectRds() {
-        HCloudEcs hCloudEcs = hCloudEcsMapper.selectByPrimaryKey(1);
+        HCloudEcs hCloudEcs = hCloudEcsMapper.selectById(1);
         ServerDetail serverDetail = new ServerDetail();
         BeanUtil.copyProperties(hCloudEcs, serverDetail);
         System.out.println(serverDetail);
@@ -251,17 +249,17 @@ class HCloudClientTest {
     @Test
     void insertCloudConf() {
         CloudConf cloudConf = new CloudConf();
-        cloudConf.setName("huawei-lin");
-        cloudConf.setProvider("HCloud");
-        cloudConf.setRegion("cn-north-4");
-        cloudConf.setAccessKey("QC45MITFDOFCQXLHDES1");
-        cloudConf.setSecretKey("xmwdYdkI0hTSjSAcZ2twLAy5fNN7TSo5xjE9hdff");
+        cloudConf.setName("xxx");
+        cloudConf.setProvider("QCloud");
+        cloudConf.setRegion("ap-guangzhou");
+        cloudConf.setAccessKey("xxx");
+        cloudConf.setSecretKey("xxx");
         cloudConfMapper.insert(cloudConf);
     }
 
     @Test
     void selectCloudConf() {
-        CloudConf cloudConf = cloudConfMapper.selectByPrimaryKey(6);
+        CloudConf cloudConf = cloudConfMapper.selectById(6);
         System.out.println(cloudConf);
     }
 
@@ -279,12 +277,86 @@ class HCloudClientTest {
     @Test
     void listPermanentAccessKeys() {
         List<HCloudPermanentAccessKey> hCloudPermanentAccessKeys = hCloudClient.listPermanentAccessKeys();
-        hCloudPermanentAccessKeyMapper.insertList(hCloudPermanentAccessKeys);
+        hCloudPermanentAccessKeyMapper.insertBatch(hCloudPermanentAccessKeys);
     }
 
     @Test
     void listAuthDomains() {
         List<HCloudAuthDomain> hCloudAuthDomains = hCloudClient.listAuthDomains();
-        hCloudAuthDomainMapper.insertList(hCloudAuthDomains);
+        hCloudAuthDomainMapper.insertBatch(hCloudAuthDomains);
+    }
+
+    @Test
+    void listEcs() {
+    }
+
+    @Test
+    void listRds() {
+    }
+
+    @Test
+    void listDcs() {
+    }
+
+    @Test
+    void listDds() {
+    }
+
+    @Test
+    void listObs() {
+    }
+
+    @Test
+    void listObsInfo() {
+    }
+
+    @Test
+    void listSfs() {
+    }
+
+    @Test
+    void listElb() {
+    }
+
+    @Test
+    void listVpc() {
+    }
+
+    @Test
+    void listEvs() {
+    }
+
+    @Test
+    void listCesMetric() {
+    }
+
+    @Test
+    void listCesMetricData() {
+    }
+
+    @Test
+    void listBillsFeeRecords() {
+    }
+
+    @Test
+    void listResourceRecordsDetails() {
+        hCloudResourceRecordDetailMapper.deleteByStatDate(DateUtil.today());
+        List<HCloudResourceRecordDetail> hCloudResourceRecordDetails = hCloudClient.listResourceRecordsDetails("2023-03");
+        hCloudResourceRecordDetailMapper.insertBatch(hCloudResourceRecordDetails);
+    }
+
+    @Test
+    void listBillsMonthlyBreakDown() {
+    }
+
+    @Test
+    void listResources() {
+    }
+
+    @Test
+    void listAllResources() {
+        hCloudResourceMapper.deleteByStatDate(DateUtil.today());
+        List<HCloudResource> HCloudResource = hCloudClient.listAllResources();
+        hCloudResourceMapper.insertBatch(HCloudResource);
     }
 }

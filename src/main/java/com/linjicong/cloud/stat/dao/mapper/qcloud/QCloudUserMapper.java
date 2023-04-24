@@ -21,20 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.linjicong.cloud.stat.dao.mapper;
+package com.linjicong.cloud.stat.dao.mapper.qcloud;
 
-import tk.mybatis.mapper.common.BaseMapper;
-import tk.mybatis.mapper.common.special.InsertListMapper;
+import com.linjicong.cloud.stat.dao.entity.qcloud.QCloudUser;
+import com.linjicong.cloud.stat.dao.mapper.CommonMapper;
+import org.springframework.stereotype.Repository;
 
 /**
- * 通用Mapper接口
- *
- * @param <T> 不能为空
- * @author liuzh
  * @author linjicong
-  * @version 1.0.0
-  * @date 2022-08-01-11:42
+ * @date 2022-07-28-14:36
+ * @version 1.0.0
  */
-@tk.mybatis.mapper.annotation.RegisterMapper
-public interface MultiMapper<T> extends BaseMapper<T>, InsertListMapper<T> {
+@Repository
+public interface QCloudUserMapper extends CommonMapper<QCloudUser> {
 }

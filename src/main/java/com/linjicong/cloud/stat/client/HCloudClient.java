@@ -294,6 +294,24 @@ public class HCloudClient{
     }
 
     /**
+     * 华为云-查询流水账单
+     */
+    public List<HCloudResourceRecordDetail> listResourceRecordsDetails(String cycle) {
+        BssClient client = BssClient.newBuilder()
+                .withCredential(globalAuth)
+                .withRegion(BssRegion.CN_NORTH_1)
+                .build();
+        ListCustomerselfResourceRecordDetailsRequest request = new ListCustomerselfResourceRecordDetailsRequest().withBody(b->b.withLimit(1000).withCycle(cycle));
+        ListCustomerselfResourceRecordDetailsResponse response = client.listCustomerselfResourceRecordDetails(request);
+        List<MonthlyBillRes> records = response.getMonthlyRecords();
+        while (records.size() % 1000 == 0){
+            ListCustomerselfResourceRecordDetailsResponse responseNext = client.listCustomerselfResourceRecordDetails(request.withBody(request.getBody().withOffset(records.size())));
+            records.addAll(responseNext.getMonthlyRecords());
+        }
+        return BeanUtils.cgLibCopyList(records, HCloudResourceRecordDetail::new);
+    }
+
+    /**
      * 华为云-查询月度成本
      */
     public List<HCloudBillsMonthlyBreakDown> listBillsMonthlyBreakDown(String shardMonth) {
@@ -317,7 +335,7 @@ public class HCloudClient{
      * 华为云-列举所有资源
      * @see RmsClient#listAllResources(com.huaweicloud.sdk.rms.v1.model.ListAllResourcesRequest)
      */
-    public List<HCloudResources> listResources() {
+    public List<HCloudResource> listAllResources() {
         RmsClient client = RmsClient.newBuilder()
                 .withCredential(globalAuth)
                 .withRegion(RmsRegion.CN_NORTH_4)
@@ -334,7 +352,7 @@ public class HCloudClient{
             nextMarker = listAllResourcesResponseNext.getPageInfo().getNextMarker();
             resources.addAll(listAllResourcesResponseNext.getResources());
         }
-        return BeanUtils.cgLibCopyList(resources, HCloudResources::new);
+        return BeanUtils.cgLibCopyList(resources, HCloudResource::new);
     }
 
     /**

@@ -48,7 +48,7 @@ public class Task {
 
     @Scheduled(cron="* * 1 * * ?")
     public void syncEcs(){
-        List<CloudConf> cloudConf = cloudConfMapper.selectAll();
+        List<CloudConf> cloudConf = cloudConfMapper.selectList(null);
         cloudConf.forEach(conf->{
             CloudService service = CloudFactory.getService(conf.getProvider());
             int result = service.syncEcs(conf);

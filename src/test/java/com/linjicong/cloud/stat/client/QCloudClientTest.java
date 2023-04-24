@@ -1,6 +1,6 @@
 package com.linjicong.cloud.stat.client;
 
-import cn.hutool.core.date.DateUtil;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.linjicong.cloud.stat.dao.entity.CloudConf;
 import com.linjicong.cloud.stat.dao.entity.qcloud.*;
 import com.linjicong.cloud.stat.dao.mapper.CloudConfMapper;
@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.annotation.Resource;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -39,45 +38,59 @@ class QCloudClientTest {
     @Resource
     private QCloudCfsMapper qCloudCfsMapper;
 
+    @Resource
+    private QCloudUserMapper qCloudUserMapper;
+
     @BeforeEach
     public void init(){
-        CloudConf cloudConf = cloudConfMapper.selectByPrimaryKey(2);
+        CloudConf cloudConf = cloudConfMapper.selectById(3);
         qCloudClient = new QCloudClient(cloudConf);
     }
 
     @Test
     void listCvm() {
         List<QCloudCvm> qCloudCvms = qCloudClient.listCvm();
-        qCloudCvmMapper.insertList(qCloudCvms);
+        qCloudCvmMapper.insertBatch(qCloudCvms);
     }
 
     @Test
     void listCbs() {
         List<QCloudCbs> qCloudCbs = qCloudClient.listCbs();
-        qCloudCbsMapper.insertList(qCloudCbs);
+        qCloudCbsMapper.insertBatch(qCloudCbs);
     }
 
     @Test
     void listClb() {
         List<QCloudClb> qCloudClbs = qCloudClient.listClb();
-        qCloudClbMapper.insertList(qCloudClbs);
+        qCloudClbMapper.insertBatch(qCloudClbs);
     }
 
     @Test
     void listBillResourceSummary() {
-        List<QCloudBillResourceSummary> qCloudBillResourceSummaries = qCloudClient.listBillResourceSummary(DateUtil.format(new Date(), "yyyy-MM"));
-        qCloudBillResourceSummaryMapper.insertList(qCloudBillResourceSummaries);
+        List<QCloudBillResourceSummary> qCloudBillResourceSummaries = qCloudClient.listBillResourceSummary("2023-03");
+        qCloudBillResourceSummaryMapper.insertBatch(qCloudBillResourceSummaries);
     }
 
     @Test
     void listCdb() {
         List<QCloudCdb> qCloudCdbs = qCloudClient.listCdb();
-        qCloudCdbMapper.insertList(qCloudCdbs);
+        qCloudCdbMapper.insertBatch(qCloudCdbs);
     }
 
     @Test
     void listCfs() {
         List<QCloudCfs> qCloudCfs = qCloudClient.listCfs();
-        qCloudCfsMapper.insertList(qCloudCfs);
+        qCloudCfsMapper.selectPage(new Page<>(1, 10), null);
+        qCloudCfsMapper.insertBatch(qCloudCfs);
+    }
+
+    @Test
+    void listUser() {
+        List<QCloudUser> qCloudUsers = qCloudClient.listUsers();
+        //for (QCloudUser qCloudUser : qCloudUsers) {
+        //    qCloudUserMapper.insert(qCloudUser);
+        //}
+        qCloudUserMapper.insertBatch(qCloudUsers);
+        //qCloudUserMapper.insertBatchSomeColumn(qCloudUsers);
     }
 }

@@ -23,6 +23,8 @@
  */
 package com.linjicong.cloud.stat.dao.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -40,9 +42,12 @@ import javax.persistence.MappedSuperclass;
 @NoArgsConstructor
 public class BasicEntityExtend {
 
+    @TableField(fill = FieldFill.INSERT)
     private String confName;
 
+    @TableField(fill = FieldFill.INSERT)
     private String confProvider;
 
+    @TableField(fill = FieldFill.INSERT)
     private String confRegion;
 }

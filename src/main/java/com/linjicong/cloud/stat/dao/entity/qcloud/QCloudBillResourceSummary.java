@@ -23,7 +23,9 @@
  */
 package com.linjicong.cloud.stat.dao.entity.qcloud;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.linjicong.cloud.stat.dao.entity.BasicEntity;
+import com.linjicong.cloud.stat.dao.typehandle.impl.qcloud.billing.BillTagInfoJsonTypeHandle;
 import com.tencentcloudapi.billing.v20180709.models.BillResourceSummary;
 import com.tencentcloudapi.billing.v20180709.models.BillTagInfo;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
@@ -184,6 +186,7 @@ public class QCloudBillResourceSummary extends BasicEntity {
      */
     @Column(columnDefinition="json")
     @Type(type = "json")
+    @TableField(typeHandler = BillTagInfoJsonTypeHandle.class)
     private BillTagInfo[] Tags;
 
     /**
@@ -233,17 +236,20 @@ public class QCloudBillResourceSummary extends BasicEntity {
      * 按组件原价的口径换算的预留实例抵扣金额
      */
     @Column(name = "original_cost_with_ri")
+    @TableField(value = "original_cost_with_ri")
     private String OriginalCostWithRI;
 
     /**
      * 节省计划抵扣的SP包面值
      */
     @Column(name = "sp_deduction")
+    @TableField(value = "sp_deduction")
     private String SPDeduction;
 
     /**
      * 按组件原价的口径换算的节省计划抵扣金额
      */
     @Column(name = "original_cost_with_sp")
+    @TableField(value = "original_cost_with_sp")
     private String OriginalCostWithSP;
 }

@@ -34,6 +34,9 @@ import com.tencentcloudapi.billing.v20180709.BillingClient;
 import com.tencentcloudapi.billing.v20180709.models.BillResourceSummary;
 import com.tencentcloudapi.billing.v20180709.models.DescribeBillResourceSummaryRequest;
 import com.tencentcloudapi.billing.v20180709.models.DescribeBillResourceSummaryResponse;
+import com.tencentcloudapi.cam.v20190116.CamClient;
+import com.tencentcloudapi.cam.v20190116.models.ListUsersRequest;
+import com.tencentcloudapi.cam.v20190116.models.ListUsersResponse;
 import com.tencentcloudapi.cbs.v20170312.CbsClient;
 import com.tencentcloudapi.cbs.v20170312.models.DescribeDisksRequest;
 import com.tencentcloudapi.cbs.v20170312.models.DescribeDisksResponse;
@@ -169,6 +172,17 @@ public class QCloudClient{
         try {
             DescribeCfsFileSystemsResponse response = client.DescribeCfsFileSystems(request);
             return BeanUtils.cgLibCopyList(ListUtil.toList(response.getFileSystems()), QCloudCfs::new);
+        } catch (TencentCloudSDKException e) {
+            throw new ClientException(e);
+        }
+    }
+
+    public List<QCloudUser> listUsers() {
+        CamClient client = new CamClient (credential,region);
+        ListUsersRequest request = new ListUsersRequest();
+        try {
+            ListUsersResponse response = client.ListUsers(request);
+            return BeanUtils.cgLibCopyList(ListUtil.toList(response.getData()), QCloudUser::new);
         } catch (TencentCloudSDKException e) {
             throw new ClientException(e);
         }

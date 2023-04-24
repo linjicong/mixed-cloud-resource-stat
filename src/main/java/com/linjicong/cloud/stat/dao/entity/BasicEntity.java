@@ -23,6 +23,7 @@
  */
 package com.linjicong.cloud.stat.dao.entity;
 
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -36,13 +37,16 @@ import java.util.Date;
 @Data
 @MappedSuperclass
 public class BasicEntity extends BasicEntityExtend{
+    @TableId(type = IdType.AUTO)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer pk;
 
-    @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP",nullable = false,insertable = false,updatable = false)
+    @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP",nullable = false)
+    @TableField(insertStrategy = FieldStrategy.NEVER)
     private Date statTime;
 
-    @Column(columnDefinition = "DATE DEFAULT (curdate())",nullable = false,insertable = false,updatable = false)
+    @Column(columnDefinition = "DATE",nullable = false)
+    @TableField(fill = FieldFill.INSERT)
     private Date statDate;
 }

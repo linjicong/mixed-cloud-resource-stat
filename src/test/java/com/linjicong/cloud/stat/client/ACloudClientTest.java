@@ -35,14 +35,14 @@ class ACloudClientTest {
 
     @BeforeEach
     public void init(){
-        CloudConf cloudConf = cloudConfMapper.selectByPrimaryKey(4);
+        CloudConf cloudConf = cloudConfMapper.selectById(4);
         aCloudClient = new ACloudClient(cloudConf);
     }
 
     @Test
     void listDnsDomain() {
         List<ACloudDnsDomain> aCloudDnsDomain = aCloudClient.listDnsDomain();
-        aCloudDnsDomainMapper.insertList(aCloudDnsDomain);
+        aCloudDnsDomainMapper.insertBatch(aCloudDnsDomain);
     }
 
     @Test
@@ -52,6 +52,6 @@ class ACloudClientTest {
         for (ACloudDnsDomain aCloudDnsDomain : aCloudDnsDomains) {
             aCloudDnsDomainRecords.addAll(aCloudClient.listDnsDomainRecords(aCloudDnsDomain.getDomainName()));
         }
-        aCloudDnsDomainRecordsMapper.insertList(aCloudDnsDomainRecords);
+        aCloudDnsDomainRecordsMapper.insertBatch(aCloudDnsDomainRecords);
     }
 }
