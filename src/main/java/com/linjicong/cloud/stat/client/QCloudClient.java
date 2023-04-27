@@ -55,6 +55,10 @@ import com.tencentcloudapi.common.Credential;
 import com.tencentcloudapi.common.exception.TencentCloudSDKException;
 import com.tencentcloudapi.cvm.v20170312.CvmClient;
 import com.tencentcloudapi.cvm.v20170312.models.DescribeInstancesRequest;
+import com.tencentcloudapi.tag.v20180813.TagClient;
+import com.tencentcloudapi.tag.v20180813.models.DescribeResourceTagsRequest;
+import com.tencentcloudapi.tag.v20180813.models.DescribeResourceTagsResponse;
+import com.tencentcloudapi.tag.v20180813.models.TagResource;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -183,6 +187,24 @@ public class QCloudClient{
         try {
             ListUsersResponse response = client.ListUsers(request);
             return BeanUtils.cgLibCopyList(ListUtil.toList(response.getData()), QCloudUser::new);
+        } catch (TencentCloudSDKException e) {
+            throw new ClientException(e);
+        }
+    }
+
+    public List<QCloudResourceTag> listResourceTags() {
+        TagClient client = new TagClient (credential,region);
+        DescribeResourceTagsRequest request = new DescribeResourceTagsRequest();
+        request.setLimit(100L);
+        try {
+            DescribeResourceTagsResponse response = client.DescribeResourceTags(request);
+            ArrayList<TagResource> tagResources = ListUtil.toList(response.getRows());
+            while (tagResources.size() % 100 ==0){
+                request.setOffset((long) tagResources.size());
+                DescribeResourceTagsResponse responseNext = client.DescribeResourceTags(request);
+                tagResources.addAll(ListUtil.toList(responseNext.getRows()));
+            }
+            return BeanUtils.cgLibCopyList(tagResources, QCloudResourceTag::new);
         } catch (TencentCloudSDKException e) {
             throw new ClientException(e);
         }

@@ -41,6 +41,9 @@ class QCloudClientTest {
     @Resource
     private QCloudUserMapper qCloudUserMapper;
 
+    @Resource
+    private QCloudResourceTagMapper qCloudResourceTagMapper;
+
     @BeforeEach
     public void init(){
         CloudConf cloudConf = cloudConfMapper.selectById(3);
@@ -92,5 +95,14 @@ class QCloudClientTest {
         //}
         qCloudUserMapper.insertBatch(qCloudUsers);
         //qCloudUserMapper.insertBatchSomeColumn(qCloudUsers);
+    }
+
+    @Test
+    void listUsers() {
+    }
+
+    @Test
+    void listResourceTags() {
+        qCloudResourceTagMapper.insertBatch(qCloudClient.listResourceTags());
     }
 }
