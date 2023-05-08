@@ -65,7 +65,7 @@
         <dependency>
             <groupId>com.huaweicloud</groupId>
             <artifactId>esdk-obs-java-bundle</artifactId>
-            <version>3.22.12</version>
+            <version>3.23.3</version>
         </dependency>
 
         <!-- 4.0.11版本是废弃的,https://gitee.com/tencentcloud/tencentcloud-sdk-java -->
