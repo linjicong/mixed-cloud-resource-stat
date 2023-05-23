@@ -135,7 +135,9 @@ public class QCloudClient{
                 DescribeBillResourceSummaryResponse responseNext = client.DescribeBillResourceSummary(request);
                 billResourceSummaries.addAll(ListUtil.toList(responseNext.getResourceSummarySet()));
             }
-            return BeanUtils.cgLibCopyList(billResourceSummaries, QCloudBillResourceSummary::new);
+            List<QCloudBillResourceSummary> qCloudBillResourceSummaries = BeanUtils.cgLibCopyList(billResourceSummaries, QCloudBillResourceSummary::new);
+            qCloudBillResourceSummaries.forEach(qCloudBillResourceSummary -> qCloudBillResourceSummary.setMonth(month));
+            return qCloudBillResourceSummaries;
         } catch (TencentCloudSDKException e) {
             throw new ClientException(e);
         }

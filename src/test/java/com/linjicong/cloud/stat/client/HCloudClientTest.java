@@ -12,6 +12,7 @@ import com.linjicong.cloud.stat.dao.mapper.hcloud.*;
 import com.linjicong.cloud.stat.util.BeanUtils;
 import com.obs.services.model.BucketStorageInfo;
 import com.obs.services.model.BucketTypeEnum;
+import com.obs.services.model.ObsObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,6 +22,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.obs.services.model.AccessControlList.REST_CANNED_BUCKET_OWNER_FULL_CONTROL;
 
 /**
  * @author linjicong
@@ -358,5 +361,19 @@ class HCloudClientTest {
         hCloudResourceMapper.deleteByStatDate(DateUtil.today());
         List<HCloudResource> HCloudResource = hCloudClient.listAllResources();
         hCloudResourceMapper.insertBatch(HCloudResource);
+    }
+
+    @Test
+    void listObsObjects() {
+        List<ObsObject> obsObjectList = hCloudClient.listObsObjects("xxx");
+    }
+
+    @Test
+    void getObsObjectAcl() {
+    }
+
+    @Test
+    void setObsObjectAcl() {
+        hCloudClient.setObsObjectAcl("xxx","xxx",REST_CANNED_BUCKET_OWNER_FULL_CONTROL);
     }
 }

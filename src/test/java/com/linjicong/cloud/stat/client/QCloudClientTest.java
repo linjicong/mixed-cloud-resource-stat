@@ -1,5 +1,6 @@
 package com.linjicong.cloud.stat.client;
 
+import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.linjicong.cloud.stat.dao.entity.CloudConf;
 import com.linjicong.cloud.stat.dao.entity.qcloud.*;
@@ -70,6 +71,7 @@ class QCloudClientTest {
 
     @Test
     void listBillResourceSummary() {
+        qCloudBillResourceSummaryMapper.deleteByStatDate(DateUtil.today());
         List<QCloudBillResourceSummary> qCloudBillResourceSummaries = qCloudClient.listBillResourceSummary("2023-03");
         qCloudBillResourceSummaryMapper.insertBatch(qCloudBillResourceSummaries);
     }

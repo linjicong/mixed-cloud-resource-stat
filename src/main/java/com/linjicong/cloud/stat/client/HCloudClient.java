@@ -79,9 +79,9 @@ import com.linjicong.cloud.stat.dao.entity.hcloud.*;
 import com.linjicong.cloud.stat.util.BeanUtils;
 import com.linjicong.cloud.stat.util.ThreadLocalUtil;
 import com.obs.services.ObsClient;
-import com.obs.services.model.BucketStorageInfo;
-import com.obs.services.model.ListBucketsRequest;
+import com.obs.services.model.*;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -184,9 +184,30 @@ public class HCloudClient{
      * 华为云-对象存储详情
      */
     public BucketStorageInfo listObsInfo(String bucketName) {
-        return BeanUtils.cgLibCopyBean(obsClient.getBucketStorageInfo(bucketName), BucketStorageInfo::new);
+        return obsClient.getBucketStorageInfo(bucketName);
     }
 
+    public List<ObsObject> listObsObjects(String bucketName) {
+        ListObjectsRequest request = new ListObjectsRequest();
+        request.setBucketName(bucketName);
+        ObjectListing objectListing = obsClient.listObjects(request);
+        List<ObsObject> obsObjects = new ArrayList<>(objectListing.getObjects());
+        while (objectListing.isTruncated()) {
+            request.setMarker(objectListing.getNextMarker());
+            objectListing = obsClient.listObjects(request);
+            obsObjects.addAll(objectListing.getObjects());
+        }
+        return obsObjects;
+    }
+
+    public AccessControlList getObsObjectAcl(String bucketName,String objectKey) {
+        return obsClient.getObjectAcl(bucketName,objectKey);
+    }
+
+    public void setObsObjectAcl(String bucketName,String objectKey,AccessControlList acl) {
+        SetObjectAclRequest request =new SetObjectAclRequest(bucketName,objectKey,acl);
+        obsClient.setObjectAcl(request);
+    }
     /**
      * 华为云-文件存储
      */

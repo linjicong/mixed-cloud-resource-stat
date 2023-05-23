@@ -49,6 +49,8 @@ import javax.persistence.Table;
 @TypeDef(name = "json",typeClass = JsonStringType.class)
 public class QCloudBillResourceSummary extends BasicEntity {
 
+    private String month;
+
     /**
      * 产品名称：云产品大类，如云服务器CVM、云数据库MySQL
      */
