@@ -14,11 +14,17 @@
     <name>mixed-cloud-resource-stat</name>
     <description>mixed-cloud-resource-stat</description>
     <properties>
-        <java.version>1.8</java.version>
+        <java.version>17</java.version>
         <org.mapstruct.version>1.5.0.RC1</org.mapstruct.version>
         <lombok.version>1.18.28</lombok.version>
     </properties>
     <dependencies>
+        <!-- 解决spring-boot-starter漏洞警告 -->
+        <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+            <version>2.0</version>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
@@ -44,6 +50,7 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.33</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -54,7 +61,7 @@
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
             <artifactId>okhttp</artifactId>
-            <version>4.11.0</version>
+            <version>5.0.0-alpha.11</version>
         </dependency>
         <dependency>
             <groupId>com.huaweicloud.sdk</groupId>
@@ -121,6 +128,7 @@
             <version>1.36</version>
             <scope>test</scope>
         </dependency>
+
     </dependencies>
 
     <build>
@@ -128,6 +136,11 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+                <version>2.16.0</version>
             </plugin>
         </plugins>
     </build>
