@@ -28,11 +28,11 @@ import com.linjicong.cloud.stat.dao.entity.BasicEntity;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.Data;
 import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import java.util.List;
 
 /**
@@ -46,7 +46,7 @@ import java.util.List;
 @Data
 @Table(name = "h_cloud_rds")
 @Entity
-@TypeDef(name = "json",typeClass = JsonStringType.class)
+
 public class HCloudRds extends BasicEntity {
 
     private String id;
@@ -56,15 +56,15 @@ public class HCloudRds extends BasicEntity {
     private Boolean enableSsl;
 
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private List<String> privateIps ;
 
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private List<String> privateDnsNames ;
 
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private List<String> publicIps ;
 
     private String type;
@@ -80,27 +80,27 @@ public class HCloudRds extends BasicEntity {
     private String maintenanceWindow;
 
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private List<NodeResponse> nodes ;
 
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private List<RelatedInstance> relatedInstance ;
 
     private String name;
 
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private Datastore datastore;
 
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private HaResponse ha;
 
     private Integer port;
 
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private BackupStrategyForResponse backupStrategy;
 
     private String enterpriseProjectId;
@@ -114,7 +114,7 @@ public class HCloudRds extends BasicEntity {
     private String mem;
 
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private Volume volume;
 
     private String region;
@@ -126,13 +126,13 @@ public class HCloudRds extends BasicEntity {
     private String securityGroupId;
 
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private ChargeInfoResponse chargeInfo;
 
     private String timeZone;
 
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private List<TagResponse> tags ;
 
     private Double backupUsedSpace;

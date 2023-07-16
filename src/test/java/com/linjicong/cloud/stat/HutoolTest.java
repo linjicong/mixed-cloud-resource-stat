@@ -26,9 +26,12 @@ package com.linjicong.cloud.stat;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.crypto.SecureUtil;
+import cn.hutool.crypto.digest.MD5;
 import cn.hutool.crypto.symmetric.AES;
 import cn.hutool.crypto.symmetric.SymmetricAlgorithm;
+import cn.hutool.http.HttpUtil;
 import com.linjicong.cloud.stat.dao.entity.hcloud.HCloudEcs;
+import com.linjicong.cloud.stat.util.SeqUUIDUtil;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.ParameterizedType;
@@ -96,6 +99,15 @@ public class HutoolTest {
     @Test
     public void test() {
         //创建一个集合
-        //System.out.println(SeqUUIDUtil.toSequenceUUID(DateUtil.parse("2023-04-12 18:32:11").getTime()));
+        System.out.println(SeqUUIDUtil.toSequenceUUID(DateUtil.parse("2023-07-15 18:03:10").getTime()));
+    }
+
+    @Test
+    void test1(){
+        String datetime="2023-05-30 09:05:22";
+        String md5= MD5.create().digestHex(datetime+"ATJRlsLOOsLfeVsrYVNS");
+        String s = HttpUtil.get("http://hradmin.zy.com/staff/listAllPartTime?datetime=" + datetime + "&md5=" + md5);
+        System.out.println(s);
+        //System.out.println(DateUtil.parse("2023-05-29 12:00:00").getTime());
     }
 }

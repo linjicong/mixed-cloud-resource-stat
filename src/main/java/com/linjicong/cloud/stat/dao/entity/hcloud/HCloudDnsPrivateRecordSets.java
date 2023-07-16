@@ -30,11 +30,11 @@ import com.linjicong.cloud.stat.dao.entity.BasicEntity;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.Data;
 import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import java.util.List;
 
 /**
@@ -47,7 +47,7 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "h_cloud_dns_private_record_sets")
-@TypeDef(name = "json",typeClass = JsonStringType.class)
+
 public class HCloudDnsPrivateRecordSets extends BasicEntity {
 
 
@@ -72,7 +72,7 @@ public class HCloudDnsPrivateRecordSets extends BasicEntity {
     private Integer ttl;
 
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private List<String> records;
 
 
@@ -91,10 +91,10 @@ public class HCloudDnsPrivateRecordSets extends BasicEntity {
     private String projectId;
 
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private PageLink links;
 
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private List<Tag> tags;
 }

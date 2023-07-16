@@ -26,7 +26,7 @@ package com.linjicong.cloud.stat.dao.entity;
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.Date;
 
 /**

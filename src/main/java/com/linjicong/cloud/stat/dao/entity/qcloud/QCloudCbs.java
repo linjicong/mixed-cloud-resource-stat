@@ -29,11 +29,11 @@ import com.tencentcloudapi.cbs.v20170312.models.Tag;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.Data;
 import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 
 /**
  * 腾讯-云数据库
@@ -46,7 +46,7 @@ import javax.persistence.Table;
 @Data
 @Entity
 @Table(name = "q_cloud_cbs")
-@TypeDef(name = "json",typeClass = JsonStringType.class)
+
 public class QCloudCbs extends BasicEntity {
 
 
@@ -92,7 +92,7 @@ public class QCloudCbs extends BasicEntity {
      * 对于非共享型云盘，该参数为空数组。对于共享型云盘，则表示该云盘当前被挂载到的CVM实例InstanceId
      */
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private String [] InstanceIdList;
 
     /**
@@ -115,7 +115,7 @@ public class QCloudCbs extends BasicEntity {
      注意：此字段可能返回 null，表示取不到有效值。
      */
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private Tag[] Tags;
 
     /**
@@ -134,7 +134,7 @@ public class QCloudCbs extends BasicEntity {
      注意：此字段可能返回 null，表示取不到有效值。
      */
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private String [] AutoSnapshotPolicyIds;
 
     /**
@@ -163,7 +163,7 @@ public class QCloudCbs extends BasicEntity {
      * 云硬盘所在的位置。
      */
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private Placement Placement;
 
     /**

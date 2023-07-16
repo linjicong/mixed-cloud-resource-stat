@@ -38,10 +38,10 @@ push 你的本地仓库到 GitHub；
 @Data
 @Entity
 @Table(name = "h_cloud_ecs")
-@TypeDef(name = "json",typeClass = JsonStringType.class) // 使用json类型
+ // 使用json类型
 字段上:
 @Column(name="os_ext_sts_task_state",columnDefinition="json") //非基本类型需要,字段名不规则(非驼峰,例如双大写,字母大写)需要自定义
-@Type(type = "json") //非基本类型需要
+@Type(JsonStringType.class) //非基本类型需要
 ```
 
 3.1.4 检查字段名是否符合要求,不符合要求的要使用@Column自定义名称.给非基本类型的字段添加相应TypeHandle,给实体类添加Mapper接口

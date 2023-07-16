@@ -31,11 +31,11 @@ import com.linjicong.cloud.stat.dao.entity.BasicEntity;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.Data;
 import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 
 /**
  * 华为云-云监控-指标
@@ -47,7 +47,7 @@ import javax.persistence.Table;
 @Data
 @Table(name = "h_cloud_cce")
 @Entity
-@TypeDef(name = "json",typeClass = JsonStringType.class)
+
 public class HCloudCce extends BasicEntity {
 
     private String kind;
@@ -55,14 +55,14 @@ public class HCloudCce extends BasicEntity {
     private String apiVersion;
 
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private ClusterMetadata metadata;
 
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private ClusterSpec spec;
 
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private ClusterStatus status;
 }

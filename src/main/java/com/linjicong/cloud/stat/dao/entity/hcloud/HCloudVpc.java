@@ -30,11 +30,11 @@ import com.linjicong.cloud.stat.dao.entity.BasicEntity;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.Data;
 import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import java.time.OffsetDateTime;
 import java.util.List;
 
@@ -47,7 +47,7 @@ import java.util.List;
 @Data
 @Table(name = "h_cloud_vpc")
 @Entity
-@TypeDef(name = "json",typeClass = JsonStringType.class)
+
 public class HCloudVpc extends BasicEntity {
 
     private  String id;
@@ -59,7 +59,7 @@ public class HCloudVpc extends BasicEntity {
     private  String cidr;
 
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private List<String> extendCidrs = null;
 
     private  String status;
@@ -73,10 +73,10 @@ public class HCloudVpc extends BasicEntity {
     private  OffsetDateTime updatedAt;
 
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private List<CloudResource> cloudResources = null;
 
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private List<Tag> tags = null;
 }

@@ -29,11 +29,11 @@ import com.tencentcloudapi.cfs.v20190719.models.TagInfo;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.Data;
 import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 
 /**
  * 腾讯-文件存储
@@ -45,7 +45,7 @@ import javax.persistence.Table;
 @Data
 @Entity
 @Table(name = "q_cloud_cfs")
-@TypeDef(name = "json",typeClass = JsonStringType.class)
+
 public class QCloudCfs extends BasicEntity {
 
     /**
@@ -112,7 +112,7 @@ public class QCloudCfs extends BasicEntity {
      * 文件系统绑定权限组信息
      */
     @Column(name="p_group", columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private PGroup PGroup;
 
     /**
@@ -149,6 +149,6 @@ public class QCloudCfs extends BasicEntity {
      * 文件系统标签列表
      */
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private TagInfo[] Tags;
 }

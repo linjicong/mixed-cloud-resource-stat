@@ -31,11 +31,11 @@ import com.linjicong.cloud.stat.dao.entity.BasicEntity;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.Data;
 import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import java.util.List;
 import java.util.Map;
 
@@ -48,13 +48,13 @@ import java.util.Map;
 @Data
 @Table(name = "h_cloud_evs")
 @Entity
-@TypeDef(name = "json",typeClass = JsonStringType.class)
+
 public class HCloudEvs extends BasicEntity {
 
     private String id;
 
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private List<Link> links = null;
 
     private String name;
@@ -62,7 +62,7 @@ public class HCloudEvs extends BasicEntity {
     private String status;
 
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private List<Attachment> attachments = null;
 
     private String availabilityZone;
@@ -80,7 +80,7 @@ public class HCloudEvs extends BasicEntity {
     private String osVolTenantAttrTenantId;
 
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private Map<String, Object> volumeImageMetadata = null;
 
     private String volumeType;
@@ -92,7 +92,7 @@ public class HCloudEvs extends BasicEntity {
     private String bootable;
 
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private VolumeMetadata metadata;
 
     private String updatedAt;
@@ -120,7 +120,7 @@ public class HCloudEvs extends BasicEntity {
     private String dedicatedStorageName;
 
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private Map<String, String> tags = null;
 
     private String wwn;

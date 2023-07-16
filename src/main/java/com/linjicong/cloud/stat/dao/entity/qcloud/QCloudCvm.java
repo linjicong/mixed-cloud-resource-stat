@@ -28,11 +28,11 @@ import com.tencentcloudapi.cvm.v20170312.models.*;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.Data;
 import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 
 /**
  * 腾讯-弹性云服务器
@@ -45,10 +45,10 @@ import javax.persistence.Table;
 @Data
 @Entity
 @Table(name = "q_cloud_cvm")
-@TypeDef(name = "json",typeClass = JsonStringType.class)
+
 public class QCloudCvm extends BasicEntity {
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private Placement Placement;
 
     private String InstanceId;
@@ -67,27 +67,27 @@ public class QCloudCvm extends BasicEntity {
     private String InstanceChargeType;
 
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private SystemDisk SystemDisk;
 
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private DataDisk[] DataDisks;
 
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private String[] PrivateIpAddresses;
 
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private String[] PublicIpAddresses;
 
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private InternetAccessible InternetAccessible;
 
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private VirtualPrivateCloud VirtualPrivateCloud;
 
     private String ImageId;
@@ -101,17 +101,17 @@ public class QCloudCvm extends BasicEntity {
     private String OsName;
 
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private String[] SecurityGroupIds;
 
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private LoginSettings LoginSettings;
 
     private String InstanceState;
 
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private Tag[] Tags;
 
     private String StopChargingMode;
@@ -127,7 +127,7 @@ public class QCloudCvm extends BasicEntity {
     private String DisasterRecoverGroupId;
 
     @Column(name="ipv6_addresses", columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private String[] IPv6Addresses;
 
     private String CamRoleName;
@@ -135,13 +135,13 @@ public class QCloudCvm extends BasicEntity {
     private String HpcClusterId;
 
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private String[] RdmaIpAddresses;
 
     private String IsolatedSource;
 
     @Column(name="gpu_info",columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private GPUInfo GPUInfo;
 
     private String LicenseType;

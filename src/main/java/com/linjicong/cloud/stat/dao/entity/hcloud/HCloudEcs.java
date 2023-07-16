@@ -28,11 +28,11 @@ import com.linjicong.cloud.stat.dao.entity.BasicEntity;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.Data;
 import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import java.util.List;
 import java.util.Map;
 
@@ -47,7 +47,7 @@ import java.util.Map;
 @Data
 @Entity
 @Table(name = "h_cloud_ecs")
-@TypeDef(name = "json",typeClass = JsonStringType.class)
+
 public class HCloudEcs extends BasicEntity {
 
     private String status;
@@ -62,13 +62,13 @@ public class HCloudEcs extends BasicEntity {
     private String osEXTSRVATTRHost;
 
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private Map<String, List<ServerAddress>> addresses;
 
     private String keyName;
 
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private ServerImage image;
 
     @Column(name="os_ext_sts_task_state")
@@ -84,13 +84,13 @@ public class HCloudEcs extends BasicEntity {
     private String osEXTSRVATTRHypervisorHostname;
 
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private ServerFlavor flavor;
 
     private String id;
 
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private List<ServerSecurityGroup> securityGroups;
 
     @Column(name="os_ext_az_availability_zone")
@@ -114,7 +114,7 @@ public class HCloudEcs extends BasicEntity {
     private String accessIPv6;
 
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private ServerFault fault;
 
     private Integer progress;
@@ -125,7 +125,7 @@ public class HCloudEcs extends BasicEntity {
     private String configDrive;
 
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private Map<String, String> metadata;
 
     @Column(name="os_srv_usg_launched_at")
@@ -135,7 +135,7 @@ public class HCloudEcs extends BasicEntity {
     private String osSRVUSGTerminatedAt;
 
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private List<ServerExtendVolumeAttachment> osExtendedVolumesVolumesAttached;
 
     private String description;
@@ -166,24 +166,24 @@ public class HCloudEcs extends BasicEntity {
     private Boolean locked;
 
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private List<String> tags ;
 
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private ServerSchedulerHints osSchedulerHints;
 
     private String enterpriseProjectId;
 
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private List<ServerSystemTag> sysTags;
 
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private CpuOptions cpuOptions;
 
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private Hypervisor hypervisor;
 }

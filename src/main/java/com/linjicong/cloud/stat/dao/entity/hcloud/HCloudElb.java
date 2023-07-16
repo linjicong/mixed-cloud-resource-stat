@@ -28,11 +28,11 @@ import com.linjicong.cloud.stat.dao.entity.BasicEntity;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.Data;
 import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import java.util.List;
 
 /**
@@ -44,7 +44,7 @@ import java.util.List;
 @Data
 @Table(name = "h_cloud_elb")
 @Entity
-@TypeDef(name = "json",typeClass = JsonStringType.class)
+
 public class HCloudElb extends BasicEntity {
 
     private String id;
@@ -58,11 +58,11 @@ public class HCloudElb extends BasicEntity {
     private String provider;
 
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private List<PoolRef> pools;
 
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private List<ListenerRef> listeners;
 
     private String operatingStatus;
@@ -78,7 +78,7 @@ public class HCloudElb extends BasicEntity {
     private String vipPortId;
 
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private List<Tag> tags;
 
     private String createdAt;
@@ -90,7 +90,7 @@ public class HCloudElb extends BasicEntity {
     private String vpcId;
 
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private List<EipInfo> eips;
 
     @Column(name= "ipv6_vip_address")
@@ -103,7 +103,7 @@ public class HCloudElb extends BasicEntity {
     private String ipv6VipPortId;
 
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private List<String> availabilityZoneList;
 
     private String enterpriseProjectId;
@@ -123,15 +123,15 @@ public class HCloudElb extends BasicEntity {
     private String l7ScaleFlavorId;
 
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private List<PublicIpInfo> publicips;
 
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private List<String> elbVirsubnetIds;
 
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private LoadBalancer.ElbVirsubnetTypeEnum elbVirsubnetType;
 
     private Boolean ipTargetEnable;
@@ -139,12 +139,12 @@ public class HCloudElb extends BasicEntity {
     private String frozenScene;
 
     @Column(name="ipv6_bandwidth",columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private BandwidthRef ipv6Bandwidth;
 
     private Boolean deletionProtectionEnable;
 
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private AutoscalingRef autoscaling;
 }

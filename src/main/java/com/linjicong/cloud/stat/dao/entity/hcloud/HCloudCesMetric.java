@@ -29,11 +29,11 @@ import com.linjicong.cloud.stat.dao.entity.BasicEntity;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.Data;
 import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import java.util.List;
 
 /**
@@ -46,11 +46,10 @@ import java.util.List;
 @Data
 @Table(name = "h_cloud_ces_metric")
 @Entity
-@TypeDef(name = "json",typeClass = JsonStringType.class)
 public class HCloudCesMetric extends BasicEntity {
 
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private List<MetricsDimension> dimensions = null;
 
     private String metricName;

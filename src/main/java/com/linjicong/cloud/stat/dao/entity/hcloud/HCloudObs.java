@@ -28,9 +28,9 @@ import com.obs.services.model.*;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.Data;
 import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
 
-import javax.persistence.*;
+
+import jakarta.persistence.*;
 import java.util.Date;
 import java.util.Map;
 
@@ -45,13 +45,13 @@ import java.util.Map;
 @Data
 @Table(name = "h_cloud_obs")
 @Entity
-@TypeDef(name = "json",typeClass = JsonStringType.class)
+
 public class HCloudObs extends BasicEntity {
 
     private String bucketName;
 
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private Owner owner;
 
     private Date creationDate;
@@ -62,11 +62,11 @@ public class HCloudObs extends BasicEntity {
     private StorageClassEnum storageClass;
 
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private Map<String, Object> metadata;
 
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private AccessControlList acl;
 
     @Column(name="bucket_type_enum")

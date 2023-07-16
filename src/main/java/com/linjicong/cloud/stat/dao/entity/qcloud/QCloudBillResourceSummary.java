@@ -31,11 +31,11 @@ import com.tencentcloudapi.billing.v20180709.models.BillTagInfo;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.Data;
 import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 
 /**
  * @author linjicong
@@ -46,7 +46,7 @@ import javax.persistence.Table;
 @Data
 @Entity
 @Table(name = "q_cloud_bill_resource_summary")
-@TypeDef(name = "json",typeClass = JsonStringType.class)
+
 public class QCloudBillResourceSummary extends BasicEntity {
 
     private String month;
@@ -187,7 +187,7 @@ public class QCloudBillResourceSummary extends BasicEntity {
      注意：此字段可能返回 null，表示取不到有效值。
      */
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     @TableField(typeHandler = BillTagInfoJsonTypeHandle.class)
     private BillTagInfo[] Tags;
 

@@ -28,11 +28,11 @@ import com.tencentcloudapi.clb.v20180317.models.*;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.Data;
 import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 
 /**
  * 腾讯-云数据库
@@ -45,7 +45,7 @@ import javax.persistence.Table;
 @Data
 @Entity
 @Table(name = "q_cloud_clb")
-@TypeDef(name = "json",typeClass = JsonStringType.class)
+
 public class QCloudClb extends BasicEntity {
 
     /**
@@ -80,7 +80,7 @@ public class QCloudClb extends BasicEntity {
      注意：此字段可能返回 null，表示取不到有效值。
      */
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private String [] LoadBalancerVips;
 
     /**
@@ -148,7 +148,7 @@ public class QCloudClb extends BasicEntity {
      注意：此字段可能返回 null，表示取不到有效值。
      */
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private TagInfo [] Tags;
 
     /**
@@ -156,7 +156,7 @@ public class QCloudClb extends BasicEntity {
      注意：此字段可能返回 null，表示取不到有效值。
      */
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private String [] SecureGroups;
 
     /**
@@ -164,7 +164,7 @@ public class QCloudClb extends BasicEntity {
      注意：此字段可能返回 null，表示取不到有效值。
      */
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private TargetRegionInfo TargetRegionInfo;
 
     /**
@@ -197,7 +197,7 @@ public class QCloudClb extends BasicEntity {
      注意：此字段可能返回 null，表示取不到有效值。
      */
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private ZoneInfo MasterZone;
 
     /**
@@ -205,7 +205,7 @@ public class QCloudClb extends BasicEntity {
      注意：此字段可能返回 null，表示取不到有效值。
      */
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private ZoneInfo [] BackupZoneSet;
 
     /**
@@ -231,7 +231,7 @@ public class QCloudClb extends BasicEntity {
      注意：此字段可能返回 null，表示取不到有效值。
      */
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private InternetAccessible NetworkAttributes;
 
     /**
@@ -239,7 +239,7 @@ public class QCloudClb extends BasicEntity {
      注意：此字段可能返回 null，表示取不到有效值。
      */
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private LBChargePrepaid PrepaidAttributes;
 
     /**
@@ -266,7 +266,7 @@ public class QCloudClb extends BasicEntity {
      注意：此字段可能返回 null，表示取不到有效值。
      */
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private ExtraInfo ExtraInfo;
 
     /**
@@ -293,7 +293,7 @@ public class QCloudClb extends BasicEntity {
      注意：此字段可能返回 null，表示取不到有效值。
      */
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private ExclusiveCluster ExclusiveCluster;
 
     /**
@@ -314,7 +314,7 @@ public class QCloudClb extends BasicEntity {
      注意：此字段可能返回 null，表示取不到有效值。
      */
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private SnatIp[] SnatIps;
 
     /**
@@ -358,7 +358,7 @@ public class QCloudClb extends BasicEntity {
      注意：此字段可能返回 null，表示取不到有效值。
      */
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private String [] Zones;
 
     /**
@@ -384,7 +384,7 @@ public class QCloudClb extends BasicEntity {
      注意：此字段可能返回 null，表示取不到有效值。
      */
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private String [] ClusterIds;
 
     /**
@@ -392,6 +392,6 @@ public class QCloudClb extends BasicEntity {
      注意：此字段可能返回 null，表示取不到有效值。
      */
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private String [] AttributeFlags;
 }

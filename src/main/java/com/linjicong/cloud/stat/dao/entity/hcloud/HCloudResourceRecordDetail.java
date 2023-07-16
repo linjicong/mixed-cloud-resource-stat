@@ -27,10 +27,10 @@ import com.huaweicloud.sdk.bss.v2.model.MonthlyBillRes;
 import com.linjicong.cloud.stat.dao.entity.BasicEntity;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.Data;
-import org.hibernate.annotations.TypeDef;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 
 /**
  * @author linjicong
@@ -41,7 +41,7 @@ import javax.persistence.Table;
 @Data
 @Table(name = "h_cloud_resource_record_detail")
 @Entity
-@TypeDef(name = "json",typeClass = JsonStringType.class)
+
 public class HCloudResourceRecordDetail extends BasicEntity {
     private String cycle;
     private String billDate;

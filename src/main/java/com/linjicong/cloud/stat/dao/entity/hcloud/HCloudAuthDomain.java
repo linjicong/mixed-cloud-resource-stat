@@ -29,12 +29,12 @@ import com.linjicong.cloud.stat.dao.entity.BasicEntity;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.Data;
 import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Index;
-import javax.persistence.Table;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Index;
+import jakarta.persistence.Table;
 
 /**
  * @author linjicong
@@ -45,7 +45,7 @@ import javax.persistence.Table;
 @Data
 @Table(name = "h_cloud_auth_domain",indexes = {@Index(columnList = "statDate")})
 @Entity
-@TypeDef(name = "json",typeClass = JsonStringType.class)
+
 public class HCloudAuthDomain extends BasicEntity {
 
 
@@ -60,7 +60,7 @@ public class HCloudAuthDomain extends BasicEntity {
 
 
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private LinksSelf links;
 
 

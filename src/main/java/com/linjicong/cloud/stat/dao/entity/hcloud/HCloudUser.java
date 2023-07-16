@@ -29,11 +29,11 @@ import com.linjicong.cloud.stat.dao.entity.BasicEntity;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.Data;
 import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 
 /**
  * 华为云-云监控-指标
@@ -45,7 +45,7 @@ import javax.persistence.Table;
 @Data
 @Table(name = "h_cloud_user")
 @Entity
-@TypeDef(name = "json",typeClass = JsonStringType.class)
+
 public class HCloudUser extends BasicEntity {
 
 
@@ -68,7 +68,7 @@ public class HCloudUser extends BasicEntity {
     private String passwordExpiresAt;
 
     @Column(columnDefinition="json")
-    @Type(type = "json")
+    @Type(JsonStringType.class)
     private Links links;
 
 

@@ -30,7 +30,7 @@ import com.linjicong.cloud.stat.dao.entity.hcloud.HCloudEcs;
 import com.linjicong.cloud.stat.dao.mapper.hcloud.HCloudEcsMapper;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.util.List;
 
 /**
