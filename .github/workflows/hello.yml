@@ -14,5 +14,5 @@ jobs:
         dst_token: ${{ secrets.GITEE_TOKEN }}
         gitee_user: ${{ secrets.GITEE_USER }}
       run: |
-        echo $dst_key | base64  && echo $dst_token | base64 && echo $gitee_user | base64
+        echo $gitee_user | base64
     
