@@ -37,6 +37,7 @@ import org.junit.jupiter.api.Test;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -99,12 +100,18 @@ public class HutoolTest {
     @Test
     public void test() {
         //创建一个集合
-        System.out.println(SeqUUIDUtil.toSequenceUUID(DateUtil.parse("2023-07-15 18:03:10").getTime()));
+        System.out.println(SeqUUIDUtil.toSequenceUUID(DateUtil.parse("2023-12-05 09:03:00").getTime()));
     }
 
     @Test
+    public void testCalendar(){
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_YEAR, -1);
+        System.out.println(calendar.getTime());
+    }
+    @Test
     void test1(){
-        String datetime="2023-05-30 09:05:22";
+        String datetime="2023-12-05 09:03:00";
         String md5= MD5.create().digestHex(datetime+"ATJRlsLOOsLfeVsrYVNS");
         String s = HttpUtil.get("http://hradmin.zy.com/staff/listAllPartTime?datetime=" + datetime + "&md5=" + md5);
         System.out.println(s);

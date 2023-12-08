@@ -46,7 +46,7 @@ public class CommonSqlInjector extends DefaultSqlInjector {
             KeyGenerator keyGenerator = NoKeyGenerator.INSTANCE;
             SqlMethod sqlMethod = SqlMethod.INSERT_ONE;
             List<TableFieldInfo> fieldList = tableInfo.getFieldList();
-            String insertSqlColumn = tableInfo.getKeyInsertSqlColumn(true, false) +
+            String insertSqlColumn = tableInfo.getKeyInsertSqlColumn(true, "",false) +
                     this.filterTableFieldInfo(fieldList, null, i->{
                         if(i.getInsertStrategy()== FieldStrategy.NEVER){
                             return EMPTY;
