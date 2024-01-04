@@ -23,7 +23,7 @@
  */
 package com.linjicong.cloud.stat.dao.typehandle.impl.hcloud.sfs;
 
-import com.huaweicloud.sdk.sfsturbo.v1.model.Shares;
+import com.huaweicloud.sdk.sfsturbo.v1.model.ShareInfo;
 import com.linjicong.cloud.stat.dao.typehandle.JsonTypeHandler;
 
 /**
@@ -31,8 +31,8 @@ import com.linjicong.cloud.stat.dao.typehandle.JsonTypeHandler;
  * @date 2022-07-28-14:36
  * @version 1.0.0
  */
-public class PayModelEnumJsonTypeHandle extends JsonTypeHandler<Shares.PayModelEnum> {
+public class PayModelEnumJsonTypeHandle extends JsonTypeHandler<ShareInfo.PayModelEnum> {
     public PayModelEnumJsonTypeHandle() {
-        super(Shares.PayModelEnum.class);
+        super(ShareInfo.PayModelEnum.class);
     }
 }

@@ -24,16 +24,15 @@
 package com.linjicong.cloud.stat.dao.entity.hcloud;
 
 import com.huaweicloud.sdk.sfsturbo.v1.model.ActionProgress;
-import com.huaweicloud.sdk.sfsturbo.v1.model.Shares;
+import com.huaweicloud.sdk.sfsturbo.v1.model.ShareInfo;
 import com.linjicong.cloud.stat.dao.entity.BasicEntity;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
-import lombok.Data;
-import org.hibernate.annotations.Type;
-
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import lombok.Data;
+import org.hibernate.annotations.Type;
+
 import java.time.OffsetDateTime;
 
 /**
@@ -42,7 +41,7 @@ import java.time.OffsetDateTime;
  * @author linjicong
  * @date 2022-07-28-14:36
  * @version 1.0.0
- * @see Shares
+ * @see ShareInfo
  */
 @Data
 @Table(name = "h_cloud_sfs")
@@ -76,7 +75,7 @@ public class HCloudSfs extends BasicEntity {
 
     @Column(columnDefinition="json")
     @Type(JsonStringType.class)
-    private Shares.PayModelEnum payModel;
+    private ShareInfo.PayModelEnum payModel;
 
     private String region;
 

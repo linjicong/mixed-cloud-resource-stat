@@ -24,14 +24,11 @@
 package com.linjicong.cloud.stat.dao.entity.acloud;
 
 import com.aliyun.alidns20150109.models.DescribeDomainsResponseBody;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.linjicong.cloud.stat.dao.entity.BasicEntity;
-import com.vladmihalcea.hibernate.type.json.JsonStringType;
-import lombok.Data;
-
-
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import lombok.Data;
 
 /**
  * 阿里云-域名
@@ -43,7 +40,6 @@ import jakarta.persistence.Table;
 @Data
 @Entity
 @Table(name = "a_cloud_dns_domain")
-
 public class ACloudDnsDomain extends BasicEntity {
 
     private String domainName;
@@ -57,7 +53,7 @@ public class ACloudDnsDomain extends BasicEntity {
     /**
      * 主机记录
      */
-    @Column(name = "rr")
+    @TableField(value = "rr")
     private String RR;
 
     private String recordId;
@@ -66,7 +62,7 @@ public class ACloudDnsDomain extends BasicEntity {
 
     private String status;
 
-    @Column(name = "ttl")
+    @TableField(value = "ttl")
     private Long TTL;
 
     private String type;
