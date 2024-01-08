@@ -45,9 +45,12 @@ class QCloudClientTest {
     @Resource
     private QCloudResourceTagMapper qCloudResourceTagMapper;
 
+    @Resource
+    private QCloudDnsDomainMapper qCloudDnsDomainMapper;
+
     @BeforeEach
     public void init(){
-        CloudConf cloudConf = cloudConfMapper.selectById(3);
+        CloudConf cloudConf = cloudConfMapper.selectById(2);
         qCloudClient = new QCloudClient(cloudConf);
     }
 
@@ -106,5 +109,10 @@ class QCloudClientTest {
     @Test
     void listResourceTags() {
         qCloudResourceTagMapper.insertBatch(qCloudClient.listResourceTags());
+    }
+
+    @Test
+    void listDnsDomain() {
+        qCloudDnsDomainMapper.insertBatch(qCloudClient.listDnsDomain());
     }
 }

@@ -55,6 +55,9 @@ import com.tencentcloudapi.common.Credential;
 import com.tencentcloudapi.common.exception.TencentCloudSDKException;
 import com.tencentcloudapi.cvm.v20170312.CvmClient;
 import com.tencentcloudapi.cvm.v20170312.models.DescribeInstancesRequest;
+import com.tencentcloudapi.dnspod.v20210323.DnspodClient;
+import com.tencentcloudapi.dnspod.v20210323.models.DescribeDomainListRequest;
+import com.tencentcloudapi.dnspod.v20210323.models.DescribeDomainListResponse;
 import com.tencentcloudapi.tag.v20180813.TagClient;
 import com.tencentcloudapi.tag.v20180813.models.DescribeResourceTagsRequest;
 import com.tencentcloudapi.tag.v20180813.models.DescribeResourceTagsResponse;
@@ -207,6 +210,17 @@ public class QCloudClient{
                 tagResources.addAll(ListUtil.toList(responseNext.getRows()));
             }
             return BeanUtils.cgLibCopyList(tagResources, QCloudResourceTag::new);
+        } catch (TencentCloudSDKException e) {
+            throw new ClientException(e);
+        }
+    }
+
+    public List<QCloudDnsDomain> listDnsDomain() {
+        DnspodClient client = new DnspodClient (credential,region);
+        DescribeDomainListRequest request = new DescribeDomainListRequest();
+        try {
+            DescribeDomainListResponse response = client.DescribeDomainList(request);
+            return BeanUtils.cgLibCopyList(ListUtil.toList(response.getDomainList()), QCloudDnsDomain::new);
         } catch (TencentCloudSDKException e) {
             throw new ClientException(e);
         }
