@@ -43,6 +43,8 @@ jobs:
       with:
         distribution: 'temurin'
         java-version: '21'
+        cache: 'maven'
+        cache-dependency-path: 'sub-project/pom.xml' # optional
     # Initializes the CodeQL tools for scanning.
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v3
