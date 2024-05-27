@@ -84,7 +84,7 @@
         <dependency>
             <groupId>com.aliyun</groupId>
             <artifactId>alidns20150109</artifactId>
-            <version>3.1.0</version>
+            <version>3.3.0</version>
         </dependency>
 
         <dependency>
