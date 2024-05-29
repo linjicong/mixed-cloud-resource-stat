@@ -21,56 +21,51 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.linjicong.cloud.stat.dao.mapper;
+package com.linjicong.cloud.stat.dao.entity.qcloud;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.apache.ibatis.annotations.Param;
-
-import java.util.Collection;
-import java.util.List;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+import com.linjicong.cloud.stat.dao.entity.BasicEntity;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import lombok.Data;
 
 /**
- * 通用Mapper接口
+ * 腾讯-云数据库
  *
- * @param <T> 不能为空
- * @author liuzh
  * @author linjicong
-  * @version 1.0.0
-  * @date 2022-08-01-11:42
+ * @date 2022-07-28-14:36
+ * @version 1.0.0
+ * @see
  */
-public interface CommonMapper <T> extends BaseMapper<T> {
+@Data
+@Entity
+@Table(name = "q_cloud_access_key_last_used")
+@TableName(value = "q_cloud_access_key_last_used",autoResultMap = true)
 
-    int insertBatchSomeColumn(Collection<T> entityList);
-
-    int insertBatch(@Param("list") Collection<T> entityList);
-
-    /**
-     * 删除某天的数据
-     *
-     */
-    int deleteByStatDateAndConfName(String statDate, String confName);
+public class QCloudAccessKeyLastUsed extends BasicEntity {
 
     /**
-     * 获取某天的数据
-     *
+     * 密钥ID
      */
-    List<T> selectByStatDateAndConfName(String statDate, String confName);
+    @SerializedName("SecretId")
+    @Expose
+    private String SecretId;
 
     /**
-     * 删除某天的数据
-     *
+     * 最后访问日期(有1天延迟)
+     注意：此字段可能返回 null，表示取不到有效值。
      */
-    int deleteByStatDate(String statDate);
+    @SerializedName("LastUsedDate")
+    @Expose
+    private String LastUsedDate;
 
     /**
-     * 获取某天的数据
-     *
+     * 最后密钥访问日期
+     注意：此字段可能返回 null，表示取不到有效值。
      */
-    List<T> selectByStatDate(String statDate);
-
-    /**
-     * 获取某个配置的数据
-     *
-     */
-    List<T> selectByConfName(String confName);
+    @SerializedName("LastSecretUsedDate")
+    @Expose
+    private Long LastSecretUsedDate;
 }

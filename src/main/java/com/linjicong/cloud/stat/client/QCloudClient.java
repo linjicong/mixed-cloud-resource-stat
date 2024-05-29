@@ -35,8 +35,7 @@ import com.tencentcloudapi.billing.v20180709.models.BillResourceSummary;
 import com.tencentcloudapi.billing.v20180709.models.DescribeBillResourceSummaryRequest;
 import com.tencentcloudapi.billing.v20180709.models.DescribeBillResourceSummaryResponse;
 import com.tencentcloudapi.cam.v20190116.CamClient;
-import com.tencentcloudapi.cam.v20190116.models.ListUsersRequest;
-import com.tencentcloudapi.cam.v20190116.models.ListUsersResponse;
+import com.tencentcloudapi.cam.v20190116.models.*;
 import com.tencentcloudapi.cbs.v20170312.CbsClient;
 import com.tencentcloudapi.cbs.v20170312.models.DescribeDisksRequest;
 import com.tencentcloudapi.cbs.v20170312.models.DescribeDisksResponse;
@@ -192,6 +191,30 @@ public class QCloudClient{
         try {
             ListUsersResponse response = client.ListUsers(request);
             return BeanUtils.cgLibCopyList(ListUtil.toList(response.getData()), QCloudUser::new);
+        } catch (TencentCloudSDKException e) {
+            throw new ClientException(e);
+        }
+    }
+
+    public List<QCloudAccessKey> listAccessKeys(Long targetUin) {
+        CamClient client = new CamClient (credential,region);
+        ListAccessKeysRequest request = new ListAccessKeysRequest();
+        request.setTargetUin(targetUin);
+        try {
+            ListAccessKeysResponse response = client.ListAccessKeys(request);
+            return BeanUtils.cgLibCopyList(ListUtil.toList(response.getAccessKeys()), QCloudAccessKey::new);
+        } catch (TencentCloudSDKException e) {
+            throw new ClientException(e);
+        }
+    }
+
+    public List<QCloudAccessKeyLastUsed> listAccessKeyLastUsed(String[] secretIdList) {
+        CamClient client = new CamClient (credential,region);
+        GetSecurityLastUsedRequest request = new GetSecurityLastUsedRequest();
+        request.setSecretIdList(secretIdList);
+        try {
+            GetSecurityLastUsedResponse response = client.GetSecurityLastUsed(request);
+            return BeanUtils.cgLibCopyList(ListUtil.toList(response.getSecretIdLastUsedRows()), QCloudAccessKeyLastUsed::new);
         } catch (TencentCloudSDKException e) {
             throw new ClientException(e);
         }

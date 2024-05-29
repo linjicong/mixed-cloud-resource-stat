@@ -25,11 +25,14 @@ import java.util.List;
  * @date 2023-02-20-18:13
  */
 public class CommonSqlInjector extends DefaultSqlInjector {
+
     @Override
     public List<AbstractMethod> getMethodList(Class<?> mapperClass, TableInfo tableInfo) {
         List<AbstractMethod> methodList = super.getMethodList(mapperClass, tableInfo);
         methodList.add(new InsertBatchSomeColumn());
         methodList.add(new InsertBatch());
+        methodList.add(new DeleteByStatDateAndConfName());
+        methodList.add(new SelectByStatDateAndConfName());
         methodList.add(new DeleteByStatDate());
         methodList.add(new SelectByStatDate());
         methodList.add(new SelectByConfName());
@@ -90,9 +93,30 @@ public class CommonSqlInjector extends DefaultSqlInjector {
         }
     }
 
+    private static class DeleteByStatDateAndConfName extends AbstractMethod {
+        protected DeleteByStatDateAndConfName() {
+            super("deleteByStatDateAndConfName");
+        }
+        @Override
+        public MappedStatement injectMappedStatement(Class<?> mapperClass, Class<?> modelClass, TableInfo tableInfo) {
+            return this.addDeleteMappedStatement(mapperClass, this.methodName, this.languageDriver.createSqlSource(this.configuration,"DELETE FROM " + tableInfo.getTableName() + " WHERE stat_date = #{statDate} AND conf_name = #{confName}",String.class));
+        }
+    }
+
+    private static class SelectByStatDateAndConfName extends AbstractMethod {
+
+        protected SelectByStatDateAndConfName() {
+            super("selectByStatDateAndConfName");
+        }
+        @Override
+        public MappedStatement injectMappedStatement(Class<?> mapperClass, Class<?> modelClass, TableInfo tableInfo) {
+            return this.addSelectMappedStatementForOther(mapperClass, this.methodName, this.languageDriver.createSqlSource(this.configuration,"SELECT * FROM " + tableInfo.getTableName() + " WHERE stat_date = #{statDate} AND conf_name = #{confName}",String.class),modelClass);
+        }
+    }
+
     private static class DeleteByStatDate extends AbstractMethod {
         protected DeleteByStatDate() {
-            super("deleteByStatDate");
+            super("deleteByStatDateAndConfName");
         }
         @Override
         public MappedStatement injectMappedStatement(Class<?> mapperClass, Class<?> modelClass, TableInfo tableInfo) {
@@ -101,12 +125,13 @@ public class CommonSqlInjector extends DefaultSqlInjector {
     }
 
     private static class SelectByStatDate extends AbstractMethod {
+
         protected SelectByStatDate() {
-            super("selectByStatDate");
+            super("selectByStatDateAndConfName");
         }
         @Override
         public MappedStatement injectMappedStatement(Class<?> mapperClass, Class<?> modelClass, TableInfo tableInfo) {
-            return this.addSelectMappedStatementForOther(mapperClass, this.methodName, this.languageDriver.createSqlSource(this.configuration,"SELECT * FROM " + tableInfo.getTableName() + " WHERE stat_date = #{statDate}",String.class),String.class);
+            return this.addSelectMappedStatementForOther(mapperClass, this.methodName, this.languageDriver.createSqlSource(this.configuration,"SELECT * FROM " + tableInfo.getTableName() + " WHERE stat_date = #{statDate}",String.class),modelClass);
         }
     }
 

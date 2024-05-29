@@ -1,5 +1,6 @@
 package com.linjicong.cloud.stat.client;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.linjicong.cloud.stat.dao.entity.CloudConf;
@@ -11,6 +12,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import jakarta.annotation.Resource;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,10 +24,13 @@ import java.util.List;
 @SpringBootTest
 class QCloudClientTest {
 
-    private QCloudClient qCloudClient;
 
     @Resource
     private CloudConfMapper cloudConfMapper;
+
+    private CloudConf cloudConf;
+
+    private QCloudClient qCloudClient;
 
     @Resource
     private QCloudCvmMapper qCloudCvmMapper;
@@ -48,9 +54,16 @@ class QCloudClientTest {
     @Resource
     private QCloudDnsDomainMapper qCloudDnsDomainMapper;
 
+    @Resource
+    private QCloudAccessKeyMapper qCloudAccessKeyMapper;
+    @Resource
+    private QCloudUserToAccessKeyMapper qCloudUserToAccessKeyMapper;
+    @Resource
+    private QCloudAccessKeyLastUsedMapper qCloudAccessKeyLastUsedMapper;
+
     @BeforeEach
     public void init(){
-        CloudConf cloudConf = cloudConfMapper.selectById(2);
+        cloudConf = cloudConfMapper.selectById(3);
         qCloudClient = new QCloudClient(cloudConf);
     }
 
@@ -74,7 +87,7 @@ class QCloudClientTest {
 
     @Test
     void listBillResourceSummary() {
-        qCloudBillResourceSummaryMapper.deleteByStatDate(DateUtil.today());
+        qCloudBillResourceSummaryMapper.deleteByStatDateAndConfName(DateUtil.today(),cloudConf.getName());
         List<QCloudBillResourceSummary> qCloudBillResourceSummaries = qCloudClient.listBillResourceSummary("2023-03");
         qCloudBillResourceSummaryMapper.insertBatch(qCloudBillResourceSummaries);
     }
@@ -95,15 +108,7 @@ class QCloudClientTest {
     @Test
     void listUser() {
         List<QCloudUser> qCloudUsers = qCloudClient.listUsers();
-        //for (QCloudUser qCloudUser : qCloudUsers) {
-        //    qCloudUserMapper.insert(qCloudUser);
-        //}
         qCloudUserMapper.insertBatch(qCloudUsers);
-        //qCloudUserMapper.insertBatchSomeColumn(qCloudUsers);
-    }
-
-    @Test
-    void listUsers() {
     }
 
     @Test
@@ -114,5 +119,52 @@ class QCloudClientTest {
     @Test
     void listDnsDomain() {
         qCloudDnsDomainMapper.insertBatch(qCloudClient.listDnsDomain());
+    }
+
+    @Test
+    void listAccessKeys() {
+        List<QCloudAccessKey> qCloudAccessKeys = qCloudClient.listAccessKeys(null);
+        qCloudAccessKeyMapper.insertBatch(qCloudAccessKeys);
+    }
+
+    @Test
+    void listAccessKeysLastUsed() {
+        List<QCloudAccessKey> qCloudAccessKeys = qCloudAccessKeyMapper.selectByStatDateAndConfName("2024-05-29",cloudConf.getName());
+        List<QCloudAccessKeyLastUsed> qCloudAccessKeyLastUsedList = new ArrayList<>();
+        List<String> secretIdList = qCloudAccessKeys.stream().map(QCloudAccessKey::getAccessKeyId).toList();
+        List<List<String>> splitList = CollUtil.split(secretIdList, 10);
+        for (List<String> strings : splitList) {
+            qCloudAccessKeyLastUsedList.addAll(qCloudClient.listAccessKeyLastUsed(strings.toArray(String[]::new)));
+        }
+        qCloudAccessKeyLastUsedMapper.insertBatch(qCloudAccessKeyLastUsedList);
+    }
+
+    @Test
+    void listAccessKeysAll() {
+        List<QCloudUser> qCloudUsers = qCloudUserMapper.selectByStatDateAndConfName("2024-05-29",cloudConf.getName());
+        List<QCloudAccessKey> qCloudAccessKeysAll = new ArrayList<>();
+        List<QCloudUserToAccessKey>  userToAccessKeysAll= new ArrayList<>();
+        for (QCloudUser qCloudUser : qCloudUsers) {
+            Long uin = qCloudUser.getUin();
+            List<QCloudAccessKey> qCloudAccessKeys = qCloudClient.listAccessKeys(uin);
+            qCloudAccessKeysAll.addAll(qCloudAccessKeys);
+            for (QCloudAccessKey qCloudAccessKey : qCloudAccessKeys) {
+                QCloudUserToAccessKey qCloudUserToAccessKey = new QCloudUserToAccessKey();
+                qCloudUserToAccessKey.setUin(uin);
+                qCloudUserToAccessKey.setAccessKeyId(qCloudAccessKey.getAccessKeyId());
+                userToAccessKeysAll.add(qCloudUserToAccessKey);
+            }
+        }
+        if(!qCloudAccessKeysAll.isEmpty()) {
+            qCloudAccessKeyMapper.insertBatch(qCloudAccessKeysAll);
+        }
+        if(!userToAccessKeysAll.isEmpty()) {
+            qCloudUserToAccessKeyMapper.insertBatch(userToAccessKeysAll);
+        }
+    }
+
+    @Test
+    void deleteData(){
+
     }
 }

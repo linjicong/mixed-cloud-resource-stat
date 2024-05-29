@@ -35,6 +35,8 @@ class HCloudClientTest {
 
     private HCloudClient hCloudClient;
 
+    private  CloudConf cloudConf;
+
     @Resource
     private CloudConfMapper cloudConfMapper;
     @Resource
@@ -86,7 +88,7 @@ class HCloudClientTest {
     private HCloudResourceMapper hCloudResourceMapper;
     @BeforeEach
     public void beforeEach(){
-        CloudConf cloudConf = cloudConfMapper.selectById(1);
+        cloudConf = cloudConfMapper.selectById(1);
         hCloudClient = new HCloudClient(cloudConf);
     }
 
@@ -163,7 +165,7 @@ class HCloudClientTest {
 
     @Test
     void syncCesMetricData() {
-        List<HCloudCesMetric> hCloudCesMetricList = hCloudCesMetricMapper.selectByStatDate(DateUtil.today());
+        List<HCloudCesMetric> hCloudCesMetricList = hCloudCesMetricMapper.selectByStatDateAndConfName(DateUtil.today(),cloudConf.getName());
         // 接口一次只能传500个指标进行查询
         List<List<HCloudCesMetric>> splitHCloudCesMetrics = ListUtil.split(hCloudCesMetricList, 500);
         Date date = new Date();
@@ -177,7 +179,7 @@ class HCloudClientTest {
 
     @Test
     void syncCesMetricDataEcs() {
-        List<HCloudCesMetric> hCloudCesMetricList = hCloudCesMetricMapper.selectByStatDate(DateUtil.today());
+        List<HCloudCesMetric> hCloudCesMetricList = hCloudCesMetricMapper.selectByStatDateAndConfName(DateUtil.today(),cloudConf.getName());
         // 接口一次只能传500个指标进行查询
         List<List<HCloudCesMetric>> splitHCloudCesMetrics = ListUtil.split(hCloudCesMetricList, 500);
         Date date = new Date();
@@ -238,7 +240,7 @@ class HCloudClientTest {
     }
     @Test
     void selectEcsByStatDate() {
-        List<HCloudEcs> hCloudEcs = hCloudEcsMapper.selectByStatDate(DateUtil.today());
+        List<HCloudEcs> hCloudEcs = hCloudEcsMapper.selectByStatDateAndConfName(DateUtil.today(),cloudConf.getName());
         System.out.println(hCloudEcs.size());
     }
 
@@ -249,32 +251,16 @@ class HCloudClientTest {
         hCloudObsMapper.insert(hCloudObs);
     }
 
-    @Test
-    void insertCloudConf() {
-        CloudConf cloudConf = new CloudConf();
-        cloudConf.setName("xxx");
-        cloudConf.setProvider("QCloud");
-        cloudConf.setRegion("ap-guangzhou");
-        cloudConf.setAccessKey("xxx");
-        cloudConf.setSecretKey("xxx");
-        cloudConfMapper.insert(cloudConf);
-    }
-
-    @Test
-    void selectCloudConf() {
-        CloudConf cloudConf = cloudConfMapper.selectById(6);
-        System.out.println(cloudConf);
-    }
 
 
     @Test
     void deleteEcs() {
-        hCloudEcsMapper.deleteByStatDate(DateUtil.today());
+        hCloudEcsMapper.deleteByStatDateAndConfName(DateUtil.today(),cloudConf.getName());
     }
 
     @Test
     void deleteDcs() {
-        hCloudDcsMapper.deleteByStatDate(DateUtil.today());
+        hCloudDcsMapper.deleteByStatDateAndConfName(DateUtil.today(),cloudConf.getName());
     }
 
     @Test
@@ -343,7 +329,7 @@ class HCloudClientTest {
 
     @Test
     void listResourceRecordsDetails() {
-        hCloudResourceRecordDetailMapper.deleteByStatDate(DateUtil.today());
+        hCloudResourceRecordDetailMapper.deleteByStatDateAndConfName(DateUtil.today(),cloudConf.getName());
         List<HCloudResourceRecordDetail> hCloudResourceRecordDetails = hCloudClient.listResourceRecordsDetails("2023-03");
         hCloudResourceRecordDetailMapper.insertBatch(hCloudResourceRecordDetails);
     }
@@ -358,7 +344,7 @@ class HCloudClientTest {
 
     @Test
     void listAllResources() {
-        hCloudResourceMapper.deleteByStatDate(DateUtil.today());
+        hCloudResourceMapper.deleteByStatDateAndConfName(DateUtil.today(),cloudConf.getName());
         List<HCloudResource> HCloudResource = hCloudClient.listAllResources();
         hCloudResourceMapper.insertBatch(HCloudResource);
     }

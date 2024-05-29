@@ -26,7 +26,7 @@ class CommonMapperTest {
     private HCloudEcsMapper hCloudEcsMapper;
 
     @Test
-    void deleteByStatDate() {
+    void deleteByStatDateAndConfName() {
     }
 
     @Test

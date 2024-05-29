@@ -21,56 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.linjicong.cloud.stat.dao.mapper;
+package com.linjicong.cloud.stat.dao.mapper.qcloud;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.apache.ibatis.annotations.Param;
-
-import java.util.Collection;
-import java.util.List;
+import com.linjicong.cloud.stat.dao.entity.qcloud.QCloudAccessKeyLastUsed;
+import com.linjicong.cloud.stat.dao.mapper.CommonMapper;
+import org.springframework.stereotype.Repository;
 
 /**
- * 通用Mapper接口
- *
- * @param <T> 不能为空
- * @author liuzh
  * @author linjicong
-  * @version 1.0.0
-  * @date 2022-08-01-11:42
+ * @date 2022-07-28-14:36
+ * @version 1.0.0
  */
-public interface CommonMapper <T> extends BaseMapper<T> {
-
-    int insertBatchSomeColumn(Collection<T> entityList);
-
-    int insertBatch(@Param("list") Collection<T> entityList);
-
-    /**
-     * 删除某天的数据
-     *
-     */
-    int deleteByStatDateAndConfName(String statDate, String confName);
-
-    /**
-     * 获取某天的数据
-     *
-     */
-    List<T> selectByStatDateAndConfName(String statDate, String confName);
-
-    /**
-     * 删除某天的数据
-     *
-     */
-    int deleteByStatDate(String statDate);
-
-    /**
-     * 获取某天的数据
-     *
-     */
-    List<T> selectByStatDate(String statDate);
-
-    /**
-     * 获取某个配置的数据
-     *
-     */
-    List<T> selectByConfName(String confName);
+@Repository
+public interface QCloudAccessKeyLastUsedMapper extends CommonMapper<QCloudAccessKeyLastUsed> {
 }
