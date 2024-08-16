@@ -115,7 +115,7 @@ public class HCloudEcs extends BasicEntity {
 
     @Column(columnDefinition="json")
     @Type(JsonStringType.class)
-    private ServerFault fault;
+    private Object fault;
 
     private Integer progress;
 
