@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.3.3</version>
+        <version>3.3.4</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.linjicong</groupId>
@@ -47,7 +47,7 @@
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
-            <version>3.5.7</version>
+            <version>3.5.8</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -73,7 +73,7 @@
         <dependency>
             <groupId>com.huaweicloud.sdk</groupId>
             <artifactId>huaweicloud-sdk-all</artifactId>
-            <version>3.1.113</version>
+            <version>3.1.115</version>
         </dependency>
         <dependency>
             <groupId>com.huaweicloud</groupId>
@@ -84,7 +84,7 @@
         <dependency>
             <groupId>com.tencentcloudapi</groupId>
             <artifactId>tencentcloud-sdk-java</artifactId>
-            <version>3.1.1100</version>
+            <version>3.1.1110</version>
         </dependency>
 
         <dependency>
