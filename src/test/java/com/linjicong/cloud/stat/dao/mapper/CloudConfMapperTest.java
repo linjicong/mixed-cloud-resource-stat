@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.Date;
+
 /**
  * @author linjicong
  * @version 1.0.0
@@ -29,7 +31,17 @@ class CloudConfMapperTest {
 
     @Test
     void selectCloudConf() {
-        CloudConf cloudConf = cloudConfMapper.selectById(6);
+        CloudConf cloudConf = cloudConfMapper.selectById(2);
         System.out.println(cloudConf);
+    }
+
+    @Test
+    void updateCloudConf() {
+        CloudConf cloudConf = cloudConfMapper.selectById(3);
+        cloudConf.setAccessKey("xxx");
+        cloudConf.setSecretKey("xxx");
+        cloudConf.setUpdateTime(new Date());
+        int i = cloudConfMapper.updateById(cloudConf);
+        System.out.println(i);
     }
 }

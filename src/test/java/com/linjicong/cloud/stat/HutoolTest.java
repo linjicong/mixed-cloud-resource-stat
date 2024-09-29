@@ -100,7 +100,7 @@ public class HutoolTest {
     @Test
     public void test() {
         //创建一个集合
-        System.out.println(SeqUUIDUtil.toSequenceUUID(DateUtil.parse("2023-12-05 09:03:00").getTime()));
+        System.out.println(SeqUUIDUtil.toSequenceUUID(DateUtil.parse("2024-09-24 09:04:27").getTime()));
     }
 
     @Test
