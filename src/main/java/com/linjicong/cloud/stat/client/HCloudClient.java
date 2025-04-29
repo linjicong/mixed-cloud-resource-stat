@@ -54,9 +54,7 @@ import com.huaweicloud.sdk.evs.v2.EvsClient;
 import com.huaweicloud.sdk.evs.v2.model.ListVolumesRequest;
 import com.huaweicloud.sdk.evs.v2.region.EvsRegion;
 import com.huaweicloud.sdk.iam.v3.IamClient;
-import com.huaweicloud.sdk.iam.v3.model.KeystoneListAuthDomainsRequest;
-import com.huaweicloud.sdk.iam.v3.model.KeystoneListUsersRequest;
-import com.huaweicloud.sdk.iam.v3.model.ListPermanentAccessKeysRequest;
+import com.huaweicloud.sdk.iam.v3.model.*;
 import com.huaweicloud.sdk.iam.v3.region.IamRegion;
 import com.huaweicloud.sdk.rds.v3.RdsClient;
 import com.huaweicloud.sdk.rds.v3.model.ListInstancesRequest;
@@ -428,17 +426,31 @@ public class HCloudClient{
                 .withCredential(globalAuth)
                 .withRegion(IamRegion.valueOf(region))
                 .build();
-        return BeanUtils.cgLibCopyList(client.keystoneListUsers(new KeystoneListUsersRequest().withDomainId("08f22ef0300010670f30c01f33c11940")).getUsers(), HCloudUser::new);
+        return BeanUtils.cgLibCopyList(client.keystoneListUsers(new KeystoneListUsersRequest()).getUsers(), HCloudUser::new);
     }
 
     /**
      * 华为云-查询永久访问密钥列表
      */
-    public List<HCloudPermanentAccessKey> listPermanentAccessKeys() {
+    public List<HCloudPermanentAccessKey> listPermanentAccessKeys(String userId) {
         IamClient client = IamClient.newBuilder()
                 .withCredential(globalAuth)
                 .withRegion(IamRegion.valueOf(region))
                 .build();
+        return BeanUtils.cgLibCopyList(client.listPermanentAccessKeys(new ListPermanentAccessKeysRequest().withUserId(userId)).getCredentials(), HCloudPermanentAccessKey::new);
+    }
+
+    /**
+     * 华为云-新增永久访问密钥列表
+     */
+    public List<HCloudPermanentAccessKey> createPermanentAccessKeys(String userId) {
+        IamClient client = IamClient.newBuilder()
+                .withCredential(globalAuth)
+                .withRegion(IamRegion.valueOf(region))
+                .build();
+        CreatePermanentAccessKeyRequest createPermanentAccessKeyRequest = new CreatePermanentAccessKeyRequest();
+        createPermanentAccessKeyRequest.setBody(new CreatePermanentAccessKeyRequestBody().withCredential(new CreateCredentialOption().withUserId("access_key")));
+        CreatePermanentAccessKeyResponse permanentAccessKey = client.createPermanentAccessKey(createPermanentAccessKeyRequest);
         return BeanUtils.cgLibCopyList(client.listPermanentAccessKeys(new ListPermanentAccessKeysRequest()).getCredentials(), HCloudPermanentAccessKey::new);
     }
 

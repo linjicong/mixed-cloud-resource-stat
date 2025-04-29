@@ -23,17 +23,16 @@
  */
 package com.linjicong.cloud.stat.dao.entity.hcloud;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.huaweicloud.sdk.ces.v1.model.MetricInfoList;
 import com.huaweicloud.sdk.iam.v3.model.Links;
 import com.linjicong.cloud.stat.dao.entity.BasicEntity;
+import com.linjicong.cloud.stat.dao.typehandle.impl.hcloud.iam.LinksJsonTypeHandle;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
-import lombok.Data;
-import org.hibernate.annotations.Type;
-
-
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import lombok.Data;
+import org.hibernate.annotations.Type;
 
 /**
  * 华为云-云监控-指标
@@ -47,36 +46,16 @@ import jakarta.persistence.Table;
 @Entity
 
 public class HCloudUser extends BasicEntity {
-
-
-
     private Boolean pwdStatus;
-
-
     private String domainId;
-
-
     private String lastProjectId;
-
-
     private String name;
-
-
     private String description;
-
-
     private String passwordExpiresAt;
-
-    @Column(columnDefinition="json")
     @Type(JsonStringType.class)
+    @TableField(typeHandler = LinksJsonTypeHandle.class)
     private Links links;
-
-
     private String id;
-
-
     private Boolean enabled;
-
-
     private String pwdStrength;
 }
