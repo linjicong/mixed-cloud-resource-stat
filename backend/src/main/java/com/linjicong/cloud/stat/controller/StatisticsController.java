@@ -23,7 +23,6 @@
  */
 package com.linjicong.cloud.stat.controller;
 
-import cn.hutool.core.date.DateUtil;
 import com.linjicong.cloud.stat.dao.mapper.acloud.ACloudDnsDomainMapper;
 import com.linjicong.cloud.stat.dao.mapper.hcloud.*;
 import com.linjicong.cloud.stat.dao.mapper.qcloud.*;
@@ -81,29 +80,28 @@ public class StatisticsController {
     @GetMapping
     public ResponseEntity<Map<String, Object>> getStatistics() {
         try {
-            String today = DateUtil.today();
             Map<String, Object> statistics = new HashMap<>();
 
             // 华为云统计
             Map<String, Integer> huaweiStats = new HashMap<>();
-            huaweiStats.put("ecs", hCloudEcsMapper.selectByStatDate(today).size());
-            huaweiStats.put("rds", hCloudRdsMapper.selectByStatDate(today).size());
-            huaweiStats.put("elb", hCloudElbMapper.selectByStatDate(today).size());
-            huaweiStats.put("evs", hCloudEvsMapper.selectByStatDate(today).size());
-            huaweiStats.put("vpc", hCloudVpcMapper.selectByStatDate(today).size());
+            huaweiStats.put("ecs", hCloudEcsMapper.selectList(null).size());
+            huaweiStats.put("rds", hCloudRdsMapper.selectList(null).size());
+            huaweiStats.put("elb", hCloudElbMapper.selectList(null).size());
+            huaweiStats.put("evs", hCloudEvsMapper.selectList(null).size());
+            huaweiStats.put("vpc", hCloudVpcMapper.selectList(null).size());
             statistics.put("huawei", huaweiStats);
 
             // 腾讯云统计
             Map<String, Integer> tencentStats = new HashMap<>();
-            tencentStats.put("cvm", qCloudCvmMapper.selectByStatDate(today).size());
-            tencentStats.put("cdb", qCloudCdbMapper.selectByStatDate(today).size());
-            tencentStats.put("clb", qCloudClbMapper.selectByStatDate(today).size());
-            tencentStats.put("cbs", qCloudCbsMapper.selectByStatDate(today).size());
+            tencentStats.put("cvm", qCloudCvmMapper.selectList(null).size());
+            tencentStats.put("cdb", qCloudCdbMapper.selectList(null).size());
+            tencentStats.put("clb", qCloudClbMapper.selectList(null).size());
+            tencentStats.put("cbs", qCloudCbsMapper.selectList(null).size());
             statistics.put("tencent", tencentStats);
 
             // 阿里云统计
             Map<String, Integer> aliyunStats = new HashMap<>();
-            aliyunStats.put("dns", aCloudDnsDomainMapper.selectByStatDate(today).size());
+            aliyunStats.put("dns", aCloudDnsDomainMapper.selectList(null).size());
             statistics.put("aliyun", aliyunStats);
 
             // 总计

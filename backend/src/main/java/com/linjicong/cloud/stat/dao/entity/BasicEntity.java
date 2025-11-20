@@ -30,9 +30,13 @@ import jakarta.persistence.*;
 import java.util.Date;
 
 /**
+ * 基础实体类
+ * 包含主键、统计时间、统计日期、逻辑删除标记等公共字段
+ * 所有资源实体类都应继承此类
+ * 
  * @author linjicong
  * @version 1.0.0
- * @date 2022-07-28-16:41
+ * @date 2022-07-28
  */
 @Data
 @MappedSuperclass
@@ -49,4 +53,12 @@ public class BasicEntity extends BasicEntityExtend{
     @Column(columnDefinition = "DATE",nullable = false)
     @TableField(fill = FieldFill.INSERT)
     private Date statDate;
+
+    /**
+     * 逻辑删除标记
+     * 0-未删除，1-已删除
+     */
+    @TableLogic(value = "0", delval = "1")
+    @Column(columnDefinition = "TINYINT DEFAULT 0", nullable = false)
+    private Integer deleted;
 }

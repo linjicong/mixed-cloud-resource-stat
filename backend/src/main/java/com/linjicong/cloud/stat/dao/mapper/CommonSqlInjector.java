@@ -20,9 +20,12 @@ import org.apache.ibatis.mapping.SqlSource;
 import java.util.List;
 
 /**
+ * 自定义SQL注入器
+ * 扩展MyBatis Plus的SQL注入功能，添加批量插入、按日期和配置名称查询/删除等自定义方法
+ * 
  * @author linjicong
  * @version 1.0.0
- * @date 2023-02-20-18:13
+ * @date 2023-02-20
  */
 public class CommonSqlInjector extends DefaultSqlInjector {
 

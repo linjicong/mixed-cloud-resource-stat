@@ -24,9 +24,12 @@
 package com.linjicong.cloud.stat.dao.constant.hcloud;
 
 /**
+ * 华为云OBS（对象存储服务）端点常量类
+ * 定义不同区域的OBS服务端点地址
+ * 
  * @author linjicong
  * @version 1.0.0
- * @date 2022-07-28-18:43
+ * @date 2022-07-28
  */
 public class ObsEndpoint {
     public static final String CN_SOUTH_1="obs.cn-south-1.myhuaweicloud.com";

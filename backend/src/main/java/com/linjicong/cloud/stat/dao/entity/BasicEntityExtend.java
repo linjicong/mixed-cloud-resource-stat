@@ -32,9 +32,13 @@ import lombok.NoArgsConstructor;
 import jakarta.persistence.MappedSuperclass;
 
 /**
+ * 基础实体扩展类
+ * 包含配置名称、云厂商、区域等公共字段
+ * 这些字段会在插入时通过MyBatis Plus的自动填充功能自动设置
+ * 
  * @author linjicong
  * @version 1.0.0
- * @date 2022-07-28-16:41
+ * @date 2022-07-28
  */
 @Data
 @MappedSuperclass

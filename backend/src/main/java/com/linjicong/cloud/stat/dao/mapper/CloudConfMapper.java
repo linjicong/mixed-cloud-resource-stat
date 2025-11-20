@@ -27,8 +27,11 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.linjicong.cloud.stat.dao.entity.CloudConf;
 
 /**
+ * 云配置Mapper接口
+ * 用于操作云配置表（cloud_conf）的数据访问
+ * 
  * @author linjicong
- * @date 2022-07-28-14:36
+ * @date 2022-07-28
  * @version 1.0.0
  */
 //@Repository

@@ -84,24 +84,33 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * 华为云-客户端
+ * 华为云客户端
+ * 用于调用华为云API获取资源信息
+ * 支持ECS、RDS、ELB、EVS、VPC、OBS等多种资源类型
+ * 
  * @author linjicong
- * @date 2022-07-28-14:36
+ * @date 2022-07-28
  * @version 1.0.0
  */
 public class HCloudClient{
 
+    /** 区域级凭证，用于区域级服务 */
     private final ICredential auth;
 
+    /** 全局凭证，用于全局服务（如IAM） */
     private final ICredential globalAuth;
 
+    /** OBS客户端，用于对象存储服务 */
     private final ObsClient obsClient;
 
+    /** 区域 */
     private final String region;
 
     /**
-     * 华为云客户端
-     * @param cloudConf
+     * 构造华为云客户端
+     * 初始化凭证、OBS客户端等
+     * 
+     * @param cloudConf 云配置信息，包含访问密钥、区域等
      */
     public HCloudClient(CloudConf cloudConf) {
         String accessKey = cloudConf.getAccessKey();
@@ -109,9 +118,9 @@ public class HCloudClient{
         String name = cloudConf.getName();
         String provider = cloudConf.getProvider();
         this.region = cloudConf.getRegion();
-        // 先存入共享变量,后面mybatis拦截器要使用,插入公共字段
-        BasicEntityExtend entityExtend=new BasicEntityExtend(name,provider,region);
-        ThreadLocalUtil.put("entityExtend",entityExtend);
+        // 将扩展信息存入ThreadLocal，供MyBatis拦截器使用，用于自动填充公共字段
+        BasicEntityExtend entityExtend = new BasicEntityExtend(name, provider, region);
+        ThreadLocalUtil.put("entityExtend", entityExtend);
 
         this.auth = new BasicCredentials()
                 .withAk(accessKey)
@@ -215,7 +224,7 @@ public class HCloudClient{
                 .withRegion(SFSTurboRegion.valueOf(region))
                 .build();
 
-        return BeanUtils.cgLibCopyList(client.listShares(new ListSharesRequest().withLimit(200L)).getShares(),HCloudSfs::new);
+        return BeanUtils.cgLibCopyList(client.listShares(new ListSharesRequest().withLimit(200)).getShares(),HCloudSfs::new);
     }
 
     /**

@@ -23,7 +23,7 @@
  */
 package com.linjicong.cloud.stat.service;
 
-import cn.hutool.core.date.DateUtil;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.linjicong.cloud.stat.client.HCloudClient;
 import com.linjicong.cloud.stat.dao.entity.CloudConf;
 import com.linjicong.cloud.stat.dao.entity.hcloud.HCloudEcs;
@@ -32,23 +32,84 @@ import org.springframework.stereotype.Service;
 
 import jakarta.annotation.Resource;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
+ * 华为云服务实现类
+ * 实现华为云资源的同步功能
+ * 
  * @author linjicong
- * @date 2022-07-28-14:36
+ * @date 2022-07-28
  * @version 1.0.0
  */
 @Service
 public class HCloudService implements CloudService{
 
+    /**
+     * 华为云ECS数据访问对象
+     */
     @Resource
     private HCloudEcsMapper hCloudEcsMapper;
 
+    /**
+     * 同步华为云ECS资源
+     * 1. 创建华为云客户端
+     * 2. 获取ECS列表（从接口）
+     * 3. 查询数据库中该配置的所有未删除数据（不按日期）
+     * 4. 对比接口数据和数据库数据：
+     *    - 接口有但数据库没有的：新增插入
+     *    - 数据库有但接口没有的：逻辑删除
+     * 
+     * @param cloudConf 云配置信息
+     * @return 同步的ECS数量（新增数量）
+     */
     @Override
     public int syncEcs(CloudConf cloudConf) {
+        // 创建华为云客户端
         HCloudClient hCloudClient = new HCloudClient(cloudConf);
-        List<HCloudEcs> hCloudEcs = hCloudClient.listEcs();
-        hCloudEcsMapper.deleteByStatDateAndConfName(DateUtil.today(),cloudConf.getName());
-        return hCloudEcsMapper.insertBatch(hCloudEcs);
+        // 获取ECS列表（从接口）
+        List<HCloudEcs> apiEcsList = hCloudClient.listEcs();
+        
+        // 查询数据库中该配置的所有未删除数据（不按日期，@TableLogic自动过滤已删除的数据）
+        List<HCloudEcs> dbEcsList = hCloudEcsMapper.selectByConfName(cloudConf.getName());
+        
+        // 将接口数据转换为Map，以id为key
+        Map<String, HCloudEcs> apiEcsMap = apiEcsList.stream()
+                .filter(ecs -> ecs.getId() != null)
+                .collect(Collectors.toMap(HCloudEcs::getId, ecs -> ecs, (existing, replacement) -> existing));
+        
+        // 将数据库数据转换为Map，以id为key
+        Map<String, HCloudEcs> dbEcsMap = dbEcsList.stream()
+                .filter(ecs -> ecs.getId() != null)
+                .collect(Collectors.toMap(HCloudEcs::getId, ecs -> ecs, (existing, replacement) -> existing));
+        
+        // 找出需要新增的数据（接口有但数据库未删除记录中没有的）
+        List<HCloudEcs> toInsert = apiEcsList.stream()
+                .filter(ecs -> ecs.getId() != null && !dbEcsMap.containsKey(ecs.getId()))
+                .collect(Collectors.toList());
+        
+        // 找出需要逻辑删除的数据（数据库有但接口没有的）
+        Set<String> toDeleteIds = dbEcsMap.keySet().stream()
+                .filter(id -> !apiEcsMap.containsKey(id))
+                .collect(Collectors.toSet());
+        
+        // 批量插入新增的数据
+        int insertCount = 0;
+        if (!toInsert.isEmpty()) {
+            insertCount = hCloudEcsMapper.insertBatch(toInsert);
+        }
+        
+        // 批量逻辑删除（将deleted字段设置为1）
+        if (!toDeleteIds.isEmpty()) {
+            LambdaUpdateWrapper<HCloudEcs> updateWrapper = new LambdaUpdateWrapper<>();
+            updateWrapper.eq(HCloudEcs::getConfName, cloudConf.getName())
+                    .in(HCloudEcs::getId, toDeleteIds)
+                    .set(HCloudEcs::getDeleted, 1);
+            hCloudEcsMapper.update(null, updateWrapper);
+        }
+        
+        return insertCount;
     }
 }

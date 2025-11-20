@@ -66,37 +66,46 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 腾讯云-客户端
+ * 腾讯云客户端
+ * 用于调用腾讯云API获取资源信息
+ * 支持CVM、CDB、CLB、CBS等多种资源类型
+ * 
  * @author linjicong
- * @date 2022-07-28-14:36
+ * @date 2022-07-28
  * @version 1.0.0
  */
 public class QCloudClient{
+    /** 腾讯云凭证 */
     private final Credential credential;
+    /** 区域 */
     private final String region;
 
     /**
-     * 腾讯云客户端
-     * @param cloudConf
+     * 构造腾讯云客户端
+     * 
+     * @param cloudConf 云配置信息，包含访问密钥、区域等
      */
     public QCloudClient(CloudConf cloudConf) {
-        this.credential = new Credential(cloudConf.getAccessKey(),cloudConf.getSecretKey());
-        this.region=cloudConf.getRegion();
+        // 创建腾讯云凭证
+        this.credential = new Credential(cloudConf.getAccessKey(), cloudConf.getSecretKey());
+        this.region = cloudConf.getRegion();
 
         String name = cloudConf.getName();
         String provider = cloudConf.getProvider();
-        // 先存入共享变量,后面mybatis拦截器要使用,插入公共字段
-        BasicEntityExtend entityExtend=new BasicEntityExtend(name,provider,region);
-        ThreadLocalUtil.put("entityExtend",entityExtend);
+        // 将扩展信息存入ThreadLocal，供MyBatis拦截器使用，用于自动填充公共字段
+        BasicEntityExtend entityExtend = new BasicEntityExtend(name, provider, region);
+        ThreadLocalUtil.put("entityExtend", entityExtend);
     }
 
     /**
-     * 腾讯云-虚拟机
-     * @return
+     * 查询腾讯云CVM（云服务器）列表
+     * 
+     * @return CVM列表
      */
     public List<QCloudCvm> listCvm() {
         CvmClient client = new CvmClient(credential, region);
         DescribeInstancesRequest describeInstancesRequest = new DescribeInstancesRequest();
+        // 设置每页查询数量为100
         describeInstancesRequest.setLimit(100L);
         try {
             return BeanUtils.cgLibCopyList(client.DescribeInstances(describeInstancesRequest).getInstanceSet(), QCloudCvm::new);

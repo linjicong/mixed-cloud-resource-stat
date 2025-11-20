@@ -33,8 +33,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
+ * JSON类型处理器
+ * 用于MyBatis中JSON类型字段的序列化和反序列化
+ * 将Java对象转换为JSON字符串存储到数据库，从数据库读取时转换为Java对象
+ * 
+ * @param <T> 处理的Java对象类型
  * @author linjicong
- * @date 2022-07-28-14:36
+ * @date 2022-07-28
  * @version 1.0.0
  */
 public class JsonTypeHandler<T> extends BaseTypeHandler<T> {

@@ -23,7 +23,6 @@
  */
 package com.linjicong.cloud.stat.dao.entity.acloud;
 
-import com.aliyun.alidns20150109.models.DescribeDomainsResponseBody;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.linjicong.cloud.stat.dao.entity.BasicEntity;
 import jakarta.persistence.Entity;
@@ -42,12 +41,24 @@ import lombok.Data;
 @Table(name = "a_cloud_dns_domain")
 public class ACloudDnsDomain extends BasicEntity {
 
+    /**
+     * 域名名称
+     */
     private String domainName;
 
+    /**
+     * 线路类型
+     */
     private String line;
 
+    /**
+     * 域名是否被锁定
+     */
     private Boolean locked;
 
+    /**
+     * 优先级
+     */
     private Long priority;
 
     /**
@@ -56,18 +67,39 @@ public class ACloudDnsDomain extends BasicEntity {
     @TableField(value = "rr")
     private String RR;
 
+    /**
+     * 解析记录ID
+     */
     private String recordId;
 
+    /**
+     * 备注信息
+     */
     private String remark;
 
+    /**
+     * 解析记录状态
+     */
     private String status;
 
+    /**
+     * 生存时间（TTL）
+     */
     @TableField(value = "ttl")
     private Long TTL;
 
+    /**
+     * 记录类型（A、CNAME等）
+     */
     private String type;
 
+    /**
+     * 记录值
+     */
     private String value;
 
+    /**
+     * 权重
+     */
     private Integer weight;
 }

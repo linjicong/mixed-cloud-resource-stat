@@ -27,14 +27,25 @@ import com.linjicong.cloud.stat.dao.entity.CloudConf;
 import org.springframework.stereotype.Service;
 
 /**
+ * 腾讯云服务实现类
+ * 实现腾讯云资源的同步功能
+ * 
  * @author linjicong
- * @date 2022-07-28-14:36
+ * @date 2022-07-28
  * @version 1.0.0
  */
 @Service
 public class QCloudService implements CloudService{
+    /**
+     * 同步腾讯云CVM（云服务器）资源
+     * 当前实现为占位方法，待完善
+     * 
+     * @param cloudConf 云配置信息
+     * @return 同步的资源数量（当前返回0）
+     */
     @Override
     public int syncEcs(CloudConf cloudConf) {
+        // TODO: 实现腾讯云CVM资源同步逻辑
         return 0;
     }
 }

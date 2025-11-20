@@ -35,10 +35,12 @@ import lombok.Data;
 import org.hibernate.annotations.Type;
 
 /**
- * 华为云-云监控-指标
+ * 华为云IAM用户实体类
+ * 用于存储华为云IAM（身份与访问管理）服务的用户信息
+ * 
  * @author linjicong
  * @version 1.0.0
- * @date 2022-08-03-10:17
+ * @date 2022-08-03
  * @see MetricInfoList
  */
 @Data

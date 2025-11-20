@@ -39,22 +39,30 @@ import java.util.List;
 
 
 /**
- * 阿里云-客户端
+ * 阿里云客户端
+ * 用于调用阿里云API获取资源信息
+ * 主要支持DNS域名相关操作
+ * 
  * @author linjicong
- * @date 2022-07-28-14:36
+ * @date 2022-07-28
  * @version 1.0.0
  */
 public class ACloudClient {
 
+    /** 区域 */
     private final String region;
+    /** 访问密钥ID */
     private final String accessKey;
+    /** 访问密钥Secret */
     private final String secretKey;
 
+    /** 阿里云DNS服务名称 */
     public static final String ALIDNS = "alidns";
 
     /**
-     * 阿里云客户端
-     * @param cloudConf
+     * 构造阿里云客户端
+     * 
+     * @param cloudConf 云配置信息，包含访问密钥、区域等
      */
     public ACloudClient(CloudConf cloudConf) {
         String name = cloudConf.getName();
@@ -63,44 +71,71 @@ public class ACloudClient {
         this.secretKey = cloudConf.getSecretKey();
         this.region = cloudConf.getRegion();
 
-        // 先存入共享变量,后面mybatis拦截器要使用,插入公共字段
-        BasicEntityExtend entityExtend=new BasicEntityExtend(name,provider,region);
-        ThreadLocalUtil.put("entityExtend",entityExtend);
+        // 将扩展信息存入ThreadLocal，供MyBatis拦截器使用，用于自动填充公共字段
+        BasicEntityExtend entityExtend = new BasicEntityExtend(name, provider, region);
+        ThreadLocalUtil.put("entityExtend", entityExtend);
     }
 
     /**
-     * 构造配置
+     * 生成阿里云服务配置
+     * 
+     * @param serviceName 服务名称（如：alidns）
+     * @return 配置对象
      */
     private Config generateConfig(String serviceName) {
-        Config config=new Config().setAccessKeyId(accessKey).setAccessKeySecret(secretKey);
-        config.setEndpoint(serviceName + "."+region + ".aliyuncs.com");
+        Config config = new Config()
+                .setAccessKeyId(accessKey)
+                .setAccessKeySecret(secretKey);
+        // 设置服务端点：服务名.区域.aliyuncs.com
+        config.setEndpoint(serviceName + "." + region + ".aliyuncs.com");
         return config;
     }
 
     /**
-     * 阿里云-查询域名列表
+     * 查询阿里云域名列表
+     * 
+     * @return 域名列表
+     * @throws RuntimeException 当API调用失败时抛出异常
      */
     public List<ACloudDnsDomain> listDnsDomain() {
         try {
             Client client = new Client(generateConfig(ALIDNS));
-            return BeanUtils.cgLibCopyList(client.describeDomainsWithOptions(new DescribeDomainsRequest().setPageSize(100L),new RuntimeOptions()).getBody().getDomains().getDomain(), ACloudDnsDomain::new);
+            // 调用API获取域名列表，每页100条
+            return BeanUtils.cgLibCopyList(
+                    client.describeDomainsWithOptions(
+                            new DescribeDomainsRequest().setPageSize(100L),
+                            new RuntimeOptions()
+                    ).getBody().getDomains().getDomain(),
+                    ACloudDnsDomain::new
+            );
         } catch (Exception e) {
             e.printStackTrace();
-            throw new RuntimeException(e);
+            throw new RuntimeException("查询阿里云域名列表失败", e);
         }
     }
 
     /**
-     * 阿里云-获取解析记录列表
+     * 获取指定域名的解析记录列表
+     * 
      * @param domainName 域名
+     * @return 解析记录列表
+     * @throws RuntimeException 当API调用失败时抛出异常
      */
     public List<ACloudDnsDomainRecords> listDnsDomainRecords(String domainName) {
         try {
             Client client = new Client(generateConfig(ALIDNS));
-            return BeanUtils.cgLibCopyList(client.describeDomainRecords(new DescribeDomainRecordsRequest().setPageSize(500L).setDomainName(domainName)).getBody().getDomainRecords().getRecord(), ACloudDnsDomainRecords::new);
+            // 调用API获取域名解析记录，每页500条
+            return BeanUtils.cgLibCopyList(
+                    client.describeDomainRecords(
+                            new DescribeDomainRecordsRequest()
+                                    .setPageSize(500L)
+                                    .setDomainName(domainName)
+                    ).getBody().getDomainRecords().getRecord(),
+                    ACloudDnsDomainRecords::new
+            );
         } catch (Exception e) {
             e.printStackTrace();
-            throw new RuntimeException(e);
+            throw new RuntimeException("查询阿里云域名解析记录失败: " + domainName, e);
         }
     }
 }

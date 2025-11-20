@@ -26,10 +26,19 @@ package com.linjicong.cloud.stat.service;
 import com.linjicong.cloud.stat.dao.entity.CloudConf;
 
 /**
+ * 云服务接口
+ * 定义统一的云资源同步方法，各云厂商实现此接口
+ * 
  * @author linjicong
- * @date 2022-07-28-14:36
+ * @date 2022-07-28
  * @version 1.0.0
  */
 public interface CloudService {
+    /**
+     * 同步ECS（弹性云服务器）资源
+     * 
+     * @param cloudConf 云配置信息，包含访问密钥、区域等配置
+     * @return 同步的资源数量
+     */
     int syncEcs(CloudConf cloudConf);
 }

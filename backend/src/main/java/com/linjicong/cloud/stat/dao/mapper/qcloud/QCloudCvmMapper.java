@@ -28,8 +28,11 @@ import com.linjicong.cloud.stat.dao.mapper.CommonMapper;
 import org.springframework.stereotype.Repository;
 
 /**
+ * 腾讯云CVM（云服务器）Mapper接口
+ * 用于操作腾讯云CVM资源表的数据访问
+ * 
  * @author linjicong
- * @date 2022-07-28-14:36
+ * @date 2022-07-28
  * @version 1.0.0
  */
 @Repository

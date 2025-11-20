@@ -23,7 +23,6 @@
  */
 package com.linjicong.cloud.stat.controller;
 
-import cn.hutool.core.date.DateUtil;
 import com.linjicong.cloud.stat.dao.mapper.acloud.ACloudDnsDomainMapper;
 import com.linjicong.cloud.stat.dao.mapper.hcloud.*;
 import com.linjicong.cloud.stat.dao.mapper.qcloud.*;
@@ -84,14 +83,13 @@ public class ResourceController {
     @GetMapping("/huawei/{type}")
     public ResponseEntity<?> getHuaweiResources(@PathVariable String type) {
         try {
-            String today = DateUtil.today();
             List<?> resources = switch (type.toLowerCase()) {
-                case "ecs" -> hCloudEcsMapper.selectByStatDate(today);
-                case "rds" -> hCloudRdsMapper.selectByStatDate(today);
-                case "elb" -> hCloudElbMapper.selectByStatDate(today);
-                case "evs" -> hCloudEvsMapper.selectByStatDate(today);
-                case "vpc" -> hCloudVpcMapper.selectByStatDate(today);
-                case "bills" -> hCloudBillsMonthlyBreakDownMapper.selectByStatDate(today);
+                case "ecs" -> hCloudEcsMapper.selectList(null);
+                case "rds" -> hCloudRdsMapper.selectList(null);
+                case "elb" -> hCloudElbMapper.selectList(null);
+                case "evs" -> hCloudEvsMapper.selectList(null);
+                case "vpc" -> hCloudVpcMapper.selectList(null);
+                case "bills" -> hCloudBillsMonthlyBreakDownMapper.selectList(null);
                 default -> null;
             };
             
@@ -114,13 +112,12 @@ public class ResourceController {
     @GetMapping("/tencent/{type}")
     public ResponseEntity<?> getTencentResources(@PathVariable String type) {
         try {
-            String today = DateUtil.today();
             List<?> resources = switch (type.toLowerCase()) {
-                case "cvm" -> qCloudCvmMapper.selectByStatDate(today);
-                case "cdb" -> qCloudCdbMapper.selectByStatDate(today);
-                case "clb" -> qCloudClbMapper.selectByStatDate(today);
-                case "cbs" -> qCloudCbsMapper.selectByStatDate(today);
-                case "bills" -> qCloudBillResourceSummaryMapper.selectByStatDate(today);
+                case "cvm" -> qCloudCvmMapper.selectList(null);
+                case "cdb" -> qCloudCdbMapper.selectList(null);
+                case "clb" -> qCloudClbMapper.selectList(null);
+                case "cbs" -> qCloudCbsMapper.selectList(null);
+                case "bills" -> qCloudBillResourceSummaryMapper.selectList(null);
                 default -> null;
             };
             
@@ -143,9 +140,8 @@ public class ResourceController {
     @GetMapping("/aliyun/{type}")
     public ResponseEntity<?> getAliyunResources(@PathVariable String type) {
         try {
-            String today = DateUtil.today();
             List<?> resources = switch (type.toLowerCase()) {
-                case "dns" -> aCloudDnsDomainMapper.selectByStatDate(today);
+                case "dns" -> aCloudDnsDomainMapper.selectList(null);
                 default -> null;
             };
             

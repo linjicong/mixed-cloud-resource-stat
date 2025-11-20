@@ -44,12 +44,24 @@ import lombok.Data;
 
 public class ACloudDnsDomainRecords extends BasicEntity {
 
+    /**
+     * 域名名称
+     */
     private String domainName;
 
+    /**
+     * 解析线路
+     */
     private String line;
 
+    /**
+     * 是否锁定
+     */
     private Boolean locked;
 
+    /**
+     * 优先级
+     */
     private Long priority;
 
     /**
@@ -59,19 +71,40 @@ public class ACloudDnsDomainRecords extends BasicEntity {
     @Column(name = "rr")
     private String RR;
 
+    /**
+     * 解析记录ID
+     */
     private String recordId;
 
+    /**
+     * 备注信息
+     */
     private String remark;
 
+    /**
+     * 解析记录状态
+     */
     private String status;
 
+    /**
+     * 生存时间（TTL）
+     */
     @TableField(value = "ttl")
     @Column(name = "ttl")
     private Long TTL;
 
+    /**
+     * 记录类型（A、CNAME、MX等）
+     */
     private String type;
 
+    /**
+     * 记录值
+     */
     private String value;
 
+    /**
+     * 权重
+     */
     private Integer weight;
 }

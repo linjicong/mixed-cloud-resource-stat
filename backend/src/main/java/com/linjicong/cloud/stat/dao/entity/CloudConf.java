@@ -36,8 +36,12 @@ import jakarta.persistence.Id;
 import java.util.Date;
 
 /**
+ * 云配置实体类
+ * 用于存储云厂商的配置信息，包括访问密钥、区域、是否启用等
+ * 访问密钥和密钥会通过AES加密存储
+ * 
  * @author linjicong
- * @date 2022-07-28-14:36
+ * @date 2022-07-28
  * @version 1.0.0
  */
 @Data

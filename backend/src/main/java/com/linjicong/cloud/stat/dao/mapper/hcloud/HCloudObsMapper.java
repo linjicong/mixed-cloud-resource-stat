@@ -28,8 +28,11 @@ import com.linjicong.cloud.stat.dao.mapper.CommonMapper;
 import org.springframework.stereotype.Repository;
 
 /**
+ * 华为云OBS（对象存储服务）Mapper接口
+ * 用于操作华为云OBS资源表的数据访问
+ * 
  * @author linjicong
- * @date 2022-07-28-14:36
+ * @date 2022-07-28
  * @version 1.0.0
  */
 @Repository

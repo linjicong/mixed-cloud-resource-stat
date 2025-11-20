@@ -45,7 +45,8 @@
 - https://sdkcenter.developer.huaweicloud.com/?language=java
 - https://github.com/huaweicloud/huaweicloud-sdk-java-v3
 - https://apiexplorer.developer.huaweicloud.com/apiexplorer/overview
-
+- 弹性云服务器(ECS)
+  - https://console.huaweicloud.com/apiexplorer/#/openapi/ECS/doc
 地区和终端节点:
 
 - https://developer.huaweicloud.com/endpoint

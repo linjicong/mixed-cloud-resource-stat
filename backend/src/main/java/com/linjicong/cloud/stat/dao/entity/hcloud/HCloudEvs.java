@@ -51,81 +51,183 @@ import java.util.Map;
 
 public class HCloudEvs extends BasicEntity {
 
+    /**
+     * 云硬盘ID
+     */
     private String id;
 
+    /**
+     * 云硬盘链接信息
+     */
     @Column(columnDefinition="json")
     @Type(JsonStringType.class)
     private List<Link> links = null;
 
+    /**
+     * 云硬盘名称
+     */
     private String name;
 
+    /**
+     * 云硬盘状态
+     */
     private String status;
 
+    /**
+     * 云硬盘挂载信息列表
+     */
     @Column(columnDefinition="json")
     @Type(JsonStringType.class)
     private List<Attachment> attachments = null;
 
+    /**
+     * 可用区
+     */
     private String availabilityZone;
 
+    /**
+     * 云硬盘所在的主机
+     */
     private String osVolHostAttrHost;
 
+    /**
+     * 源云硬盘ID
+     */
     private String sourceVolid;
 
+    /**
+     * 快照ID
+     */
     private String snapshotId;
 
+    /**
+     * 云硬盘描述
+     */
     private String description;
 
+    /**
+     * 创建时间
+     */
     private String createdAt;
 
+    /**
+     * 租户ID
+     */
     private String osVolTenantAttrTenantId;
 
+    /**
+     * 云硬盘镜像元数据
+     */
     @Column(columnDefinition="json")
     @Type(JsonStringType.class)
     private Map<String, Object> volumeImageMetadata = null;
 
+    /**
+     * 云硬盘类型
+     */
     private String volumeType;
 
+    /**
+     * 云硬盘大小（GB）
+     */
     private Integer size;
 
+    /**
+     * 一致性组ID
+     */
     private String consistencygroupId;
 
+    /**
+     * 是否可启动
+     */
     private String bootable;
 
+    /**
+     * 云硬盘元数据
+     */
     @Column(columnDefinition="json")
     @Type(JsonStringType.class)
     private VolumeMetadata metadata;
 
+    /**
+     * 更新时间
+     */
     private String updatedAt;
 
+    /**
+     * 是否加密
+     */
     private Boolean encrypted;
 
+    /**
+     * 复制状态
+     */
     private String replicationStatus;
 
+    /**
+     * 复制扩展状态
+     */
     private String osVolumeReplicationExtendedStatus;
 
+    /**
+     * 迁移状态
+     */
     private String osVolMigStatusAttrMigstat;
 
+    /**
+     * 迁移名称ID
+     */
     private String osVolMigStatusAttrNameId;
 
+    /**
+     * 是否可共享
+     */
     private String shareable;
 
+    /**
+     * 用户ID
+     */
     private String userId;
 
+    /**
+     * 服务类型
+     */
     private String serviceType;
 
+    /**
+     * 是否支持多挂载
+     */
     private Boolean multiattach;
 
+    /**
+     * 专属存储ID
+     */
     private String dedicatedStorageId;
 
+    /**
+     * 专属存储名称
+     */
     private String dedicatedStorageName;
 
+    /**
+     * 标签列表
+     */
     @Column(columnDefinition="json")
     @Type(JsonStringType.class)
     private Map<String, String> tags = null;
 
+    /**
+     * 全球唯一标识符
+     */
     private String wwn;
 
+    /**
+     * 企业项目ID
+     */
     private String enterpriseProjectId;
 
+    /**
+     * 序列号
+     */
     private String serialNumber;
 }

@@ -28,8 +28,11 @@ import com.linjicong.cloud.stat.dao.mapper.CommonMapper;
 import org.springframework.stereotype.Repository;
 
 /**
+ * 华为云ELB（弹性负载均衡）Mapper接口
+ * 用于操作华为云ELB资源表的数据访问
+ * 
  * @author linjicong
- * @date 2022-07-28-14:36
+ * @date 2022-07-28
  * @version 1.0.0
  */
 @Repository

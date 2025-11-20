@@ -3,6 +3,15 @@ package com.linjicong.cloud.stat.util;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * ThreadLocal工具类
+ * 用于在线程本地存储中保存和获取数据
+ * 主要用于在MyBatis拦截器中传递扩展信息（如配置名称、云厂商、区域等）
+ * 
+ * @author linjicong
+ * @date 2022-07-28
+ * @version 1.0.0
+ */
 public class ThreadLocalUtil {
 
     private ThreadLocalUtil() {

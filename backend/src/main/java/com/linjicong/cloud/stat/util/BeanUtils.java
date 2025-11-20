@@ -9,10 +9,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
 /**
- * @ClassName BeanUtils
- * @Description bean 工具
- * @Version 1.0
- **/
+ * Bean工具类
+ * 使用CGLib的BeanCopier实现高性能的Bean属性复制
+ * 通过缓存BeanCopier对象提升性能
+ * 
+ * @author linjicong
+ * @version 1.0.0
+ */
 public class BeanUtils {
 
 

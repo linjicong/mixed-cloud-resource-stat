@@ -50,32 +50,68 @@ import java.util.List;
 
 public class HCloudVpc extends BasicEntity {
 
+    /**
+     * VPC ID
+     */
     private  String id;
 
+    /**
+     * VPC名称
+     */
     private  String name;
 
+    /**
+     * VPC描述
+     */
     private  String description;
 
+    /**
+     * VPC的CIDR
+     */
     private  String cidr;
 
+    /**
+     * VPC扩展网段列表
+     */
     @Column(columnDefinition="json")
     @Type(JsonStringType.class)
     private List<String> extendCidrs = null;
 
+    /**
+     * VPC状态
+     */
     private  String status;
 
+    /**
+     * 项目ID
+     */
     private  String projectId;
 
+    /**
+     * 企业项目ID
+     */
     private  String enterpriseProjectId;
 
+    /**
+     * 创建时间
+     */
     private  OffsetDateTime createdAt;
 
+    /**
+     * 更新时间
+     */
     private  OffsetDateTime updatedAt;
 
+    /**
+     * 云资源列表
+     */
     @Column(columnDefinition="json")
     @Type(JsonStringType.class)
     private List<CloudResource> cloudResources = null;
 
+    /**
+     * 标签列表
+     */
     @Column(columnDefinition="json")
     @Type(JsonStringType.class)
     private List<Tag> tags = null;

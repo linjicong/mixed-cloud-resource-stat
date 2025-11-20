@@ -28,8 +28,11 @@ import com.linjicong.cloud.stat.dao.mapper.CommonMapper;
 import org.springframework.stereotype.Repository;
 
 /**
+ * 阿里云DNS域名Mapper接口
+ * 用于操作阿里云DNS域名表的数据访问
+ * 
  * @author linjicong
- * @date 2022-07-28-14:36
+ * @date 2022-07-28
  * @version 1.0.0
  */
 @Repository

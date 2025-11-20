@@ -30,9 +30,13 @@ import cn.hutool.crypto.symmetric.AES;
 import java.nio.charset.StandardCharsets;
 
 /**
+ * AES加密工具类
+ * 用于对敏感信息（如云配置的访问密钥）进行加密和解密
+ * 使用AES算法进行对称加密
+ * 
  * @author linjicong
  * @version 1.0.0
- * @date 2022-09-08-17:19
+ * @date 2022-09-08
  */
 public class AESUtil {
     public static final String AES_KEY = YamlPropertyUtil.getProperty("aes.key");

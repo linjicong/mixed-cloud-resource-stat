@@ -30,22 +30,38 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * 云服务工厂类
+ * 根据云厂商类型获取对应的服务实现类
+ * 采用工厂模式，统一管理不同云厂商的服务实例
+ * 
  * @author linjicong
- * @date 2022-07-28-14:36
+ * @date 2022-07-28
  * @version 1.0.0
  */
 public class CloudFactory {
 
+    /**
+     * 服务缓存Map（当前未使用，预留扩展）
+     */
     private static final Map<Integer, CloudService> cachedServiceMap = new HashMap<>();
 
+    /**
+     * 根据云厂商类型获取对应的服务实例
+     * 
+     * @param provider 云厂商类型（H_CLOUD: 华为云, Q_CLOUD: 腾讯云）
+     * @return 对应的云服务实现类
+     * @throws RuntimeException 当云厂商类型不支持时抛出异常
+     */
     public static CloudService getService(String provider) {
         switch (provider) {
             case CloudConstant.H_CLOUD:
+                // 获取华为云服务实例
                 return SpringUtil.getBean("HCloudService");
             case CloudConstant.Q_CLOUD:
+                // 获取腾讯云服务实例
                 return SpringUtil.getBean("QCloudService");
             default:
-                throw new RuntimeException("供应商配置错误");
+                throw new RuntimeException("供应商配置错误: " + provider);
         }
     }
 }

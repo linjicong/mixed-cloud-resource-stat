@@ -35,24 +35,43 @@ import jakarta.annotation.Resource;
 import java.util.List;
 
 /**
+ * 定时任务类
+ * 用于定时同步各云厂商的资源数据
+ * 
  * @author linjicong
- * @date 2022-07-28-14:36
+ * @date 2022-07-28
  * @version 1.0.0
  */
 @Component
 @Slf4j
 public class Task {
 
+    /**
+     * 云配置数据访问对象
+     */
     @Resource
     private CloudConfMapper cloudConfMapper;
 
+    /**
+     * 定时同步ECS资源
+     * 每天凌晨1点执行，同步所有启用的云配置的ECS资源
+     * Cron表达式: "* * 1 * * ?" 表示每天凌晨1点执行
+     */
     @Scheduled(cron="* * 1 * * ?")
     public void syncEcs(){
+        // 获取所有云配置
         List<CloudConf> cloudConf = cloudConfMapper.selectList(null);
+        // 遍历每个配置，执行同步
         cloudConf.forEach(conf->{
-            CloudService service = CloudFactory.getService(conf.getProvider());
-            int result = service.syncEcs(conf);
-            log.info("成功同步ECS: "+result+"");
+            try {
+                // 根据云厂商类型获取对应的服务实例
+                CloudService service = CloudFactory.getService(conf.getProvider());
+                // 执行同步并获取同步数量
+                int result = service.syncEcs(conf);
+                log.info("成功同步ECS: {} 条记录，配置: {}", result, conf.getName());
+            } catch (Exception e) {
+                log.error("同步ECS失败，配置: {}，错误: {}", conf.getName(), e.getMessage(), e);
+            }
         });
     }
 }
