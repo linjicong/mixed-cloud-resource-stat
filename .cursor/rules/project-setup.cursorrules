@@ -1,0 +1,8 @@
+# 项目基础配置规则
+- 项目名称：多云资源统计管理系统
+- 后端技术：Spring Boot 3.x + MyBatis Plus + MySQL
+- 前端技术：Vue 3 + TypeScript + Element Plus
+- 代码规范：遵循阿里巴巴Java开发规范、Vue官方风格指南
+- 后端项目在backend目录
+- 前端项目在frontend目录
+- 所有代码注释都使用中文

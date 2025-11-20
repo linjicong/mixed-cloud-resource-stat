@@ -1,0 +1,185 @@
+// 全局样式
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', Arial, sans-serif;
+}
+
+#app {
+  height: 100%;
+}
+
+// 卡片样式
+.resource-card {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  
+  .card-header {
+    padding: 20px;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    
+    .title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #303133;
+    }
+    
+    .actions {
+      display: flex;
+      gap: 10px;
+    }
+  }
+  
+  .card-content {
+    padding: 20px;
+  }
+}
+
+// 统计卡片
+.stat-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 20px;
+  
+  .stat-title {
+    font-size: 14px;
+    opacity: 0.9;
+    margin-bottom: 8px;
+  }
+  
+  .stat-value {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 4px;
+  }
+  
+  .stat-change {
+    font-size: 12px;
+    opacity: 0.8;
+  }
+  
+  &.huawei {
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+  }
+  
+  &.tencent {
+    background: linear-gradient(135deg, #00d2ff 0%, #3a7bd5 100%);
+  }
+  
+  &.aliyun {
+    background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+    color: #333;
+  }
+}
+
+// 表格样式
+.resource-table {
+  .el-table {
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  
+  .status-tag {
+    &.running {
+      background-color: #f0f9ff;
+      color: #1890ff;
+      border-color: #91d5ff;
+    }
+    
+    &.stopped {
+      background-color: #fff2e8;
+      color: #fa8c16;
+      border-color: #ffd591;
+    }
+    
+    &.error {
+      background-color: #fff1f0;
+      color: #f5222d;
+      border-color: #ffa39e;
+    }
+  }
+}
+
+// 响应式设计
+@media (max-width: 768px) {
+  .layout-container {
+    .el-aside {
+      width: 64px !important;
+      
+      .logo span {
+        display: none;
+      }
+    }
+    
+    .header {
+      padding: 0 10px;
+      
+      .header-left {
+        .el-breadcrumb {
+          font-size: 12px;
+        }
+      }
+    }
+    
+    .main-content {
+      padding: 10px;
+    }
+  }
+  
+  .stat-card {
+    padding: 16px;
+    
+    .stat-value {
+      font-size: 20px;
+    }
+  }
+  
+  .resource-card {
+    .card-header {
+      padding: 15px;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    
+    .card-content {
+      padding: 15px;
+    }
+  }
+}
+
+// 加载动画
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+}
+
+// 空状态
+.empty-state {
+  text-align: center;
+  padding: 40px;
+  color: #909399;
+  
+  .empty-icon {
+    font-size: 64px;
+    margin-bottom: 16px;
+  }
+  
+  .empty-text {
+    font-size: 14px;
+  }
+}
