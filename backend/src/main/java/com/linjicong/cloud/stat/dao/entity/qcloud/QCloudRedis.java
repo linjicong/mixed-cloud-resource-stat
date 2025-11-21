@@ -23,16 +23,17 @@
  */
 package com.linjicong.cloud.stat.dao.entity.qcloud;
 
+import com.linjicong.cloud.stat.dao.entity.BasicEntity;
 import lombok.Data;
 
 /**
- * 腾讯-云数据库
+ * 腾讯云-云数据库Redis
  *
  * @author linjicong
  * @date 2022-07-28-14:36
  * @version 1.0.0
  */
 @Data
-public class QCloudRedis {
+public class QCloudRedis extends BasicEntity {
 
 }

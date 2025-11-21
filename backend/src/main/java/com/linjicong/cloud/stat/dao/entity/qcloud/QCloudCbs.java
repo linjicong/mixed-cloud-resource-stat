@@ -36,7 +36,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
 /**
- * 腾讯-云数据库
+ * 腾讯云-云硬盘
  *
  * @author linjicong
  * @date 2022-07-28-14:36
@@ -48,7 +48,6 @@ import jakarta.persistence.Table;
 @Table(name = "q_cloud_cbs")
 
 public class QCloudCbs extends BasicEntity {
-
 
     /**
      * 云盘是否与挂载的实例一起销毁。<br><li>true:销毁实例时会同时销毁云盘，只支持按小时后付费云盘。<br><li>false：销毁实例时不销毁云盘。

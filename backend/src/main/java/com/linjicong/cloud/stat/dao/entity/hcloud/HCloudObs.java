@@ -35,7 +35,7 @@ import java.util.Date;
 import java.util.Map;
 
 /**
- * 对象存储
+ * 华为云-对象存储服务
  *
  * @author linjicong
  * @date 2022-07-28-14:36
@@ -48,37 +48,63 @@ import java.util.Map;
 
 public class HCloudObs extends BasicEntity {
 
+    /**
+     * 桶名称
+     */
     private String bucketName;
 
+    /**
+     * 桶所有者信息
+     */
     @Column(columnDefinition="json")
     @Type(JsonStringType.class)
     private Owner owner;
 
+    /**
+     * 创建时间
+     */
     private Date creationDate;
 
+    /**
+     * 桶所在区域
+     */
     private String location;
 
+    /**
+     * 存储类别
+     */
     @Enumerated(EnumType.STRING)
     private StorageClassEnum storageClass;
 
+    /**
+     * 桶元数据
+     */
     @Column(columnDefinition="json")
     @Type(JsonStringType.class)
     private Map<String, Object> metadata;
 
+    /**
+     * 访问控制列表
+     */
     @Column(columnDefinition="json")
     @Type(JsonStringType.class)
     private AccessControlList acl;
 
+    /**
+     * 桶类型枚举
+     */
     @Column(name="bucket_type_enum")
     @Enumerated(EnumType.STRING)
     private BucketTypeEnum bucketTypeEnum;
 
     /**
+     * 桶大小（字节）
      * @see BucketStorageInfo
      */
     private Long size;
 
     /**
+     * 对象数量
      * @see BucketStorageInfo
      */
     private Long objectNum;

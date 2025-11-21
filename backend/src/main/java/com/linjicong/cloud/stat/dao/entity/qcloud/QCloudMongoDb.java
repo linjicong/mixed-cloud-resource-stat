@@ -23,16 +23,17 @@
  */
 package com.linjicong.cloud.stat.dao.entity.qcloud;
 
+import com.linjicong.cloud.stat.dao.entity.BasicEntity;
 import lombok.Data;
 
 /**
- * 腾讯-MongoDb
+ * 腾讯云-MongoDB
  *
  * @author linjicong
  * @date 2022-07-28-14:36
  * @version 1.0.0
  */
 @Data
-public class QCloudMongoDb {
+public class QCloudMongoDb extends BasicEntity {
 
 }

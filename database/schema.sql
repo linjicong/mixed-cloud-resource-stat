@@ -581,6 +581,157 @@ CREATE TABLE `h_cloud_vpc`
   ROW_FORMAT = Dynamic;
 
 -- ----------------------------
+-- Table structure for h_cloud_eip
+-- ----------------------------
+DROP TABLE IF EXISTS `h_cloud_eip`;
+CREATE TABLE `h_cloud_eip`
+(
+    `pk`                              int                                                           NOT NULL AUTO_INCREMENT,
+    `stat_date`                       timestamp                                                     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `id`                              varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `status`                          varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `type`                            varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `ip_version`                      int                                                           NULL     DEFAULT NULL,
+    `public_ip_address`               varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `public_ipv6_address`             varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `tenant_id`                       varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `create_time`                     datetime(6)                                                   NULL     DEFAULT NULL,
+    `bandwidth_id`                    varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `bandwidth_name`                   varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `bandwidth_size`                  int                                                           NULL     DEFAULT NULL,
+    `bandwidth_share_type`            varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `enterprise_project_id`           varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `associate_instance_type`         varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `associate_instance_id`           varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `associate_instance_name`         varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `associate_instance_type_detail`  varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `port_id`                         varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `port_info`                       json                                                          NULL,
+    `tags`                            json                                                          NULL,
+    `alias`                           varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `description`                     varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `update_time`                     datetime(6)                                                   NULL     DEFAULT NULL,
+    `order_id`                        varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `charge_mode`                     varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `bandwidth_type`                  varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `bandwidth_charge_mode`           varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `bandwidth_name_detail`           varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `bandwidth_size_detail`           int                                                           NULL     DEFAULT NULL,
+    `bandwidth_share_type_detail`      varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `bandwidth_type_detail`           varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `bandwidth_charge_mode_detail`    varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `frozen_scene`                    varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    PRIMARY KEY (`pk`) USING BTREE
+) ENGINE = InnoDB
+  CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_general_ci
+  ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for h_cloud_ims
+-- ----------------------------
+DROP TABLE IF EXISTS `h_cloud_ims`;
+CREATE TABLE `h_cloud_ims`
+(
+    `pk`                    int                                                           NOT NULL AUTO_INCREMENT,
+    `stat_date`             timestamp                                                     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `id`                    varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `name`                  varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `status`                varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `image_type`            varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `disk_format`           varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `size`                  bigint                                                        NULL     DEFAULT NULL,
+    `owner`                 varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `is_public`             tinyint(1)                                                   NULL     DEFAULT NULL,
+    `protected`             tinyint(1)                                                   NULL     DEFAULT NULL COMMENT '镜像是否受保护',
+    `visibility`            varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `architecture`         varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `virtual_env_type`      varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `os_type`               varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `platform`              varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `os_version`            varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `description`           varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `created_at`            varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `updated_at`            varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `deleted_at`            varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `image_deleted`          tinyint(1)                                                   NULL     DEFAULT NULL COMMENT '镜像删除标记（与BasicEntity的deleted字段不同）',
+    `min_disk`              int                                                           NULL     DEFAULT NULL,
+    `min_ram`               int                                                           NULL     DEFAULT NULL,
+    `checksum`              varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `file`                  varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `backend`               varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `source`                varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `image_source_type`     varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `tags`                  json                                                          NULL,
+    `links`                 json                                                          NULL,
+    `enterprise_project_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `product_code`          varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `image_source_id`       varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `image_source_name`     varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `image_source_region`    varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `image_source_project_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    PRIMARY KEY (`pk`) USING BTREE
+) ENGINE = InnoDB
+  CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_general_ci
+  ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for h_cloud_cbr
+-- ----------------------------
+DROP TABLE IF EXISTS `h_cloud_cbr`;
+CREATE TABLE `h_cloud_cbr`
+(
+    `pk`                      int                                                           NOT NULL AUTO_INCREMENT,
+    `stat_date`               timestamp                                                     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `stat_time`               timestamp                                                     NULL     DEFAULT CURRENT_TIMESTAMP,
+    `deleted`                 tinyint                                                       NULL     DEFAULT 0,
+    `conf_name`               varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `conf_provider`           varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `conf_region`             varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `id`                      varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `name`                    varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `description`             varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `status`                  varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `created_at`              varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `updated_at`              varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `backup_type`             varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `backup_method`           varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `size`                    bigint                                                        NULL     DEFAULT NULL,
+    `resource_id`             varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `resource_name`           varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `resource_type`           varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `checkpoint_id`           varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `project_id`              varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `enterprise_project_id`   varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `provider_id`             varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `parent_id`               varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL,
+    `children`                json                                                          NULL,
+    `extend_info`             json                                                          NULL,
+    `resource_extra_info`     json                                                          NULL,
+    `tags`                    json                                                          NULL,
+    `supported_restore_mode`  tinyint(1)                                                   NULL     DEFAULT NULL,
+    `contain_system_disk`     tinyint(1)                                                   NULL     DEFAULT NULL,
+    `supported_lazy_loading` tinyint(1)                                                   NULL     DEFAULT NULL,
+    `supported_dedup`         tinyint(1)                                                   NULL     DEFAULT NULL,
+    `supported_fast_restore`  tinyint(1)                                                   NULL     DEFAULT NULL,
+    `supported_shared_backup` tinyint(1)                                                   NULL     DEFAULT NULL,
+    `supported_replication`   tinyint(1)                                                   NULL     DEFAULT NULL,
+    `supported_migration`     tinyint(1)                                                   NULL     DEFAULT NULL,
+    `supported_encryption`   tinyint(1)                                                   NULL     DEFAULT NULL,
+    `supported_compression`   tinyint(1)                                                   NULL     DEFAULT NULL,
+    `supported_deduplication` tinyint(1)                                                   NULL     DEFAULT NULL,
+    `supported_verification` tinyint(1)                                                   NULL     DEFAULT NULL,
+    `supported_cleanup`       tinyint(1)                                                   NULL     DEFAULT NULL,
+    `supported_archive`      tinyint(1)                                                   NULL     DEFAULT NULL,
+    `supported_restore`      tinyint(1)                                                   NULL     DEFAULT NULL,
+    PRIMARY KEY (`pk`) USING BTREE
+) ENGINE = InnoDB
+  CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_general_ci
+  ROW_FORMAT = Dynamic;
+
+-- ----------------------------
 -- Table structure for q_cloud_bill_resource_summary
 -- ----------------------------
 DROP TABLE IF EXISTS `q_cloud_bill_resource_summary`;

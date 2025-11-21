@@ -36,7 +36,7 @@ import jakarta.persistence.Table;
 import java.util.List;
 
 /**
- * 文档数据库 Mongo
+ * 华为云-文档数据库服务 Mongo
  *
  * @author linjicong
  * @date 2022-07-28-14:36
@@ -49,67 +49,148 @@ import java.util.List;
 
 public class HCloudDds extends BasicEntity {
 
+    /**
+     * 实例ID
+     */
     private String id;
 
+    /**
+     * 实例名称
+     */
     private String name;
 
+    /**
+     * 备注信息
+     */
     private String remark;
 
+    /**
+     * 实例状态
+     */
     private String status;
 
+    /**
+     * 端口号
+     */
     private String port;
 
+    /**
+     * 实例模式
+     */
     private String mode;
 
+    /**
+     * 区域
+     */
     private String region;
 
+    /**
+     * 数据库信息
+     */
     @Column(columnDefinition="json")
     @Type(JsonStringType.class)
     private DatastoreItem datastore;
 
+    /**
+     * 数据库引擎
+     */
     private String engine;
 
+    /**
+     * 创建时间
+     */
     private String created;
 
+    /**
+     * 更新时间
+     */
     private String updated;
 
+    /**
+     * 数据库用户名
+     */
     private String dbUserName;
 
+    /**
+     * SSL状态
+     */
     @Column(name="`ssl`")
     private Integer ssl;
 
+    /**
+     * 虚拟私有云ID
+     */
     private String vpcId;
 
+    /**
+     * 子网ID
+     */
     private String subnetId;
 
+    /**
+     * 安全组ID
+     */
     private String securityGroupId;
 
+    /**
+     * 备份策略
+     */
     @Column(columnDefinition="json")
     @Type(JsonStringType.class)
     private BackupStrategyForItemResponse backupStrategy;
 
+    /**
+     * 付费模式
+     */
     private String payMode;
 
+    /**
+     * 维护时间窗口
+     */
     private String maintenanceWindow;
 
+    /**
+     * 实例组信息
+     */
     @Column(name = "`groups`",columnDefinition="json")
     @Type(JsonStringType.class)
     private List<GroupResponseItem> groups ;
 
+    /**
+     * 磁盘加密ID
+     */
     private String diskEncryptionId;
 
+    /**
+     * 企业项目ID
+     */
     private String enterpriseProjectId;
 
+    /**
+     * 时区
+     */
     private String timeZone;
 
+    /**
+     * 专属存储池ID
+     */
     private String dssPoolId;
 
+    /**
+     * 正在执行的操作列表
+     */
     @Column(columnDefinition="json")
     @Type(JsonStringType.class)
     private List<String> actions ;
 
+    /**
+     * 订单ID
+     */
     private String orderId;
 
+    /**
+     * 标签列表
+     */
     @Column(columnDefinition="json")
     @Type(JsonStringType.class)
     private List<TagResponse> tags ;

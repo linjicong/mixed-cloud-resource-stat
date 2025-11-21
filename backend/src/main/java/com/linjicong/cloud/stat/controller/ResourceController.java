@@ -56,6 +56,12 @@ public class ResourceController {
     @Autowired
     private HCloudVpcMapper hCloudVpcMapper;
     @Autowired
+    private HCloudEipMapper hCloudEipMapper;
+    @Autowired
+    private HCloudImsMapper hCloudImsMapper;
+    @Autowired
+    private HCloudCbrMapper hCloudCbrMapper;
+    @Autowired
     private HCloudBillsMonthlyBreakDownMapper hCloudBillsMonthlyBreakDownMapper;
 
     // 腾讯云Mapper
@@ -77,7 +83,7 @@ public class ResourceController {
     /**
      * 获取华为云资源
      * 
-     * @param type 资源类型 (ecs, rds, elb, evs, vpc, bills)
+     * @param type 资源类型 (ecs, rds, elb, evs, vpc, eip, ims, cbr, bills)
      * @return 资源列表
      */
     @GetMapping("/huawei/{type}")
@@ -89,6 +95,9 @@ public class ResourceController {
                 case "elb" -> hCloudElbMapper.selectList(null);
                 case "evs" -> hCloudEvsMapper.selectList(null);
                 case "vpc" -> hCloudVpcMapper.selectList(null);
+                case "eip" -> hCloudEipMapper.selectList(null);
+                case "ims" -> hCloudImsMapper.selectList(null);
+                case "cbr" -> hCloudCbrMapper.selectList(null);
                 case "bills" -> hCloudBillsMonthlyBreakDownMapper.selectList(null);
                 default -> null;
             };

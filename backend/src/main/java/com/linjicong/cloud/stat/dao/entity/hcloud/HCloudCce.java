@@ -38,7 +38,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
 /**
- * 华为云-云监控-指标
+ * 华为云-云容器引擎
  * @author linjicong
  * @version 1.0.0
  * @date 2022-08-03-10:17
@@ -50,18 +50,33 @@ import jakarta.persistence.Table;
 
 public class HCloudCce extends BasicEntity {
 
+    /**
+     * 资源类型
+     */
     private String kind;
 
+    /**
+     * API版本
+     */
     private String apiVersion;
 
+    /**
+     * 集群元数据
+     */
     @Column(columnDefinition="json")
     @Type(JsonStringType.class)
     private ClusterMetadata metadata;
 
+    /**
+     * 集群规格
+     */
     @Column(columnDefinition="json")
     @Type(JsonStringType.class)
     private ClusterSpec spec;
 
+    /**
+     * 集群状态
+     */
     @Column(columnDefinition="json")
     @Type(JsonStringType.class)
     private ClusterStatus status;

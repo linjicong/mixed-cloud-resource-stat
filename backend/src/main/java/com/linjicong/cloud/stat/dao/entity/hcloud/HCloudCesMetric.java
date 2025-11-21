@@ -48,13 +48,25 @@ import java.util.List;
 @Entity
 public class HCloudCesMetric extends BasicEntity {
 
+    /**
+     * 指标维度列表
+     */
     @Column(columnDefinition="json")
     @Type(JsonStringType.class)
     private List<MetricsDimension> dimensions = null;
 
+    /**
+     * 指标名称
+     */
     private String metricName;
 
+    /**
+     * 命名空间
+     */
     private String namespace;
 
+    /**
+     * 单位
+     */
     private String unit;
 }

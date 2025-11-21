@@ -10,6 +10,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
 /**
+ * 腾讯云-资源标签
  * @author linjicong
  * @version 1.0.0
  * @date 2023-04-24-16:42

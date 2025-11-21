@@ -38,7 +38,7 @@ import jakarta.persistence.Table;
 import java.util.List;
 
 /**
- * DNS 解析记录
+ * 华为云-DNS私有解析记录集
  * @author linjicong
  * @version 1.0.0
  * @date 2022-08-24-9:51
@@ -50,50 +50,84 @@ import java.util.List;
 
 public class HCloudDnsPrivateRecordSets extends BasicEntity {
 
-
+    /**
+     * 记录集ID
+     */
     private String id;
 
-
+    /**
+     * 记录集名称
+     */
     private String name;
 
-
+    /**
+     * 描述信息
+     */
     private String description;
 
-
+    /**
+     * 所属域名ID
+     */
     private String zoneId;
 
-
+    /**
+     * 所属域名名称
+     */
     private String zoneName;
 
-
+    /**
+     * 记录类型
+     */
     private String type;
 
-
+    /**
+     * TTL时间
+     */
     private Integer ttl;
 
+    /**
+     * 记录值列表
+     */
     @Column(columnDefinition="json")
     @Type(JsonStringType.class)
     private List<String> records;
 
-
+    /**
+     * 创建时间
+     */
     private String createAt;
 
-
+    /**
+     * 更新时间
+     */
     private String updateAt;
 
-
+    /**
+     * 状态
+     */
     private String status;
 
+    /**
+     * 是否默认记录集
+     */
     @Column(name = "`default`")
     private Boolean _default;
 
-
+    /**
+     * 项目ID
+     */
     private String projectId;
 
+    /**
+     * 链接信息
+     */
     @Column(columnDefinition="json")
     @Type(JsonStringType.class)
     private PageLink links;
 
+    /**
+     * 标签列表
+     */
     @Column(columnDefinition="json")
     @Type(JsonStringType.class)
     private List<Tag> tags;

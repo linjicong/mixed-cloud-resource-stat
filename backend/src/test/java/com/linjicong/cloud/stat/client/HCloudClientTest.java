@@ -57,6 +57,8 @@ class HCloudClientTest {
     @Resource
     private HCloudVpcMapper hCloudVpcMapper;
     @Resource
+    private HCloudEipMapper hCloudEipMapper;
+    @Resource
     private HCloudEvsMapper hCloudEvsMapper;
     @Resource
     private HCloudCesMetricMapper hCloudCesMetricMapper;
@@ -87,6 +89,11 @@ class HCloudClientTest {
 
     @Resource
     private HCloudResourceMapper hCloudResourceMapper;
+
+    @Resource
+    private HCloudImsMapper hCloudImsMapper;
+    @Resource
+    private HCloudCbrMapper hCloudCbrMapper;
     @BeforeEach
     public void beforeEach(){
         cloudConf = cloudConfMapper.selectById(11);
@@ -150,6 +157,12 @@ class HCloudClientTest {
     void syncVpc() {
         List<HCloudVpc> hCloudVpcs = hCloudClient.listVpc();
         hCloudVpcMapper.insertBatch(hCloudVpcs);
+    }
+
+    @Test
+    void syncEip() {
+        List<HCloudEip> hCloudEips = hCloudClient.listEip();
+        hCloudEipMapper.insertBatch(hCloudEips);
     }
 
     @Test
@@ -417,5 +430,17 @@ class HCloudClientTest {
     @Test
     void setObsObjectAcl() {
         hCloudClient.setObsObjectAcl("xxx","xxx",REST_CANNED_BUCKET_OWNER_FULL_CONTROL);
+    }
+
+    @Test
+    void syncIms() {
+        List<HCloudIms> hCloudIms = hCloudClient.listImages();
+        hCloudImsMapper.insertBatch(hCloudIms);
+    }
+
+    @Test
+    void syncCbr() {
+        List<HCloudCbr> hCloudCbrs = hCloudClient.listBackups();
+        hCloudCbrMapper.insertBatch(hCloudCbrs);
     }
 }

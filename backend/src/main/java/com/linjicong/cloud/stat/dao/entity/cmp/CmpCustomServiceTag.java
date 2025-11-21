@@ -21,8 +21,24 @@ public class CmpCustomServiceTag extends BasicEntityExtend {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer pk;
+    
+    /**
+     * 服务类型
+     */
     private String serviceType;
+    
+    /**
+     * 服务名称
+     */
     private String serviceName;
+    
+    /**
+     * 标签
+     */
     private String tag;
+    
+    /**
+     * 统计月份
+     */
     private String statMonth;
 }

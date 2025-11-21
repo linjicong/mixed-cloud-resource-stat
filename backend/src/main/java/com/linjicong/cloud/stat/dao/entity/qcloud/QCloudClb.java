@@ -35,7 +35,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
 /**
- * 腾讯-云数据库
+ * 腾讯云-负载均衡
  *
  * @author linjicong
  * @date 2022-07-28-14:36

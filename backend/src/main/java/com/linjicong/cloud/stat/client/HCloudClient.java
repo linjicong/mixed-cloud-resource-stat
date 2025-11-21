@@ -44,6 +44,9 @@ import com.huaweicloud.sdk.dns.v2.DnsClient;
 import com.huaweicloud.sdk.dns.v2.model.ListPrivateZonesRequest;
 import com.huaweicloud.sdk.dns.v2.model.ListRecordSetsRequest;
 import com.huaweicloud.sdk.dns.v2.region.DnsRegion;
+import com.huaweicloud.sdk.eip.v2.EipClient;
+import com.huaweicloud.sdk.eip.v2.model.ListPublicipsRequest;
+import com.huaweicloud.sdk.eip.v2.region.EipRegion;
 import com.huaweicloud.sdk.ecs.v2.EcsClient;
 import com.huaweicloud.sdk.ecs.v2.model.ListServersDetailsRequest;
 import com.huaweicloud.sdk.ecs.v2.region.EcsRegion;
@@ -56,6 +59,12 @@ import com.huaweicloud.sdk.evs.v2.region.EvsRegion;
 import com.huaweicloud.sdk.iam.v3.IamClient;
 import com.huaweicloud.sdk.iam.v3.model.*;
 import com.huaweicloud.sdk.iam.v3.region.IamRegion;
+import com.huaweicloud.sdk.ims.v2.ImsClient;
+import com.huaweicloud.sdk.ims.v2.model.ListImagesRequest;
+import com.huaweicloud.sdk.ims.v2.region.ImsRegion;
+import com.huaweicloud.sdk.cbr.v1.CbrClient;
+import com.huaweicloud.sdk.cbr.v1.model.ListBackupsRequest;
+import com.huaweicloud.sdk.cbr.v1.region.CbrRegion;
 import com.huaweicloud.sdk.rds.v3.RdsClient;
 import com.huaweicloud.sdk.rds.v3.model.ListInstancesRequest;
 import com.huaweicloud.sdk.rds.v3.region.RdsRegion;
@@ -249,6 +258,18 @@ public class HCloudClient{
                 .build();
 
         return BeanUtils.cgLibCopyList(client.listVpcs(new ListVpcsRequest().withLimit(200)).getVpcs(), HCloudVpc::new);
+    }
+
+    /**
+     * 华为云-弹性公网IP
+     */
+    public List<HCloudEip> listEip() {
+        EipClient client = EipClient.newBuilder()
+                .withCredential(auth)
+                .withRegion(EipRegion.valueOf(region))
+                .build();
+
+        return BeanUtils.cgLibCopyList(client.listPublicips(new ListPublicipsRequest().withLimit(200)).getPublicips(), HCloudEip::new);
     }
 
     /**
@@ -463,5 +484,26 @@ public class HCloudClient{
         return BeanUtils.cgLibCopyList(client.listPermanentAccessKeys(new ListPermanentAccessKeysRequest()).getCredentials(), HCloudPermanentAccessKey::new);
     }
 
+    /**
+     * 华为云-查询镜像列表
+     */
+    public List<HCloudIms> listImages() {
+        ImsClient client = ImsClient.newBuilder()
+                .withCredential(auth)
+                .withRegion(ImsRegion.valueOf(region))
+                .build();
+        return BeanUtils.cgLibCopyList(client.listImages(new ListImagesRequest().withLimit(1000)).getImages(), HCloudIms::new);
+    }
+
+    /**
+     * 华为云-查询备份列表
+     */
+    public List<HCloudCbr> listBackups() {
+        CbrClient client = CbrClient.newBuilder()
+                .withCredential(auth)
+                .withRegion(CbrRegion.valueOf(region))
+                .build();
+        return BeanUtils.cgLibCopyList(client.listBackups(new ListBackupsRequest().withLimit(1000)).getBackups(), HCloudCbr::new);
+    }
 
 }

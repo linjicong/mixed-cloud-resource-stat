@@ -27,7 +27,9 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.linjicong.cloud.stat.client.HCloudClient;
 import com.linjicong.cloud.stat.dao.entity.CloudConf;
 import com.linjicong.cloud.stat.dao.entity.hcloud.HCloudEcs;
+import com.linjicong.cloud.stat.dao.entity.hcloud.HCloudEip;
 import com.linjicong.cloud.stat.dao.mapper.hcloud.HCloudEcsMapper;
+import com.linjicong.cloud.stat.dao.mapper.hcloud.HCloudEipMapper;
 import org.springframework.stereotype.Service;
 
 import jakarta.annotation.Resource;
@@ -52,6 +54,12 @@ public class HCloudService implements CloudService{
      */
     @Resource
     private HCloudEcsMapper hCloudEcsMapper;
+
+    /**
+     * 华为云EIP数据访问对象
+     */
+    @Resource
+    private HCloudEipMapper hCloudEipMapper;
 
     /**
      * 同步华为云ECS资源
@@ -108,6 +116,65 @@ public class HCloudService implements CloudService{
                     .in(HCloudEcs::getId, toDeleteIds)
                     .set(HCloudEcs::getDeleted, 1);
             hCloudEcsMapper.update(null, updateWrapper);
+        }
+        
+        return insertCount;
+    }
+
+    /**
+     * 同步华为云EIP资源
+     * 1. 创建华为云客户端
+     * 2. 获取EIP列表（从接口）
+     * 3. 查询数据库中该配置的所有未删除数据（不按日期）
+     * 4. 对比接口数据和数据库数据：
+     *    - 接口有但数据库没有的：新增插入
+     *    - 数据库有但接口没有的：逻辑删除
+     * 
+     * @param cloudConf 云配置信息
+     * @return 同步的EIP数量（新增数量）
+     */
+    public int syncEip(CloudConf cloudConf) {
+        // 创建华为云客户端
+        HCloudClient hCloudClient = new HCloudClient(cloudConf);
+        // 获取EIP列表（从接口）
+        List<HCloudEip> apiEipList = hCloudClient.listEip();
+        
+        // 查询数据库中该配置的所有未删除数据（不按日期，@TableLogic自动过滤已删除的数据）
+        List<HCloudEip> dbEipList = hCloudEipMapper.selectByConfName(cloudConf.getName());
+        
+        // 将接口数据转换为Map，以id为key
+        Map<String, HCloudEip> apiEipMap = apiEipList.stream()
+                .filter(eip -> eip.getId() != null)
+                .collect(Collectors.toMap(HCloudEip::getId, eip -> eip, (existing, replacement) -> existing));
+        
+        // 将数据库数据转换为Map，以id为key
+        Map<String, HCloudEip> dbEipMap = dbEipList.stream()
+                .filter(eip -> eip.getId() != null)
+                .collect(Collectors.toMap(HCloudEip::getId, eip -> eip, (existing, replacement) -> existing));
+        
+        // 找出需要新增的数据（接口有但数据库未删除记录中没有的）
+        List<HCloudEip> toInsert = apiEipList.stream()
+                .filter(eip -> eip.getId() != null && !dbEipMap.containsKey(eip.getId()))
+                .collect(Collectors.toList());
+        
+        // 找出需要逻辑删除的数据（数据库有但接口没有的）
+        Set<String> toDeleteIds = dbEipMap.keySet().stream()
+                .filter(id -> !apiEipMap.containsKey(id))
+                .collect(Collectors.toSet());
+        
+        // 批量插入新增的数据
+        int insertCount = 0;
+        if (!toInsert.isEmpty()) {
+            insertCount = hCloudEipMapper.insertBatch(toInsert);
+        }
+        
+        // 批量逻辑删除（将deleted字段设置为1）
+        if (!toDeleteIds.isEmpty()) {
+            LambdaUpdateWrapper<HCloudEip> updateWrapper = new LambdaUpdateWrapper<>();
+            updateWrapper.eq(HCloudEip::getConfName, cloudConf.getName())
+                    .in(HCloudEip::getId, toDeleteIds)
+                    .set(HCloudEip::getDeleted, 1);
+            hCloudEipMapper.update(null, updateWrapper);
         }
         
         return insertCount;

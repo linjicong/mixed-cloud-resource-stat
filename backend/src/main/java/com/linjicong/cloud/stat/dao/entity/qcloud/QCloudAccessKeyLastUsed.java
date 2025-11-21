@@ -32,7 +32,7 @@ import jakarta.persistence.Table;
 import lombok.Data;
 
 /**
- * 腾讯-云数据库
+ * 腾讯云-访问密钥最后使用记录
  *
  * @author linjicong
  * @date 2022-07-28-14:36

@@ -35,7 +35,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
 /**
- * 腾讯-云数据库
+ * 腾讯云-云数据库MySQL
  *
  * @author linjicong
  * @date 2022-07-28-14:36
@@ -224,12 +224,12 @@ public class QCloudCdb extends BasicEntity {
     private Long CdbError;
 
     /**
-     * 私有网络描述符，例如：“vpc-5v8wn9mg”
+     * 私有网络描述符，例如："vpc-5v8wn9mg"
      */
     private String UniqVpcId;
 
     /**
-     * 子网描述符，例如：“subnet-1typ0s7d”
+     * 子网描述符，例如："subnet-1typ0s7d"
      */
     private String UniqSubnetId;
 

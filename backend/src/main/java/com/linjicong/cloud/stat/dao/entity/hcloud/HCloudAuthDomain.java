@@ -37,6 +37,7 @@ import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 
 /**
+ * 华为云-认证域
  * @author linjicong
  * @version 1.0.0
  * @date 2022-08-09-17:28
@@ -48,22 +49,31 @@ import jakarta.persistence.Table;
 
 public class HCloudAuthDomain extends BasicEntity {
 
-
-
+    /**
+     * 是否启用
+     */
     private Boolean enabled;
 
-
+    /**
+     * 域ID
+     */
     private String id;
 
-
+    /**
+     * 域名称
+     */
     private String name;
 
-
+    /**
+     * 链接信息
+     */
     @Column(columnDefinition="json")
     @Type(JsonStringType.class)
     private LinksSelf links;
 
-
+    /**
+     * 描述信息
+     */
     private String description;
 
 }

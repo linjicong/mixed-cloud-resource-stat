@@ -37,6 +37,7 @@ import jakarta.persistence.Table;
 import java.util.Map;
 
 /**
+ * 华为云-资源
  * @author linjicong
  * @version 1.0.0
  * @date 2023-04-24-14:58
@@ -46,23 +47,82 @@ import java.util.Map;
 @Entity
 
 public class HCloudResource extends BasicEntity {
+    /**
+     * 资源ID
+     */
     private String id;
+    
+    /**
+     * 资源名称
+     */
     private String name;
+    
+    /**
+     * 云服务商
+     */
     private String provider;
+    
+    /**
+     * 资源类型
+     */
     private String type;
+    
+    /**
+     * 区域ID
+     */
     private String regionId;
+    
+    /**
+     * 项目ID
+     */
     private String projectId;
+    
+    /**
+     * 项目名称
+     */
     private String projectName;
+    
+    /**
+     * 企业项目ID
+     */
     private String epId;
+    
+    /**
+     * 企业项目名称
+     */
     private String epName;
+    
+    /**
+     * 校验和
+     */
     private String checksum;
+    
+    /**
+     * 创建时间
+     */
     private String created;
+    
+    /**
+     * 更新时间
+     */
     private String updated;
+    
+    /**
+     * 配置状态
+     */
     private String provisioningState;
+    
+    /**
+     * 标签信息
+     */
     @Column(columnDefinition="json")
     @Type(JsonStringType.class)
     @TableField(typeHandler = JacksonTypeHandler.class)
     private Map<String, String> tags;
+    
+    /**
+     * 属性信息
+     */
     @Column(columnDefinition="json")
     @Type(JsonStringType.class)
     @TableField(typeHandler = JacksonTypeHandler.class)

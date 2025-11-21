@@ -21,49 +21,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.linjicong.cloud.stat.dao.entity.qcloud;
+package com.linjicong.cloud.stat.dao.mapper.hcloud;
 
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-import com.linjicong.cloud.stat.dao.entity.BasicEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import lombok.Data;
+import com.linjicong.cloud.stat.dao.entity.hcloud.HCloudIms;
+import com.linjicong.cloud.stat.dao.mapper.CommonMapper;
+import org.springframework.stereotype.Repository;
 
 /**
- * 腾讯云-访问密钥
- *
+ * 华为云IMS（镜像服务）Mapper接口
+ * 用于操作华为云IMS资源表的数据访问
+ * 
  * @author linjicong
- * @date 2022-07-28-14:36
+ * @date 2024-12-24
  * @version 1.0.0
- * @see
  */
-@Data
-@Entity
-@Table(name = "q_cloud_access_key")
-@TableName(value = "q_cloud_access_key",autoResultMap = true)
+@Repository
+public interface HCloudImsMapper extends CommonMapper<HCloudIms> {
 
-public class QCloudAccessKey extends BasicEntity {
-
-    /**
-     * 访问密钥标识
-     */
-    @SerializedName("AccessKeyId")
-    @Expose
-    private String AccessKeyId;
-
-    /**
-     * 密钥状态，激活（Active）或未激活（Inactive）
-     */
-    @SerializedName("Status")
-    @Expose
-    private String Status;
-
-    /**
-     * 创建时间
-     */
-    @SerializedName("CreateTime")
-    @Expose
-    private String CreateTime;
 }
+

@@ -39,7 +39,7 @@ import jakarta.persistence.Table;
 import java.util.List;
 
 /**
- * DNS 解析
+ * 华为云-DNS私有解析
  * @author linjicong
  * @version 1.0.0
  * @date 2022-08-24-9:51
@@ -50,30 +50,101 @@ import java.util.List;
 @Table(name = "h_cloud_dns_private")
 
 public class HCloudDnsPrivate extends BasicEntity {
+    /**
+     * 域名ID
+     */
     private String id;
+    
+    /**
+     * 域名名称
+     */
     private String name;
+    
+    /**
+     * 描述信息
+     */
     private String description;
+    
+    /**
+     * 邮箱地址
+     */
     private String email;
+    
+    /**
+     * 域名类型
+     */
     private String zoneType;
+    
+    /**
+     * TTL时间
+     */
     private Integer ttl;
+    
+    /**
+     * 序列号
+     */
     private Integer serial;
+    
+    /**
+     * 状态
+     */
     private String status;
+    
+    /**
+     * 记录数量
+     */
     private Integer recordNum;
+    
+    /**
+     * 资源池ID
+     */
     private String poolId;
+    
+    /**
+     * 项目ID
+     */
     private String projectId;
+    
+    /**
+     * 创建时间
+     */
     private String createdAt;
+    
+    /**
+     * 更新时间
+     */
     private String updatedAt;
+    
+    /**
+     * 链接信息
+     */
     @Column(columnDefinition="json")
     @Type(JsonStringType.class)
     private PageLink links;
+    
+    /**
+     * 标签列表
+     */
     @Column(columnDefinition="json")
     @Type(JsonStringType.class)
     private List<Tag> tags;
+    
+    /**
+     * 主DNS服务器列表
+     */
     @Column(columnDefinition="json")
     @Type(JsonStringType.class)
     private List<String> masters;
+    
+    /**
+     * 路由信息列表
+     */
     @Column(columnDefinition="json")
     @Type(JsonStringType.class)
     private List<RouterWithStatus> routers;
+    
+    /**
+     * 企业项目ID
+     */
     private String enterpriseProjectId;
 }

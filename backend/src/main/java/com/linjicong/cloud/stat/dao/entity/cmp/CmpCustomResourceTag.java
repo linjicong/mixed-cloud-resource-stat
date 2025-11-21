@@ -21,9 +21,29 @@ public class CmpCustomResourceTag extends BasicEntityExtend {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer pk;
+    
+    /**
+     * 资源ID
+     */
     private String resourceId;
+    
+    /**
+     * 资源名称
+     */
     private String resourceName;
+    
+    /**
+     * 资源类型
+     */
     private String resourceType;
+    
+    /**
+     * 标签
+     */
     private String tag;
+    
+    /**
+     * 统计月份
+     */
     private String statMonth;
 }

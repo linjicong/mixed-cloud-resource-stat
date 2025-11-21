@@ -33,6 +33,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
 /**
+ * 华为云-永久访问密钥
  * @author linjicong
  * @version 1.0.0
  * @date 2022-08-09-17:28
@@ -44,13 +45,28 @@ import jakarta.persistence.Table;
 
 public class HCloudPermanentAccessKey extends BasicEntity {
 
+    /**
+     * 用户ID
+     */
     private String userId;
 
+    /**
+     * 访问密钥
+     */
     private String access;
 
+    /**
+     * 状态
+     */
     private String status;
 
+    /**
+     * 创建时间
+     */
     private String createTime;
 
+    /**
+     * 描述信息
+     */
     private String description;
 }

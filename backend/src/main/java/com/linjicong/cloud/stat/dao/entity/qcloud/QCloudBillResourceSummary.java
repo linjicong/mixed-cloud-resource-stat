@@ -38,6 +38,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
 /**
+ * 腾讯云-账单资源摘要
  * @author linjicong
  * @version 1.0.0
  * @date 2022-08-16-17:02
@@ -49,6 +50,9 @@ import jakarta.persistence.Table;
 
 public class QCloudBillResourceSummary extends BasicEntity {
 
+    /**
+     * 账单月份
+     */
     private String month;
 
     /**
@@ -138,7 +142,7 @@ public class QCloudBillResourceSummary extends BasicEntity {
 
     /**
      * 折扣率
-     当聚合之后折扣不唯一或者合同价的情况下，返回“-”
+     当聚合之后折扣不唯一或者合同价的情况下，返回"-""
      */
     private String Discount;
 

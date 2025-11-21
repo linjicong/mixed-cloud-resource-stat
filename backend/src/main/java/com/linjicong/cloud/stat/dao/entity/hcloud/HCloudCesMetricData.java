@@ -38,7 +38,6 @@ import jakarta.persistence.Table;
 import java.util.List;
 
 /**
- *
  * 华为云-云监控-数据
  * @author linjicong
  * @version 1.0.0
@@ -51,16 +50,31 @@ import java.util.List;
 
 public class HCloudCesMetricData extends BasicEntity {
 
+    /**
+     * 单位
+     */
     private String unit;
 
+    /**
+     * 数据点列表
+     */
     @Column(columnDefinition="json")
     @Type(JsonStringType.class)
     private List<DatapointForBatchMetric> datapoints = null;
 
+    /**
+     * 命名空间
+     */
     private String namespace;
 
+    /**
+     * 指标名称
+     */
     private String metricName;
 
+    /**
+     * 指标维度列表
+     */
     @Column(columnDefinition="json")
     @Type(JsonStringType.class)
     private List<MetricsDimension> dimensions = null;

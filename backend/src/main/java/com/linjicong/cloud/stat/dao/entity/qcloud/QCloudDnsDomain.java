@@ -37,7 +37,7 @@ import lombok.Data;
 import org.hibernate.annotations.Type;
 
 /**
- * 腾讯-弹性云服务器
+ * 腾讯云-DNS域名
  *
  * @author linjicong
  * @date 2022-07-28-14:36
@@ -50,59 +50,128 @@ import org.hibernate.annotations.Type;
 
 public class QCloudDnsDomain extends BasicEntity {
 
+    /**
+     * 域名ID
+     */
     private Long DomainId;
 
+    /**
+     * 域名名称
+     */
     private String Name;
 
+    /**
+     * 域名状态
+     */
     private String Status;
 
+    /**
+     * TTL时间
+     */
     @TableField(value = "ttl")
     @Column(name = "ttl")
     private Long TTL;
 
+    /**
+     * CNAME加速状态
+     */
     @TableField(value = "cname_speedup")
     @Column(name = "cname_speedup")
     private String CNAMESpeedup;
 
+    /**
+     * DNS状态
+     */
     @TableField(value = "dns_status")
     @Column(name = "dns_status")
     private String DNSStatus;
 
+    /**
+     * 域名等级
+     */
     private String Grade;
 
+    /**
+     * 分组ID
+     */
     private Long GroupId;
 
+    /**
+     * 搜索引擎推送状态
+     */
     private String SearchEnginePush;
 
+    /**
+     * 备注信息
+     */
     private String Remark;
 
+    /**
+     * Punycode编码域名
+     */
     private String Punycode;
 
+    /**
+     * 有效DNS服务器列表
+     */
     @Column(columnDefinition="json",name = "effective_dns")
     @Type(JsonStringType.class)
     @TableField(value = "effective_dns",typeHandler = StringJsonTypeHandle.class)
     private String[] EffectiveDNS;
 
+    /**
+     * 等级级别
+     */
     private Long GradeLevel;
 
+    /**
+     * 等级标题
+     */
     private String GradeTitle;
 
+    /**
+     * 是否为VIP域名
+     */
     private String IsVip;
 
+    /**
+     * VIP开始时间
+     */
     private String VipStartAt;
 
+    /**
+     * VIP结束时间
+     */
     private String VipEndAt;
 
+    /**
+     * VIP自动续费状态
+     */
     private String VipAutoRenew;
 
+    /**
+     * 记录数量
+     */
     private Long RecordCount;
 
+    /**
+     * 创建时间
+     */
     private String CreatedOn;
 
+    /**
+     * 更新时间
+     */
     private String UpdatedOn;
 
+    /**
+     * 域名所有者
+     */
     private String Owner;
 
+    /**
+     * 标签列表
+     */
     @Column(columnDefinition="json")
     @Type(JsonStringType.class)
     @TableField(typeHandler = TagItemJsonTypeHandle.class)
