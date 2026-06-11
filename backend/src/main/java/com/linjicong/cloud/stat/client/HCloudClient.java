@@ -65,6 +65,102 @@ import com.huaweicloud.sdk.ims.v2.region.ImsRegion;
 import com.huaweicloud.sdk.cbr.v1.CbrClient;
 import com.huaweicloud.sdk.cbr.v1.model.ListBackupsRequest;
 import com.huaweicloud.sdk.cbr.v1.region.CbrRegion;
+import com.huaweicloud.sdk.antiddos.v2.AntiDDoSClient;
+import com.huaweicloud.sdk.antiddos.v2.region.AntiDDoSRegion;
+import com.huaweicloud.sdk.aom.v2.AomClient;
+import com.huaweicloud.sdk.aom.v2.region.AomRegion;
+import com.huaweicloud.sdk.apig.v2.ApigClient;
+import com.huaweicloud.sdk.apig.v2.region.ApigRegion;
+import com.huaweicloud.sdk.as.v1.AsClient;
+import com.huaweicloud.sdk.as.v1.region.AsRegion;
+import com.huaweicloud.sdk.bcs.v2.BcsClient;
+import com.huaweicloud.sdk.bcs.v2.region.BcsRegion;
+import com.huaweicloud.sdk.bms.v1.BmsClient;
+import com.huaweicloud.sdk.bms.v1.region.BmsRegion;
+import com.huaweicloud.sdk.ccm.v1.CcmClient;
+import com.huaweicloud.sdk.ccm.v1.region.CcmRegion;
+import com.huaweicloud.sdk.cdn.v2.CdnClient;
+import com.huaweicloud.sdk.cdn.v2.region.CdnRegion;
+import com.huaweicloud.sdk.cfw.v1.CfwClient;
+import com.huaweicloud.sdk.cfw.v1.region.CfwRegion;
+import com.huaweicloud.sdk.cph.v1.CphClient;
+import com.huaweicloud.sdk.cph.v1.region.CphRegion;
+import com.huaweicloud.sdk.cse.v1.CseClient;
+import com.huaweicloud.sdk.cse.v1.region.CseRegion;
+import com.huaweicloud.sdk.css.v1.CssClient;
+import com.huaweicloud.sdk.css.v1.region.CssRegion;
+import com.huaweicloud.sdk.cts.v3.CtsClient;
+import com.huaweicloud.sdk.cts.v3.region.CtsRegion;
+import com.huaweicloud.sdk.dbss.v1.DbssClient;
+import com.huaweicloud.sdk.dbss.v1.region.DbssRegion;
+import com.huaweicloud.sdk.ddm.v1.DdmClient;
+import com.huaweicloud.sdk.ddm.v1.region.DdmRegion;
+import com.huaweicloud.sdk.deh.v1.DeHClient;
+import com.huaweicloud.sdk.deh.v1.region.DeHRegion;
+import com.huaweicloud.sdk.dli.v1.DliClient;
+import com.huaweicloud.sdk.dli.v1.region.DliRegion;
+import com.huaweicloud.sdk.drs.v5.DrsClient;
+import com.huaweicloud.sdk.drs.v5.region.DrsRegion;
+import com.huaweicloud.sdk.dsc.v1.DscClient;
+import com.huaweicloud.sdk.dsc.v1.region.DscRegion;
+import com.huaweicloud.sdk.dws.v2.DwsClient;
+import com.huaweicloud.sdk.dws.v2.region.DwsRegion;
+import com.huaweicloud.sdk.er.v3.ErClient;
+import com.huaweicloud.sdk.er.v3.region.ErRegion;
+import com.huaweicloud.sdk.functiongraph.v2.FunctionGraphClient;
+import com.huaweicloud.sdk.functiongraph.v2.region.FunctionGraphRegion;
+import com.huaweicloud.sdk.gaussdb.v3.GaussDBClient;
+import com.huaweicloud.sdk.gaussdb.v3.region.GaussDBRegion;
+import com.huaweicloud.sdk.gaussdbfornosql.v3.GaussDBforNoSQLClient;
+import com.huaweicloud.sdk.gaussdbfornosql.v3.region.GaussDBforNoSQLRegion;
+import com.huaweicloud.sdk.gaussdbforopengauss.v3.GaussDBforopenGaussClient;
+import com.huaweicloud.sdk.gaussdbforopengauss.v3.region.GaussDBforopenGaussRegion;
+import com.huaweicloud.sdk.hss.v5.HssClient;
+import com.huaweicloud.sdk.hss.v5.region.HssRegion;
+import com.huaweicloud.sdk.ief.v1.IefClient;
+import com.huaweicloud.sdk.ief.v1.region.IefRegion;
+import com.huaweicloud.sdk.iotda.v5.IoTDAClient;
+import com.huaweicloud.sdk.iotda.v5.region.IoTDARegion;
+import com.huaweicloud.sdk.kafka.v2.KafkaClient;
+import com.huaweicloud.sdk.kafka.v2.region.KafkaRegion;
+import com.huaweicloud.sdk.kms.v2.KmsClient;
+import com.huaweicloud.sdk.kms.v2.region.KmsRegion;
+import com.huaweicloud.sdk.live.v1.LiveClient;
+import com.huaweicloud.sdk.live.v1.region.LiveRegion;
+import com.huaweicloud.sdk.lts.v2.LtsClient;
+import com.huaweicloud.sdk.lts.v2.region.LtsRegion;
+import com.huaweicloud.sdk.mrs.v1.MrsClient;
+import com.huaweicloud.sdk.mrs.v1.region.MrsRegion;
+import com.huaweicloud.sdk.nat.v2.NatClient;
+import com.huaweicloud.sdk.nat.v2.region.NatRegion;
+import com.huaweicloud.sdk.oms.v2.OmsClient;
+import com.huaweicloud.sdk.oms.v2.region.OmsRegion;
+import com.huaweicloud.sdk.rabbitmq.v2.RabbitMQClient;
+import com.huaweicloud.sdk.rabbitmq.v2.region.RabbitMQRegion;
+import com.huaweicloud.sdk.rocketmq.v2.RocketMQClient;
+import com.huaweicloud.sdk.rocketmq.v2.region.RocketMQRegion;
+import com.huaweicloud.sdk.roma.v2.RomaClient;
+import com.huaweicloud.sdk.roma.v2.region.RomaRegion;
+import com.huaweicloud.sdk.sdrs.v1.SdrsClient;
+import com.huaweicloud.sdk.sdrs.v1.region.SdrsRegion;
+import com.huaweicloud.sdk.servicestage.v2.ServiceStageClient;
+import com.huaweicloud.sdk.servicestage.v2.region.ServiceStageRegion;
+import com.huaweicloud.sdk.smn.v2.SmnClient;
+import com.huaweicloud.sdk.smn.v2.region.SmnRegion;
+import com.huaweicloud.sdk.sms.v3.SmsClient;
+import com.huaweicloud.sdk.sms.v3.region.SmsRegion;
+import com.huaweicloud.sdk.swr.v2.SwrClient;
+import com.huaweicloud.sdk.swr.v2.region.SwrRegion;
+import com.huaweicloud.sdk.vod.v1.VodClient;
+import com.huaweicloud.sdk.vod.v1.region.VodRegion;
+import com.huaweicloud.sdk.vpcep.v1.VpcepClient;
+import com.huaweicloud.sdk.vpcep.v1.region.VpcepRegion;
+import com.huaweicloud.sdk.vpn.v5.VpnClient;
+import com.huaweicloud.sdk.vpn.v5.region.VpnRegion;
+import com.huaweicloud.sdk.waf.v1.WafClient;
+import com.huaweicloud.sdk.waf.v1.region.WafRegion;
+import com.huaweicloud.sdk.workspace.v2.WorkspaceClient;
+import com.huaweicloud.sdk.workspace.v2.region.WorkspaceRegion;
 import com.huaweicloud.sdk.rds.v3.RdsClient;
 import com.huaweicloud.sdk.rds.v3.model.ListInstancesRequest;
 import com.huaweicloud.sdk.rds.v3.region.RdsRegion;
@@ -506,4 +602,542 @@ public class HCloudClient{
         return BeanUtils.cgLibCopyList(client.listBackups(new ListBackupsRequest().withLimit(1000)).getBackups(), HCloudCbr::new);
     }
 
+    /**
+     * 华为云-nat
+     */
+    public List<HCloudNat> listNat() {
+        NatClient client = NatClient.newBuilder()
+                .withCredential(auth)
+                .withRegion(NatRegion.valueOf(region))
+                .build();
+        return BeanUtils.cgLibCopyList(client.listNatGateways(new com.huaweicloud.sdk.nat.v2.model.ListNatGatewaysRequest()).getNatGateways(), HCloudNat::new);
+    }
+
+    /**
+     * 华为云-functiongraph
+     */
+    public List<HCloudFunctionGraph> listFunctionGraph() {
+        FunctionGraphClient client = FunctionGraphClient.newBuilder()
+                .withCredential(auth)
+                .withRegion(FunctionGraphRegion.valueOf(region))
+                .build();
+        return BeanUtils.cgLibCopyList(client.listFunctions(new com.huaweicloud.sdk.functiongraph.v2.model.ListFunctionsRequest().withMaxitems("1000")).getFunctions(), HCloudFunctionGraph::new);
+    }
+
+    /**
+     * 华为云-vpn
+     */
+    public List<HCloudVpn> listVpn() {
+        VpnClient client = VpnClient.newBuilder()
+                .withCredential(auth)
+                .withRegion(VpnRegion.valueOf(region))
+                .build();
+        return BeanUtils.cgLibCopyList(client.listVgws(new com.huaweicloud.sdk.vpn.v5.model.ListVgwsRequest()).getVpnGateways(), HCloudVpn::new);
+    }
+
+    /**
+     * 华为云-gaussdb
+     */
+    public List<HCloudGaussDb> listGaussDb() {
+        GaussDBClient client = GaussDBClient.newBuilder()
+                .withCredential(auth)
+                .withRegion(GaussDBRegion.valueOf(region))
+                .build();
+        return BeanUtils.cgLibCopyList(client.listGaussMySqlInstances(new com.huaweicloud.sdk.gaussdb.v3.model.ListGaussMySqlInstancesRequest().withLimit(100)).getInstances(), HCloudGaussDb::new);
+    }
+
+    /**
+     * 华为云-kms
+     */
+    public List<HCloudKms> listKms() {
+        KmsClient client = KmsClient.newBuilder()
+                .withCredential(auth)
+                .withRegion(KmsRegion.valueOf(region))
+                .build();
+        return BeanUtils.cgLibCopyList(client.listKeys(new com.huaweicloud.sdk.kms.v2.model.ListKeysRequest()).getKeyDetails(), HCloudKms::new);
+    }
+
+    /**
+     * 华为云-waf
+     */
+    public List<HCloudWaf> listWaf() {
+        WafClient client = WafClient.newBuilder()
+                .withCredential(auth)
+                .withRegion(WafRegion.valueOf(region))
+                .build();
+        return BeanUtils.cgLibCopyList(client.listHost(new com.huaweicloud.sdk.waf.v1.model.ListHostRequest()).getItems(), HCloudWaf::new);
+    }
+
+    /**
+     * 华为云-cts
+     */
+    public List<HCloudCts> listCts() {
+        CtsClient client = CtsClient.newBuilder()
+                .withCredential(auth)
+                .withRegion(CtsRegion.valueOf(region))
+                .build();
+        return BeanUtils.cgLibCopyList(client.listTrackers(new com.huaweicloud.sdk.cts.v3.model.ListTrackersRequest()).getTrackers(), HCloudCts::new);
+    }
+
+    /**
+     * 华为云-kafka
+     */
+    public List<HCloudKafka> listKafka() {
+        KafkaClient client = KafkaClient.newBuilder()
+                .withCredential(auth)
+                .withRegion(KafkaRegion.valueOf(region))
+                .build();
+        return BeanUtils.cgLibCopyList(client.listInstances(new com.huaweicloud.sdk.kafka.v2.model.ListInstancesRequest().withLimit("100")).getInstances(), HCloudKafka::new);
+    }
+
+    /**
+     * 华为云-rocketmq
+     */
+    public List<HCloudRocketMq> listRocketMq() {
+        RocketMQClient client = RocketMQClient.newBuilder()
+                .withCredential(auth)
+                .withRegion(RocketMQRegion.valueOf(region))
+                .build();
+        return BeanUtils.cgLibCopyList(client.listInstances(new com.huaweicloud.sdk.rocketmq.v2.model.ListInstancesRequest().withLimit(100)).getInstances(), HCloudRocketMq::new);
+    }
+
+    /**
+     * 华为云-rabbitmq
+     */
+    public List<HCloudRabbitMq> listRabbitMq() {
+        RabbitMQClient client = RabbitMQClient.newBuilder()
+                .withCredential(auth)
+                .withRegion(RabbitMQRegion.valueOf(region))
+                .build();
+        return BeanUtils.cgLibCopyList(client.listInstancesDetails(new com.huaweicloud.sdk.rabbitmq.v2.model.ListInstancesDetailsRequest()).getInstances(), HCloudRabbitMq::new);
+    }
+
+    /**
+     * 华为云-lts
+     */
+    public List<HCloudLts> listLts() {
+        LtsClient client = LtsClient.newBuilder()
+                .withCredential(auth)
+                .withRegion(LtsRegion.valueOf(region))
+                .build();
+        return BeanUtils.cgLibCopyList(client.listLogGroups(new com.huaweicloud.sdk.lts.v2.model.ListLogGroupsRequest()).getLogGroups(), HCloudLts::new);
+    }
+
+    /**
+     * 华为云-cdn
+     */
+    public List<HCloudCdn> listCdn() {
+        CdnClient client = CdnClient.newBuilder()
+                .withCredential(auth)
+                .withRegion(CdnRegion.valueOf(region))
+                .build();
+        return BeanUtils.cgLibCopyList(client.listDomains(new com.huaweicloud.sdk.cdn.v2.model.ListDomainsRequest()).getDomains(), HCloudCdn::new);
+    }
+
+    /**
+     * 华为云-antiddos
+     */
+    public List<HCloudAntiDdos> listAntiDdos() {
+        AntiDDoSClient client = AntiDDoSClient.newBuilder()
+                .withCredential(auth)
+                .withRegion(AntiDDoSRegion.valueOf(region))
+                .build();
+        return BeanUtils.cgLibCopyList(client.listDDosStatus(new com.huaweicloud.sdk.antiddos.v2.model.ListDDosStatusRequest()).getDdosStatus(), HCloudAntiDdos::new);
+    }
+
+    /**
+     * 华为云-hss
+     */
+    public List<HCloudHss> listHss() {
+        HssClient client = HssClient.newBuilder()
+                .withCredential(auth)
+                .withRegion(HssRegion.valueOf(region))
+                .build();
+        return BeanUtils.cgLibCopyList(client.listHostStatus(new com.huaweicloud.sdk.hss.v5.model.ListHostStatusRequest().withLimit(200)).getDataList(), HCloudHss::new);
+    }
+
+    /**
+     * 华为云-swr
+     */
+    public List<HCloudSwr> listSwr() {
+        SwrClient client = SwrClient.newBuilder()
+                .withCredential(auth)
+                .withRegion(SwrRegion.valueOf(region))
+                .build();
+        return BeanUtils.cgLibCopyList(client.listNamespaces(new com.huaweicloud.sdk.swr.v2.model.ListNamespacesRequest()).getNamespaces(), HCloudSwr::new);
+    }
+
+    /**
+     * 华为云-smn
+     */
+    public List<HCloudSmn> listSmn() {
+        SmnClient client = SmnClient.newBuilder()
+                .withCredential(auth)
+                .withRegion(SmnRegion.valueOf(region))
+                .build();
+        return BeanUtils.cgLibCopyList(client.listTopics(new com.huaweicloud.sdk.smn.v2.model.ListTopicsRequest()).getTopics(), HCloudSmn::new);
+    }
+
+    /**
+     * 华为云-apig
+     */
+    public List<HCloudApig> listApig() {
+        ApigClient client = ApigClient.newBuilder()
+                .withCredential(auth)
+                .withRegion(ApigRegion.valueOf(region))
+                .build();
+        return BeanUtils.cgLibCopyList(client.listInstancesV2(new com.huaweicloud.sdk.apig.v2.model.ListInstancesV2Request()).getInstances(), HCloudApig::new);
+    }
+
+    /**
+     * 华为云-aom
+     */
+    public List<HCloudAom> listAom() {
+        AomClient client = AomClient.newBuilder()
+                .withCredential(auth)
+                .withRegion(AomRegion.valueOf(region))
+                .build();
+        return BeanUtils.cgLibCopyList(client.listAlarmRule(new com.huaweicloud.sdk.aom.v2.model.ListAlarmRuleRequest()).getThresholds(), HCloudAom::new);
+    }
+
+    /**
+     * 华为云-css
+     */
+    public List<HCloudCss> listCss() {
+        CssClient client = CssClient.newBuilder()
+                .withCredential(auth)
+                .withRegion(CssRegion.valueOf(region))
+                .build();
+        return BeanUtils.cgLibCopyList(client.listClustersDetails(new com.huaweicloud.sdk.css.v1.model.ListClustersDetailsRequest()).getClusters(), HCloudCss::new);
+    }
+
+    /**
+     * 华为云-cfw
+     */
+    public List<HCloudCfw> listCfw() {
+        CfwClient client = CfwClient.newBuilder()
+                .withCredential(auth)
+                .withRegion(CfwRegion.valueOf(region))
+                .build();
+        return BeanUtils.cgLibCopyList(client.listFirewallList(new com.huaweicloud.sdk.cfw.v1.model.ListFirewallListRequest()).getData().getRecords(), HCloudCfw::new);
+    }
+
+    /**
+     * 华为云-ccm
+     */
+    public List<HCloudCcm> listCcm() {
+        CcmClient client = CcmClient.newBuilder()
+                .withCredential(auth)
+                .withRegion(CcmRegion.valueOf(region))
+                .build();
+        return BeanUtils.cgLibCopyList(client.listCertificate(new com.huaweicloud.sdk.ccm.v1.model.ListCertificateRequest()).getCertificates(), HCloudCcm::new);
+    }
+
+    /**
+     * 华为云-drs
+     */
+    public List<HCloudDrs> listDrs() {
+        DrsClient client = DrsClient.newBuilder()
+                .withCredential(auth)
+                .withRegion(DrsRegion.valueOf(region))
+                .build();
+        return BeanUtils.cgLibCopyList(client.listJobs(new com.huaweicloud.sdk.drs.v5.model.ListJobsRequest().withLimit(100)).getJobs(), HCloudDrs::new);
+    }
+
+    /**
+     * 华为云-mrs
+     */
+    public List<HCloudMrs> listMrs() {
+        MrsClient client = MrsClient.newBuilder()
+                .withCredential(auth)
+                .withRegion(MrsRegion.valueOf(region))
+                .build();
+        return BeanUtils.cgLibCopyList(client.listClusters(new com.huaweicloud.sdk.mrs.v1.model.ListClustersRequest()).getClusters(), HCloudMrs::new);
+    }
+
+    /**
+     * 华为云-as
+     */
+    public List<HCloudAs> listAs() {
+        AsClient client = AsClient.newBuilder()
+                .withCredential(auth)
+                .withRegion(AsRegion.valueOf(region))
+                .build();
+        return BeanUtils.cgLibCopyList(client.listScalingGroups(new com.huaweicloud.sdk.as.v1.model.ListScalingGroupsRequest().withLimit(100)).getScalingGroups(), HCloudAs::new);
+    }
+
+    /**
+     * 华为云-bms
+     */
+    public List<HCloudBms> listBms() {
+        BmsClient client = BmsClient.newBuilder()
+                .withCredential(auth)
+                .withRegion(BmsRegion.valueOf(region))
+                .build();
+        return BeanUtils.cgLibCopyList(client.listBareMetalServers(new com.huaweicloud.sdk.bms.v1.model.ListBareMetalServersRequest()).getServers(), HCloudBms::new);
+    }
+
+    /**
+     * 华为云-workspace
+     */
+    public List<HCloudWorkspace> listWorkspace() {
+        WorkspaceClient client = WorkspaceClient.newBuilder()
+                .withCredential(auth)
+                .withRegion(WorkspaceRegion.valueOf(region))
+                .build();
+        return BeanUtils.cgLibCopyList(client.listDesktopsDetail(new com.huaweicloud.sdk.workspace.v2.model.ListDesktopsDetailRequest().withLimit(100)).getDesktops(), HCloudWorkspace::new);
+    }
+
+    /**
+     * 华为云-dli
+     */
+    public List<HCloudDli> listDli() {
+        DliClient client = DliClient.newBuilder()
+                .withCredential(auth)
+                .withRegion(DliRegion.valueOf(region))
+                .build();
+        return BeanUtils.cgLibCopyList(client.listQueues(new com.huaweicloud.sdk.dli.v1.model.ListQueuesRequest()).getQueues(), HCloudDli::new);
+    }
+
+    /**
+     * 华为云-dws
+     */
+    public List<HCloudDws> listDws() {
+        DwsClient client = DwsClient.newBuilder()
+                .withCredential(auth)
+                .withRegion(DwsRegion.valueOf(region))
+                .build();
+        return BeanUtils.cgLibCopyList(client.listClusters(new com.huaweicloud.sdk.dws.v2.model.ListClustersRequest()).getClusters(), HCloudDws::new);
+    }
+
+    /**
+     * 华为云-gaussdbfornosql
+     */
+    public List<HCloudGaussDbNoSql> listGaussDbNoSql() {
+        GaussDBforNoSQLClient client = GaussDBforNoSQLClient.newBuilder()
+                .withCredential(auth)
+                .withRegion(GaussDBforNoSQLRegion.valueOf(region))
+                .build();
+        return BeanUtils.cgLibCopyList(client.listInstances(new com.huaweicloud.sdk.gaussdbfornosql.v3.model.ListInstancesRequest().withLimit(100)).getInstances(), HCloudGaussDbNoSql::new);
+    }
+
+    /**
+     * 华为云-gaussdbforopengauss
+     */
+    public List<HCloudGaussDbOpenGauss> listGaussDbOpenGauss() {
+        GaussDBforopenGaussClient client = GaussDBforopenGaussClient.newBuilder()
+                .withCredential(auth)
+                .withRegion(GaussDBforopenGaussRegion.valueOf(region))
+                .build();
+        return BeanUtils.cgLibCopyList(client.listInstances(new com.huaweicloud.sdk.gaussdbforopengauss.v3.model.ListInstancesRequest().withLimit(100)).getInstances(), HCloudGaussDbOpenGauss::new);
+    }
+
+    /**
+     * 华为云-ddm
+     */
+    public List<HCloudDdm> listDdm() {
+        DdmClient client = DdmClient.newBuilder()
+                .withCredential(auth)
+                .withRegion(DdmRegion.valueOf(region))
+                .build();
+        return BeanUtils.cgLibCopyList(client.listInstances(new com.huaweicloud.sdk.ddm.v1.model.ListInstancesRequest().withLimit(100)).getInstances(), HCloudDdm::new);
+    }
+
+    /**
+     * 华为云-cse
+     */
+    public List<HCloudCse> listCse() {
+        CseClient client = CseClient.newBuilder()
+                .withCredential(auth)
+                .withRegion(CseRegion.valueOf(region))
+                .build();
+        return BeanUtils.cgLibCopyList(client.listEngines(new com.huaweicloud.sdk.cse.v1.model.ListEnginesRequest()).getData(), HCloudCse::new);
+    }
+
+    /**
+     * 华为云-servicestage
+     */
+    public List<HCloudServiceStage> listServiceStage() {
+        ServiceStageClient client = ServiceStageClient.newBuilder()
+                .withCredential(auth)
+                .withRegion(ServiceStageRegion.valueOf(region))
+                .build();
+        return BeanUtils.cgLibCopyList(client.listApplications(new com.huaweicloud.sdk.servicestage.v2.model.ListApplicationsRequest()).getApplications(), HCloudServiceStage::new);
+    }
+
+    /**
+     * 华为云-cbh
+     */
+    public List<HCloudCbh> listCbh() {
+        com.huaweicloud.sdk.cbh.v2.CbhClient client = com.huaweicloud.sdk.cbh.v2.CbhClient.newBuilder()
+                .withCredential(auth)
+                .withRegion(com.huaweicloud.sdk.cbh.v2.region.CbhRegion.valueOf(region))
+                .build();
+        return BeanUtils.cgLibCopyList(client.listInstances(new com.huaweicloud.sdk.cbh.v2.model.ListInstancesRequest()).getInstance(), HCloudCbh::new);
+    }
+
+    /**
+     * 华为云-dbss
+     */
+    public List<HCloudDbss> listDbss() {
+        DbssClient client = DbssClient.newBuilder()
+                .withCredential(auth)
+                .withRegion(DbssRegion.valueOf(region))
+                .build();
+        return BeanUtils.cgLibCopyList(client.listAuditInstances(new com.huaweicloud.sdk.dbss.v1.model.ListAuditInstancesRequest()).getServers(), HCloudDbss::new);
+    }
+
+    /**
+     * 华为云-vod
+     */
+    public List<HCloudVod> listVod() {
+        VodClient client = VodClient.newBuilder()
+                .withCredential(auth)
+                .withRegion(VodRegion.valueOf(region))
+                .build();
+        return BeanUtils.cgLibCopyList(client.listAssetList(new com.huaweicloud.sdk.vod.v1.model.ListAssetListRequest()).getAssets(), HCloudVod::new);
+    }
+
+    /**
+     * 华为云-live
+     */
+    public List<HCloudLive> listLive() {
+        LiveClient client = LiveClient.newBuilder()
+                .withCredential(auth)
+                .withRegion(LiveRegion.valueOf(region))
+                .build();
+        return BeanUtils.cgLibCopyList(client.listLiveStreamsOnline(new com.huaweicloud.sdk.live.v1.model.ListLiveStreamsOnlineRequest()).getStreams(), HCloudLive::new);
+    }
+
+    /**
+     * 华为云-oms
+     */
+    public List<HCloudOms> listOms() {
+        OmsClient client = OmsClient.newBuilder()
+                .withCredential(auth)
+                .withRegion(OmsRegion.valueOf(region))
+                .build();
+        return BeanUtils.cgLibCopyList(client.listTasks(new com.huaweicloud.sdk.oms.v2.model.ListTasksRequest()).getTasks(), HCloudOms::new);
+    }
+
+    /**
+     * 华为云-sdrs
+     */
+    public List<HCloudSdrs> listSdrs() {
+        SdrsClient client = SdrsClient.newBuilder()
+                .withCredential(auth)
+                .withRegion(SdrsRegion.valueOf(region))
+                .build();
+        return BeanUtils.cgLibCopyList(client.listProtectedInstances(new com.huaweicloud.sdk.sdrs.v1.model.ListProtectedInstancesRequest()).getProtectedInstances(), HCloudSdrs::new);
+    }
+
+    /**
+     * 华为云-sms
+     */
+    public List<HCloudSms> listSms() {
+        SmsClient client = SmsClient.newBuilder()
+                .withCredential(auth)
+                .withRegion(SmsRegion.valueOf(region))
+                .build();
+        return BeanUtils.cgLibCopyList(client.listServers(new com.huaweicloud.sdk.sms.v3.model.ListServersRequest()).getSourceServers(), HCloudSms::new);
+    }
+
+    /**
+     * 华为云-dsc
+     */
+    public List<HCloudDsc> listDsc() {
+        DscClient client = DscClient.newBuilder()
+                .withCredential(auth)
+                .withRegion(DscRegion.valueOf(region))
+                .build();
+        return BeanUtils.cgLibCopyList(client.listBuckets(new com.huaweicloud.sdk.dsc.v1.model.ListBucketsRequest()).getBuckets(), HCloudDsc::new);
+    }
+
+    /**
+     * 华为云-roma
+     */
+    public List<HCloudRoma> listRoma() {
+        RomaClient client = RomaClient.newBuilder()
+                .withCredential(auth)
+                .withRegion(RomaRegion.valueOf(region))
+                .build();
+        return BeanUtils.cgLibCopyList(client.listMqsInstance(new com.huaweicloud.sdk.roma.v2.model.ListMqsInstanceRequest()).getInstances(), HCloudRoma::new);
+    }
+
+    /**
+     * 华为云-cph
+     */
+    public List<HCloudCph> listCph() {
+        CphClient client = CphClient.newBuilder()
+                .withCredential(auth)
+                .withRegion(CphRegion.valueOf(region))
+                .build();
+        return BeanUtils.cgLibCopyList(client.listCloudPhones(new com.huaweicloud.sdk.cph.v1.model.ListCloudPhonesRequest()).getPhones(), HCloudCph::new);
+    }
+
+    /**
+     * 华为云-er
+     */
+    public List<HCloudEr> listEr() {
+        ErClient client = ErClient.newBuilder()
+                .withCredential(auth)
+                .withRegion(ErRegion.valueOf(region))
+                .build();
+        return BeanUtils.cgLibCopyList(client.listEnterpriseRouters(new com.huaweicloud.sdk.er.v3.model.ListEnterpriseRoutersRequest()).getInstances(), HCloudEr::new);
+    }
+
+    /**
+     * 华为云-vpcep
+     */
+    public List<HCloudVpcep> listVpcep() {
+        VpcepClient client = VpcepClient.newBuilder()
+                .withCredential(auth)
+                .withRegion(VpcepRegion.valueOf(region))
+                .build();
+        return BeanUtils.cgLibCopyList(client.listEndpoints(new com.huaweicloud.sdk.vpcep.v1.model.ListEndpointsRequest()).getEndpoints(), HCloudVpcep::new);
+    }
+
+    /**
+     * 华为云-ief
+     */
+    public List<HCloudIef> listIef() {
+        IefClient client = IefClient.newBuilder()
+                .withCredential(auth)
+                .withRegion(IefRegion.valueOf(region))
+                .build();
+        return BeanUtils.cgLibCopyList(client.listEdgeNodes(new com.huaweicloud.sdk.ief.v1.model.ListEdgeNodesRequest()).getNodes(), HCloudIef::new);
+    }
+
+    /**
+     * 华为云-iotda
+     */
+    public List<HCloudIotDa> listIotDa() {
+        IoTDAClient client = IoTDAClient.newBuilder()
+                .withCredential(auth)
+                .withRegion(IoTDARegion.valueOf(region))
+                .build();
+        return BeanUtils.cgLibCopyList(client.listDevices(new com.huaweicloud.sdk.iotda.v5.model.ListDevicesRequest().withLimit(100)).getDevices(), HCloudIotDa::new);
+    }
+
+    /**
+     * 华为云-deh
+     */
+    public List<HCloudDeh> listDeh() {
+        DeHClient client = DeHClient.newBuilder()
+                .withCredential(auth)
+                .withRegion(DeHRegion.valueOf(region))
+                .build();
+        return BeanUtils.cgLibCopyList(client.listDedicatedHosts(new com.huaweicloud.sdk.deh.v1.model.ListDedicatedHostsRequest()).getDedicatedHosts(), HCloudDeh::new);
+    }
+
+    /**
+     * 华为云-bcs
+     */
+    public List<HCloudBcs> listBcs() {
+        BcsClient client = BcsClient.newBuilder()
+                .withCredential(auth)
+                .withRegion(BcsRegion.valueOf(region))
+                .build();
+        return BeanUtils.cgLibCopyList(client.listBlockchains(new com.huaweicloud.sdk.bcs.v2.model.ListBlockchainsRequest()).getBlockchains(), HCloudBcs::new);
+    }
 }

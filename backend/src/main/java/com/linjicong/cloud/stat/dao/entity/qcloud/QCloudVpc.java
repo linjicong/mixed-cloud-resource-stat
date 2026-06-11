@@ -1,0 +1,102 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2022 linjicong
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+package com.linjicong.cloud.stat.dao.entity.qcloud;
+
+import com.linjicong.cloud.stat.dao.entity.BasicEntity;
+import com.tencentcloudapi.vpc.v20170312.models.Tag;
+import com.vladmihalcea.hibernate.type.json.JsonStringType;
+import lombok.Data;
+import org.hibernate.annotations.Type;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+
+/**
+ * 腾讯云-VPC私有网络
+ *
+ * @author linjicong
+ * @date 2022-07-28-14:36
+ * @version 1.0.0
+ * @see com.tencentcloudapi.vpc.v20170312.models.Vpc
+ */
+@Data
+@Entity
+@Table(name = "q_cloud_vpc")
+public class QCloudVpc extends BasicEntity {
+
+    /**
+     * VPC名称
+     */
+    private String VpcName;
+
+    /**
+     * VPC实例ID
+     */
+    private String VpcId;
+
+    /**
+     * VPC的CIDR
+     */
+    private String CidrBlock;
+
+    /**
+     * 是否默认VPC
+     */
+    private Boolean IsDefault;
+
+    /**
+     * 是否开启组播
+     */
+    private Boolean EnableMulticast;
+
+    /**
+     * 创建时间
+     */
+    private String CreatedTime;
+
+    /**
+     * DNS列表
+     */
+    @Column(columnDefinition = "json")
+    @Type(JsonStringType.class)
+    private String[] DnsServerSet;
+
+    /**
+     * DHCP域名名称
+     */
+    private String DomainName;
+
+    /**
+     * DHCP选项集ID
+     */
+    private String DhcpOptionsId;
+
+    /**
+     * 标签
+     */
+    @Column(columnDefinition = "json")
+    @Type(JsonStringType.class)
+    private Tag[] Tags;
+}

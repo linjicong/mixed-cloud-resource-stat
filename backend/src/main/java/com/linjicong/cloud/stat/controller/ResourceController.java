@@ -1,26 +1,3 @@
-/*
- * MIT License
- *
- * Copyright (c) 2022 linjicong
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- */
 package com.linjicong.cloud.stat.controller;
 
 import com.linjicong.cloud.stat.dao.mapper.acloud.ACloudDnsDomainMapper;
@@ -30,62 +7,273 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
-/**
- * 资源查询Controller
- * 
- * @author linjicong
- * @date 2024-12-19
- * @version 1.0.0
- */
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
 public class ResourceController {
 
-    // 华为云Mapper
-    @Autowired
-    private HCloudEcsMapper hCloudEcsMapper;
-    @Autowired
-    private HCloudRdsMapper hCloudRdsMapper;
-    @Autowired
-    private HCloudElbMapper hCloudElbMapper;
-    @Autowired
-    private HCloudEvsMapper hCloudEvsMapper;
-    @Autowired
-    private HCloudVpcMapper hCloudVpcMapper;
-    @Autowired
-    private HCloudEipMapper hCloudEipMapper;
-    @Autowired
-    private HCloudImsMapper hCloudImsMapper;
-    @Autowired
-    private HCloudCbrMapper hCloudCbrMapper;
-    @Autowired
-    private HCloudBillsMonthlyBreakDownMapper hCloudBillsMonthlyBreakDownMapper;
+    @Autowired private HCloudEcsMapper hCloudEcsMapper;
+    @Autowired private HCloudRdsMapper hCloudRdsMapper;
+    @Autowired private HCloudElbMapper hCloudElbMapper;
+    @Autowired private HCloudEvsMapper hCloudEvsMapper;
+    @Autowired private HCloudVpcMapper hCloudVpcMapper;
+    @Autowired private HCloudEipMapper hCloudEipMapper;
+    @Autowired private HCloudImsMapper hCloudImsMapper;
+    @Autowired private HCloudCbrMapper hCloudCbrMapper;
+    @Autowired private HCloudBillsMonthlyBreakDownMapper hCloudBillsMonthlyBreakDownMapper;
+    @Autowired private HCloudDcsMapper hCloudDcsMapper;
+    @Autowired private HCloudDdsMapper hCloudDdsMapper;
+    @Autowired private HCloudObsMapper hCloudObsMapper;
+    @Autowired private HCloudSfsMapper hCloudSfsMapper;
+    @Autowired private HCloudCesMetricMapper hCloudCesMetricMapper;
+    @Autowired private HCloudDnsPrivateMapper hCloudDnsPrivateMapper;
+    @Autowired private HCloudDnsPrivateRecordSetsMapper hCloudDnsPrivateRecordSetsMapper;
+    @Autowired private HCloudCceMapper hCloudCceMapper;
+    @Autowired private HCloudAuthDomainMapper hCloudAuthDomainMapper;
+    @Autowired private HCloudUserMapper hCloudUserMapper;
+    @Autowired private HCloudPermanentAccessKeyMapper hCloudPermanentAccessKeyMapper;
+    @Autowired private HCloudResourceMapper hCloudResourceMapper;
+    @Autowired private HCloudBillsFeeRecordsMapper hCloudBillsFeeRecordsMapper;
+    @Autowired private HCloudResourceRecordDetailMapper hCloudResourceRecordDetailMapper;
+    @Autowired private HCloudNatMapper hCloudNatMapper;
+    @Autowired private HCloudFunctionGraphMapper hCloudFunctionGraphMapper;
+    @Autowired private HCloudVpnMapper hCloudVpnMapper;
+    @Autowired private HCloudGaussDbMapper hCloudGaussDbMapper;
+    @Autowired private HCloudKmsMapper hCloudKmsMapper;
+    @Autowired private HCloudWafMapper hCloudWafMapper;
+    @Autowired private HCloudCtsMapper hCloudCtsMapper;
+    @Autowired private HCloudKafkaMapper hCloudKafkaMapper;
+    @Autowired private HCloudRocketMqMapper hCloudRocketMqMapper;
+    @Autowired private HCloudRabbitMqMapper hCloudRabbitMqMapper;
+    @Autowired private HCloudLtsMapper hCloudLtsMapper;
+    @Autowired private HCloudCdnMapper hCloudCdnMapper;
+    @Autowired private HCloudAntiDdosMapper hCloudAntiDdosMapper;
+    @Autowired private HCloudHssMapper hCloudHssMapper;
+    @Autowired private HCloudSwrMapper hCloudSwrMapper;
+    @Autowired private HCloudSmnMapper hCloudSmnMapper;
+    @Autowired private HCloudApigMapper hCloudApigMapper;
+    @Autowired private HCloudAomMapper hCloudAomMapper;
+    @Autowired private HCloudCssMapper hCloudCssMapper;
+    @Autowired private HCloudCfwMapper hCloudCfwMapper;
+    @Autowired private HCloudCcmMapper hCloudCcmMapper;
+    @Autowired private HCloudDrsMapper hCloudDrsMapper;
+    @Autowired private HCloudMrsMapper hCloudMrsMapper;
+    @Autowired private HCloudAsMapper hCloudAsMapper;
+    @Autowired private HCloudBmsMapper hCloudBmsMapper;
+    @Autowired private HCloudWorkspaceMapper hCloudWorkspaceMapper;
+    @Autowired private HCloudDliMapper hCloudDliMapper;
+    @Autowired private HCloudDwsMapper hCloudDwsMapper;
+    @Autowired private HCloudGaussDbNoSqlMapper hCloudGaussDbNoSqlMapper;
+    @Autowired private HCloudGaussDbOpenGaussMapper hCloudGaussDbOpenGaussMapper;
+    @Autowired private HCloudDdmMapper hCloudDdmMapper;
+    @Autowired private HCloudCseMapper hCloudCseMapper;
+    @Autowired private HCloudServiceStageMapper hCloudServiceStageMapper;
+    @Autowired private HCloudCbhMapper hCloudCbhMapper;
+    @Autowired private HCloudDbssMapper hCloudDbssMapper;
+    @Autowired private HCloudVodMapper hCloudVodMapper;
+    @Autowired private HCloudLiveMapper hCloudLiveMapper;
+    @Autowired private HCloudOmsMapper hCloudOmsMapper;
+    @Autowired private HCloudSdrsMapper hCloudSdrsMapper;
+    @Autowired private HCloudSmsMapper hCloudSmsMapper;
+    @Autowired private HCloudDscMapper hCloudDscMapper;
+    @Autowired private HCloudRomaMapper hCloudRomaMapper;
+    @Autowired private HCloudCphMapper hCloudCphMapper;
+    @Autowired private HCloudErMapper hCloudErMapper;
+    @Autowired private HCloudVpcepMapper hCloudVpcepMapper;
+    @Autowired private HCloudIefMapper hCloudIefMapper;
+    @Autowired private HCloudIotDaMapper hCloudIotDaMapper;
+    @Autowired private HCloudDehMapper hCloudDehMapper;
+    @Autowired private HCloudBcsMapper hCloudBcsMapper;
 
-    // 腾讯云Mapper
-    @Autowired
-    private QCloudCvmMapper qCloudCvmMapper;
-    @Autowired
-    private QCloudCdbMapper qCloudCdbMapper;
-    @Autowired
-    private QCloudClbMapper qCloudClbMapper;
-    @Autowired
-    private QCloudCbsMapper qCloudCbsMapper;
-    @Autowired
-    private QCloudBillResourceSummaryMapper qCloudBillResourceSummaryMapper;
+    @Autowired private QCloudCvmMapper qCloudCvmMapper;
+    @Autowired private QCloudCdbMapper qCloudCdbMapper;
+    @Autowired private QCloudClbMapper qCloudClbMapper;
+    @Autowired private QCloudCbsMapper qCloudCbsMapper;
+    @Autowired private QCloudBillResourceSummaryMapper qCloudBillResourceSummaryMapper;
+    @Autowired private QCloudVpcMapper qCloudVpcMapper;
+    @Autowired private QCloudVpcSubnetMapper qCloudVpcSubnetMapper;
+    @Autowired private QCloudEipMapper qCloudEipMapper;
+    @Autowired private QCloudSecurityGroupMapper qCloudSecurityGroupMapper;
+    @Autowired private QCloudCdnDomainMapper qCloudCdnDomainMapper;
+    @Autowired private QCloudRedisMapper qCloudRedisMapper;
+    @Autowired private QCloudMongoDbMapper qCloudMongoDbMapper;
+    @Autowired private QCloudCynosDBMapper qCloudCynosDBMapper;
+    @Autowired private QCloudPostgresqlMapper qCloudPostgresqlMapper;
+    @Autowired private QCloudSqlserverMapper qCloudSqlserverMapper;
+    @Autowired private QCloudNatGatewayMapper qCloudNatGatewayMapper;
+    @Autowired private QCloudCfsMapper qCloudCfsMapper;
+    @Autowired private QCloudDnsDomainMapper qCloudDnsDomainMapper;
+    @Autowired private QCloudCosMapper qCloudCosMapper;
+    @Autowired private QCloudScfMapper qCloudScfMapper;
+    @Autowired private QCloudMariaDbMapper qCloudMariaDbMapper;
+    @Autowired private QCloudDCDBMapper qCloudDCDBMapper;
+    @Autowired private QCloudCkafkaMapper qCloudCkafkaMapper;
+    @Autowired private QCloudRocketMQMapper qCloudRocketMQMapper;
+    @Autowired private QCloudSSLMapper qCloudSSLMapper;
+    @Autowired private QCloudWAFMapper qCloudWAFMapper;
+    @Autowired private QCloudCLSMapper qCloudCLSMapper;
+    @Autowired private QCloudMonitorMapper qCloudMonitorMapper;
+    @Autowired private QCloudDomainMapper qCloudDomainMapper;
+    @Autowired private QCloudTKEMapper qCloudTKEMapper;
+    @Autowired private QCloudTCRMapper qCloudTCRMapper;
+    @Autowired private QCloudESMapper qCloudESMapper;
+    @Autowired private QCloudMemcachedMapper qCloudMemcachedMapper;
+    @Autowired private QCloudKeeWiDBMapper qCloudKeeWiDBMapper;
+    @Autowired private QCloudCTSDBMapper qCloudCTSDBMapper;
+    @Autowired private QCloudCHDFSMapper qCloudCHDFSMapper;
+    @Autowired private QCloudASMapper qCloudASMapper;
+    @Autowired private QCloudLighthouseMapper qCloudLighthouseMapper;
+    @Autowired private QCloudDCMapper qCloudDCMapper;
+    @Autowired private QCloudRabbitMQMapper qCloudRabbitMQMapper;
+    @Autowired private QCloudAPIGWMapper qCloudAPIGWMapper;
+    @Autowired private QCloudBMSMapper qCloudBMSMapper;
+    @Autowired private QCloudTDMQMapper qCloudTDMQMapper;
+    @Autowired private QCloudOceanusMapper qCloudOceanusMapper;
+    @Autowired private QCloudEMRMapper qCloudEMRMapper;
+    @Autowired private QCloudGaapMapper qCloudGaapMapper;
+    @Autowired private QCloudAgentGWMapper qCloudAgentGWMapper;
+    @Autowired private QCloudAgentPlatformMapper qCloudAgentPlatformMapper;
+    @Autowired private QCloudAppRenderMapper qCloudAppRenderMapper;
+    @Autowired private QCloudASRMapper qCloudASRMapper;
+    @Autowired private QCloudAuditMapper qCloudAuditMapper;
+    @Autowired private QCloudBIMapper qCloudBIMapper;
+    @Autowired private QCloudBastionMapper qCloudBastionMapper;
+    @Autowired private QCloudBizProcessMapper qCloudBizProcessMapper;
+    @Autowired private QCloudCACertMapper qCloudCACertMapper;
+    @Autowired private QCloudCAPTCHAMapper qCloudCAPTCHAMapper;
+    @Autowired private QCloudCHCMapper qCloudCHCMapper;
+    @Autowired private QCloudCLB_gwMapper qCloudCLB_gwMapper;
+    @Autowired private QCloudCloudBaseMapper qCloudCloudBaseMapper;
+    @Autowired private QCloudCloudContactMapper qCloudCloudContactMapper;
+    @Autowired private QCloudCloudHSMMapper qCloudCloudHSMMapper;
+    @Autowired private QCloudCloudPhoneMapper qCloudCloudPhoneMapper;
+    @Autowired private QCloudCloudStudioMapper qCloudCloudStudioMapper;
+    @Autowired private QCloudCmqMapper qCloudCmqMapper;
+    @Autowired private QCloudCodingDevopsMapper qCloudCodingDevopsMapper;
+    @Autowired private QCloudConfigMapper qCloudConfigMapper;
+    @Autowired private QCloudContentRecognizeMapper qCloudContentRecognizeMapper;
+    @Autowired private QCloudContentSafeMapper qCloudContentSafeMapper;
+    @Autowired private QCloudControlCenterMapper qCloudControlCenterMapper;
+    @Autowired private QCloudCSPMapper qCloudCSPMapper;
+    @Autowired private QCloudCSPGatewayMapper qCloudCSPGatewayMapper;
+    @Autowired private QCloudCSSMapper qCloudCSSMapper;
+    @Autowired private QCloudCWPMapper qCloudCWPMapper;
+    @Autowired private QCloudCWP3Mapper qCloudCWP3Mapper;
+    @Autowired private QCloudDDoSMapper qCloudDDoSMapper;
+    @Autowired private QCloudDLCMapper qCloudDLCMapper;
+    @Autowired private QCloudDNSPrivateMapper qCloudDNSPrivateMapper;
+    @Autowired private QCloudDNSSecMapper qCloudDNSSecMapper;
+    @Autowired private QCloudDataAuditMapper qCloudDataAuditMapper;
+    @Autowired private QCloudDataSafeGovMapper qCloudDataSafeGovMapper;
+    @Autowired private QCloudDeviceSafetyMapper qCloudDeviceSafetyMapper;
+    @Autowired private QCloudDistIDMapper qCloudDistIDMapper;
+    @Autowired private QCloudDocProcessMapper qCloudDocProcessMapper;
+    @Autowired private QCloudDocsMapper qCloudDocsMapper;
+    @Autowired private QCloudDomainRegMapper qCloudDomainRegMapper;
+    @Autowired private QCloudEOMapper qCloudEOMapper;
+    @Autowired private QCloudESignMapper qCloudESignMapper;
+    @Autowired private QCloudEngWriteMapper qCloudEngWriteMapper;
+    @Autowired private QCloudEventBusMapper qCloudEventBusMapper;
+    @Autowired private QCloudExposedMgrMapper qCloudExposedMgrMapper;
+    @Autowired private QCloudFaceMapper qCloudFaceMapper;
+    @Autowired private QCloudFaceDeformMapper qCloudFaceDeformMapper;
+    @Autowired private QCloudFaceFusionMapper qCloudFaceFusionMapper;
+    @Autowired private QCloudFaceMakeupMapper qCloudFaceMakeupMapper;
+    @Autowired private QCloudFaceSwapMapper qCloudFaceSwapMapper;
+    @Autowired private QCloudGameAntiACEMapper qCloudGameAntiACEMapper;
+    @Autowired private QCloudGameDBMapper qCloudGameDBMapper;
+    @Autowired private QCloudGameServerMapper qCloudGameServerMapper;
+    @Autowired private QCloudGameVoiceMapper qCloudGameVoiceMapper;
+    @Autowired private QCloudGSEMapper qCloudGSEMapper;
+    @Autowired private QCloudGTMMapper qCloudGTMMapper;
+    @Autowired private QCloudGHPhoneMapper qCloudGHPhoneMapper;
+    @Autowired private QCloudHBaseMapper qCloudHBaseMapper;
+    @Autowired private QCloudHSMMapper qCloudHSMMapper;
+    @Autowired private QCloudHealthDashMapper qCloudHealthDashMapper;
+    @Autowired private QCloudHealthOmicsMapper qCloudHealthOmicsMapper;
+    @Autowired private QCloudHealthReport2Mapper qCloudHealthReport2Mapper;
+    @Autowired private QCloudICPBeianMapper qCloudICPBeianMapper;
+    @Autowired private QCloudIOAMapper qCloudIOAMapper;
+    @Autowired private QCloudImageProcess2Mapper qCloudImageProcess2Mapper;
+    @Autowired private QCloudImageSearchMapper qCloudImageSearchMapper;
+    @Autowired private QCloudIoTMapper qCloudIoTMapper;
+    @Autowired private QCloudIoTDeviceMapper qCloudIoTDeviceMapper;
+    @Autowired private QCloudIoTHubMapper qCloudIoTHubMapper;
+    @Autowired private QCloudKMSMapper qCloudKMSMapper;
+    @Autowired private QCloudKnowledgeEngineMapper qCloudKnowledgeEngineMapper;
+    @Autowired private QCloudLiveMapper qCloudLiveMapper;
+    @Autowired private QCloudLive2Mapper qCloudLive2Mapper;
+    @Autowired private QCloudMailMapper qCloudMailMapper;
+    @Autowired private QCloudMallTrafficMapper qCloudMallTrafficMapper;
+    @Autowired private QCloudMathGradeMapper qCloudMathGradeMapper;
+    @Autowired private QCloudMediaAssetMapper qCloudMediaAssetMapper;
+    @Autowired private QCloudMeetingMapper qCloudMeetingMapper;
+    @Autowired private QCloudMicroWedaMapper qCloudMicroWedaMapper;
+    @Autowired private QCloudMiniSafeMapper qCloudMiniSafeMapper;
+    @Autowired private QCloudMongoDB_CKafkaMapper qCloudMongoDB_CKafkaMapper;
+    @Autowired private QCloudNMTMapper qCloudNMTMapper;
+    @Autowired private QCloudNativeBuildMapper qCloudNativeBuildMapper;
+    @Autowired private QCloudOCRMapper qCloudOCRMapper;
+    @Autowired private QCloudOrgMapper qCloudOrgMapper;
+    @Autowired private QCloudPenTestMapper qCloudPenTestMapper;
+    @Autowired private QCloudPrivDNSMapper qCloudPrivDNSMapper;
+    @Autowired private QCloudRegionMgrMapper qCloudRegionMgrMapper;
+    @Autowired private QCloudRiskIdentifyMapper qCloudRiskIdentifyMapper;
+    @Autowired private QCloudRTIEduMapper qCloudRTIEduMapper;
+    @Autowired private QCloudRTIIndustrialMapper qCloudRTIIndustrialMapper;
+    @Autowired private QCloudSafeAudioMapper qCloudSafeAudioMapper;
+    @Autowired private QCloudSafeCenterMapper qCloudSafeCenterMapper;
+    @Autowired private QCloudSafeDocMapper qCloudSafeDocMapper;
+    @Autowired private QCloudSafeGuardMapper qCloudSafeGuardMapper;
+    @Autowired private QCloudSafeImageMapper qCloudSafeImageMapper;
+    @Autowired private QCloudSafeMonitorMapper qCloudSafeMonitorMapper;
+    @Autowired private QCloudSafePlatformMapper qCloudSafePlatformMapper;
+    @Autowired private QCloudSafeTextMapper qCloudSafeTextMapper;
+    @Autowired private QCloudSafeVideoMapper qCloudSafeVideoMapper;
+    @Autowired private QCloudSecCredentialMapper qCloudSecCredentialMapper;
+    @Autowired private QCloudSecretMgrMapper qCloudSecretMgrMapper;
+    @Autowired private QCloudSESMapper qCloudSESMapper;
+    @Autowired private QCloudSmartAdvisorMapper qCloudSmartAdvisorMapper;
+    @Autowired private QCloudSmartGuideMapper qCloudSmartGuideMapper;
+    @Autowired private QCloudSmartViewMapper qCloudSmartViewMapper;
+    @Autowired private QCloudSMSMapper qCloudSMSMapper;
+    @Autowired private QCloudSmsSignMapper qCloudSmsSignMapper;
+    @Autowired private QCloudSmsTemplateMapper qCloudSmsTemplateMapper;
+    @Autowired private QCloudSpokenEvalMapper qCloudSpokenEvalMapper;
+    @Autowired private QCloudSSLPodMapper qCloudSSLPodMapper;
+    @Autowired private QCloudTAPDMapper qCloudTAPDMapper;
+    @Autowired private QCloudTBAASMapper qCloudTBAASMapper;
+    @Autowired private QCloudTCBMapper qCloudTCBMapper;
+    @Autowired private QCloudTcaplusDBMapper qCloudTcaplusDBMapper;
+    @Autowired private QCloudTcrEntMapper qCloudTcrEntMapper;
+    @Autowired private QCloudTencentConnectMapper qCloudTencentConnectMapper;
+    @Autowired private QCloudTendisMapper qCloudTendisMapper;
+    @Autowired private QCloudTCHouseCMapper qCloudTCHouseCMapper;
+    @Autowired private QCloudTCHouseDMapper qCloudTCHouseDMapper;
+    @Autowired private QCloudTCHousePMapper qCloudTCHousePMapper;
+    @Autowired private QCloudTIMapper qCloudTIMapper;
+    @Autowired private QCloudTIHaiMapper qCloudTIHaiMapper;
+    @Autowired private QCloudTokenHubMapper qCloudTokenHubMapper;
+    @Autowired private QCloudTourismBigdataMapper qCloudTourismBigdataMapper;
+    @Autowired private QCloudTRTCMapper qCloudTRTCMapper;
+    @Autowired private QCloudTRTCRoomMapper qCloudTRTCRoomMapper;
+    @Autowired private QCloudTSEMapper qCloudTSEMapper;
+    @Autowired private QCloudTSFMapper qCloudTSFMapper;
+    @Autowired private QCloudTTSMapper qCloudTTSMapper;
+    @Autowired private QCloudVODMapper qCloudVODMapper;
+    @Autowired private QCloudVODMediaMapper qCloudVODMediaMapper;
+    @Autowired private QCloudVODProcessMapper qCloudVODProcessMapper;
+    @Autowired private QCloudVoiceCloneMapper qCloudVoiceCloneMapper;
+    @Autowired private QCloudVoiceMsgMapper qCloudVoiceMsgMapper;
+    @Autowired private QCloudVulnMgrMapper qCloudVulnMgrMapper;
+    @Autowired private QCloudWeDataMapper qCloudWeDataMapper;
+    @Autowired private QCloudWeLinkMapper qCloudWeLinkMapper;
+    @Autowired private QCloudWebSearchMapper qCloudWebSearchMapper;
+    @Autowired private QCloudWedaMapper qCloudWedaMapper;
 
-    // 阿里云Mapper
-    @Autowired
-    private ACloudDnsDomainMapper aCloudDnsDomainMapper;
+    @Autowired private ACloudDnsDomainMapper aCloudDnsDomainMapper;
 
-    /**
-     * 获取华为云资源
-     * 
-     * @param type 资源类型 (ecs, rds, elb, evs, vpc, eip, ims, cbr, bills)
-     * @return 资源列表
-     */
     @GetMapping("/huawei/{type}")
     public ResponseEntity<?> getHuaweiResources(@PathVariable String type) {
         try {
@@ -99,25 +287,78 @@ public class ResourceController {
                 case "ims" -> hCloudImsMapper.selectList(null);
                 case "cbr" -> hCloudCbrMapper.selectList(null);
                 case "bills" -> hCloudBillsMonthlyBreakDownMapper.selectList(null);
+                case "dcs", "redis" -> hCloudDcsMapper.selectList(null);
+                case "dds", "mongodb" -> hCloudDdsMapper.selectList(null);
+                case "obs", "cos", "storage" -> hCloudObsMapper.selectList(null);
+                case "sfs", "nas" -> hCloudSfsMapper.selectList(null);
+                case "ces_metric", "metric" -> hCloudCesMetricMapper.selectList(null);
+                case "dns_private" -> hCloudDnsPrivateMapper.selectList(null);
+                case "dns_record_sets" -> hCloudDnsPrivateRecordSetsMapper.selectList(null);
+                case "cce", "cluster" -> hCloudCceMapper.selectList(null);
+                case "auth_domain" -> hCloudAuthDomainMapper.selectList(null);
+                case "user", "iam" -> hCloudUserMapper.selectList(null);
+                case "access_key" -> hCloudPermanentAccessKeyMapper.selectList(null);
+                case "resource", "rms" -> hCloudResourceMapper.selectList(null);
+                case "bills_fee_records" -> hCloudBillsFeeRecordsMapper.selectList(null);
+                case "resource_record_detail" -> hCloudResourceRecordDetailMapper.selectList(null);
+                case "nat" -> hCloudNatMapper.selectList(null);
+                case "functiongraph", "faas" -> hCloudFunctionGraphMapper.selectList(null);
+                case "vpn" -> hCloudVpnMapper.selectList(null);
+                case "gaussdb" -> hCloudGaussDbMapper.selectList(null);
+                case "kms" -> hCloudKmsMapper.selectList(null);
+                case "waf" -> hCloudWafMapper.selectList(null);
+                case "cts", "audit" -> hCloudCtsMapper.selectList(null);
+                case "kafka" -> hCloudKafkaMapper.selectList(null);
+                case "rocketmq" -> hCloudRocketMqMapper.selectList(null);
+                case "rabbitmq" -> hCloudRabbitMqMapper.selectList(null);
+                case "lts" -> hCloudLtsMapper.selectList(null);
+                case "cdn" -> hCloudCdnMapper.selectList(null);
+                case "antiddos", "ddos" -> hCloudAntiDdosMapper.selectList(null);
+                case "hss" -> hCloudHssMapper.selectList(null);
+                case "swr" -> hCloudSwrMapper.selectList(null);
+                case "smn" -> hCloudSmnMapper.selectList(null);
+                case "apig", "apigw" -> hCloudApigMapper.selectList(null);
+                case "aom" -> hCloudAomMapper.selectList(null);
+                case "css", "es" -> hCloudCssMapper.selectList(null);
+                case "cfw" -> hCloudCfwMapper.selectList(null);
+                case "ccm", "ssl" -> hCloudCcmMapper.selectList(null);
+                case "drs" -> hCloudDrsMapper.selectList(null);
+                case "mrs" -> hCloudMrsMapper.selectList(null);
+                case "as" -> hCloudAsMapper.selectList(null);
+                case "bms" -> hCloudBmsMapper.selectList(null);
+                case "workspace", "wks" -> hCloudWorkspaceMapper.selectList(null);
+                case "dli" -> hCloudDliMapper.selectList(null);
+                case "dws" -> hCloudDwsMapper.selectList(null);
+                case "gaussdbnosql" -> hCloudGaussDbNoSqlMapper.selectList(null);
+                case "gaussdbopengauss" -> hCloudGaussDbOpenGaussMapper.selectList(null);
+                case "ddm" -> hCloudDdmMapper.selectList(null);
+                case "cse" -> hCloudCseMapper.selectList(null);
+                case "servicestage" -> hCloudServiceStageMapper.selectList(null);
+                case "cbh" -> hCloudCbhMapper.selectList(null);
+                case "dbss" -> hCloudDbssMapper.selectList(null);
+                case "vod" -> hCloudVodMapper.selectList(null);
+                case "live" -> hCloudLiveMapper.selectList(null);
+                case "oms" -> hCloudOmsMapper.selectList(null);
+                case "sdrs" -> hCloudSdrsMapper.selectList(null);
+                case "sms" -> hCloudSmsMapper.selectList(null);
+                case "dsc" -> hCloudDscMapper.selectList(null);
+                case "roma" -> hCloudRomaMapper.selectList(null);
+                case "cph" -> hCloudCphMapper.selectList(null);
+                case "er" -> hCloudErMapper.selectList(null);
+                case "vpcep" -> hCloudVpcepMapper.selectList(null);
+                case "ief" -> hCloudIefMapper.selectList(null);
+                case "iotda", "iot" -> hCloudIotDaMapper.selectList(null);
+                case "deh" -> hCloudDehMapper.selectList(null);
+                case "bcs" -> hCloudBcsMapper.selectList(null);
                 default -> null;
             };
-            
-            if (resources != null) {
-                return ResponseEntity.ok(resources);
-            } else {
-                return ResponseEntity.badRequest().body("不支持的资源类型: " + type);
-            }
+            if (resources != null) { return ResponseEntity.ok(resources); }
+            else { return ResponseEntity.badRequest().body("unsupported type: " + type); }
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("查询失败: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("query failed: " + e.getMessage());
         }
     }
 
-    /**
-     * 获取腾讯云资源
-     * 
-     * @param type 资源类型 (cvm, cdb, clb, cbs, bills)
-     * @return 资源列表
-     */
     @GetMapping("/tencent/{type}")
     public ResponseEntity<?> getTencentResources(@PathVariable String type) {
         try {
@@ -127,25 +368,196 @@ public class ResourceController {
                 case "clb" -> qCloudClbMapper.selectList(null);
                 case "cbs" -> qCloudCbsMapper.selectList(null);
                 case "bills" -> qCloudBillResourceSummaryMapper.selectList(null);
+                case "vpc" -> qCloudVpcMapper.selectList(null);
+                case "subnet" -> qCloudVpcSubnetMapper.selectList(null);
+                case "eip" -> qCloudEipMapper.selectList(null);
+                case "sg", "securitygroup" -> qCloudSecurityGroupMapper.selectList(null);
+                case "cdn" -> qCloudCdnDomainMapper.selectList(null);
+                case "redis" -> qCloudRedisMapper.selectList(null);
+                case "mongodb" -> qCloudMongoDbMapper.selectList(null);
+                case "cynosdb" -> qCloudCynosDBMapper.selectList(null);
+                case "postgresql", "pg" -> qCloudPostgresqlMapper.selectList(null);
+                case "sqlserver" -> qCloudSqlserverMapper.selectList(null);
+                case "nat" -> qCloudNatGatewayMapper.selectList(null);
+                case "cfs" -> qCloudCfsMapper.selectList(null);
+                case "dns" -> qCloudDnsDomainMapper.selectList(null);
+                case "cos" -> qCloudCosMapper.selectList(null);
+                                case "scf" -> qCloudScfMapper.selectList(null);
+                case "mariadb" -> qCloudMariaDbMapper.selectList(null);
+                case "dcdb" -> qCloudDCDBMapper.selectList(null);
+                case "ckafka" -> qCloudCkafkaMapper.selectList(null);
+                case "rocketmq" -> qCloudRocketMQMapper.selectList(null);
+                case "ssl" -> qCloudSSLMapper.selectList(null);
+                case "waf" -> qCloudWAFMapper.selectList(null);
+                case "cls" -> qCloudCLSMapper.selectList(null);
+                case "monitor" -> qCloudMonitorMapper.selectList(null);
+                case "domain" -> qCloudDomainMapper.selectList(null);
+                case "tke" -> qCloudTKEMapper.selectList(null);
+                case "tcr" -> qCloudTCRMapper.selectList(null);
+                case "es" -> qCloudESMapper.selectList(null);
+
+                                case "memcached" -> qCloudMemcachedMapper.selectList(null);
+                case "keewidb" -> qCloudKeeWiDBMapper.selectList(null);
+                case "ctsdb" -> qCloudCTSDBMapper.selectList(null);
+                case "chdfs" -> qCloudCHDFSMapper.selectList(null);
+                case "as" -> qCloudASMapper.selectList(null);
+                case "lighthouse" -> qCloudLighthouseMapper.selectList(null);
+                case "dc" -> qCloudDCMapper.selectList(null);
+                case "rabbitmq" -> qCloudRabbitMQMapper.selectList(null);
+                case "apigw" -> qCloudAPIGWMapper.selectList(null);
+                case "bms" -> qCloudBMSMapper.selectList(null);
+                case "tdmq" -> qCloudTDMQMapper.selectList(null);
+                case "oceanus" -> qCloudOceanusMapper.selectList(null);
+                case "emr" -> qCloudEMRMapper.selectList(null);
+                case "gaap" -> qCloudGaapMapper.selectList(null);
+                case "agentgw" -> qCloudAgentGWMapper.selectList(null);
+                case "agentplatform" -> qCloudAgentPlatformMapper.selectList(null);
+                case "apprender" -> qCloudAppRenderMapper.selectList(null);
+                case "asr" -> qCloudASRMapper.selectList(null);
+                case "audit" -> qCloudAuditMapper.selectList(null);
+                case "bi" -> qCloudBIMapper.selectList(null);
+                case "bastion" -> qCloudBastionMapper.selectList(null);
+                case "bizprocess" -> qCloudBizProcessMapper.selectList(null);
+                case "cacert" -> qCloudCACertMapper.selectList(null);
+                case "captcha" -> qCloudCAPTCHAMapper.selectList(null);
+                case "chc" -> qCloudCHCMapper.selectList(null);
+                case "clbgw" -> qCloudCLB_gwMapper.selectList(null);
+                case "cloudbase" -> qCloudCloudBaseMapper.selectList(null);
+                case "cloudcontact" -> qCloudCloudContactMapper.selectList(null);
+                case "cloudhsm" -> qCloudCloudHSMMapper.selectList(null);
+                case "cloudphone" -> qCloudCloudPhoneMapper.selectList(null);
+                case "cloudstudio" -> qCloudCloudStudioMapper.selectList(null);
+                case "cmq" -> qCloudCmqMapper.selectList(null);
+                case "codingdevops" -> qCloudCodingDevopsMapper.selectList(null);
+                case "config" -> qCloudConfigMapper.selectList(null);
+                case "contentrecognize" -> qCloudContentRecognizeMapper.selectList(null);
+                case "contentsafe" -> qCloudContentSafeMapper.selectList(null);
+                case "controlcenter" -> qCloudControlCenterMapper.selectList(null);
+                case "csp" -> qCloudCSPMapper.selectList(null);
+                case "cspgateway" -> qCloudCSPGatewayMapper.selectList(null);
+                case "css" -> qCloudCSSMapper.selectList(null);
+                case "cwp" -> qCloudCWPMapper.selectList(null);
+                case "cwp3" -> qCloudCWP3Mapper.selectList(null);
+                case "ddos" -> qCloudDDoSMapper.selectList(null);
+                case "dlc" -> qCloudDLCMapper.selectList(null);
+                case "dnsprivate" -> qCloudDNSPrivateMapper.selectList(null);
+                case "dnssec" -> qCloudDNSSecMapper.selectList(null);
+                case "dataaudit" -> qCloudDataAuditMapper.selectList(null);
+                case "datasafegov" -> qCloudDataSafeGovMapper.selectList(null);
+                case "devicesafety" -> qCloudDeviceSafetyMapper.selectList(null);
+                case "distid" -> qCloudDistIDMapper.selectList(null);
+                case "docprocess" -> qCloudDocProcessMapper.selectList(null);
+                case "docs" -> qCloudDocsMapper.selectList(null);
+                case "domainreg" -> qCloudDomainRegMapper.selectList(null);
+                case "eo" -> qCloudEOMapper.selectList(null);
+                case "esign" -> qCloudESignMapper.selectList(null);
+                case "engwrite" -> qCloudEngWriteMapper.selectList(null);
+                case "eventbus" -> qCloudEventBusMapper.selectList(null);
+                case "exposedmgr" -> qCloudExposedMgrMapper.selectList(null);
+                case "face" -> qCloudFaceMapper.selectList(null);
+                case "facefusion" -> qCloudFaceFusionMapper.selectList(null);
+                case "facemakeup" -> qCloudFaceMakeupMapper.selectList(null);
+                case "faceswap" -> qCloudFaceSwapMapper.selectList(null);
+                case "gameantiace" -> qCloudGameAntiACEMapper.selectList(null);
+                case "gamedb" -> qCloudGameDBMapper.selectList(null);
+                case "gameserver" -> qCloudGameServerMapper.selectList(null);
+                case "gamevoice" -> qCloudGameVoiceMapper.selectList(null);
+                case "gse" -> qCloudGSEMapper.selectList(null);
+                case "gtm" -> qCloudGTMMapper.selectList(null);
+                case "ghphone" -> qCloudGHPhoneMapper.selectList(null);
+                case "hbase" -> qCloudHBaseMapper.selectList(null);
+                case "hsm" -> qCloudHSMMapper.selectList(null);
+                case "healthdash" -> qCloudHealthDashMapper.selectList(null);
+                case "healthomics" -> qCloudHealthOmicsMapper.selectList(null);
+                case "healthreport" -> qCloudHealthReport2Mapper.selectList(null);
+                case "icpbeian" -> qCloudICPBeianMapper.selectList(null);
+                case "ioa" -> qCloudIOAMapper.selectList(null);
+                case "imageprocess" -> qCloudImageProcess2Mapper.selectList(null);
+                case "imagesearch" -> qCloudImageSearchMapper.selectList(null);
+                case "iot" -> qCloudIoTMapper.selectList(null);
+                case "iotdevice" -> qCloudIoTDeviceMapper.selectList(null);
+                case "iothub" -> qCloudIoTHubMapper.selectList(null);
+                case "kms" -> qCloudKMSMapper.selectList(null);
+                case "knowledgeengine" -> qCloudKnowledgeEngineMapper.selectList(null);
+                case "live" -> qCloudLiveMapper.selectList(null);
+                case "live2" -> qCloudLive2Mapper.selectList(null);
+                case "mail" -> qCloudMailMapper.selectList(null);
+                case "malltraffic" -> qCloudMallTrafficMapper.selectList(null);
+                case "mathgrade" -> qCloudMathGradeMapper.selectList(null);
+                case "mediaasset" -> qCloudMediaAssetMapper.selectList(null);
+                case "meeting" -> qCloudMeetingMapper.selectList(null);
+                case "microweda" -> qCloudMicroWedaMapper.selectList(null);
+                case "minisafe" -> qCloudMiniSafeMapper.selectList(null);
+                case "mongodbckafka" -> qCloudMongoDB_CKafkaMapper.selectList(null);
+                case "nmt" -> qCloudNMTMapper.selectList(null);
+                case "nativebuild" -> qCloudNativeBuildMapper.selectList(null);
+                case "ocr" -> qCloudOCRMapper.selectList(null);
+                case "org" -> qCloudOrgMapper.selectList(null);
+                case "pentest" -> qCloudPenTestMapper.selectList(null);
+                case "privdns" -> qCloudPrivDNSMapper.selectList(null);
+                case "regionmgr" -> qCloudRegionMgrMapper.selectList(null);
+                case "riskidentify" -> qCloudRiskIdentifyMapper.selectList(null);
+                case "rtiedu" -> qCloudRTIEduMapper.selectList(null);
+                case "rtiindustrial" -> qCloudRTIIndustrialMapper.selectList(null);
+                case "safeaudio" -> qCloudSafeAudioMapper.selectList(null);
+                case "safecenter" -> qCloudSafeCenterMapper.selectList(null);
+                case "safedoc" -> qCloudSafeDocMapper.selectList(null);
+                case "safeguard" -> qCloudSafeGuardMapper.selectList(null);
+                case "safeimage" -> qCloudSafeImageMapper.selectList(null);
+                case "safemonitor" -> qCloudSafeMonitorMapper.selectList(null);
+                case "safeplatform" -> qCloudSafePlatformMapper.selectList(null);
+                case "safetext" -> qCloudSafeTextMapper.selectList(null);
+                case "safevideo" -> qCloudSafeVideoMapper.selectList(null);
+                case "seccredential" -> qCloudSecCredentialMapper.selectList(null);
+                case "secretmgr" -> qCloudSecretMgrMapper.selectList(null);
+                case "ses" -> qCloudSESMapper.selectList(null);
+                case "smartadvisor" -> qCloudSmartAdvisorMapper.selectList(null);
+                case "smartguide" -> qCloudSmartGuideMapper.selectList(null);
+                case "smartview" -> qCloudSmartViewMapper.selectList(null);
+                case "sms" -> qCloudSMSMapper.selectList(null);
+                case "smssign" -> qCloudSmsSignMapper.selectList(null);
+                case "smstemplate" -> qCloudSmsTemplateMapper.selectList(null);
+                case "spokeneval" -> qCloudSpokenEvalMapper.selectList(null);
+                case "sslpod" -> qCloudSSLPodMapper.selectList(null);
+                case "tapd" -> qCloudTAPDMapper.selectList(null);
+                case "tbaas" -> qCloudTBAASMapper.selectList(null);
+                case "tcb" -> qCloudTCBMapper.selectList(null);
+                case "tcaplusdb" -> qCloudTcaplusDBMapper.selectList(null);
+                case "tcrent" -> qCloudTcrEntMapper.selectList(null);
+                case "tencentconnect" -> qCloudTencentConnectMapper.selectList(null);
+                case "tendis" -> qCloudTendisMapper.selectList(null);
+                case "tchousec" -> qCloudTCHouseCMapper.selectList(null);
+                case "tchoused" -> qCloudTCHouseDMapper.selectList(null);
+                case "tchousep" -> qCloudTCHousePMapper.selectList(null);
+                case "ti" -> qCloudTIMapper.selectList(null);
+                case "tihai" -> qCloudTIHaiMapper.selectList(null);
+                case "tokenhub" -> qCloudTokenHubMapper.selectList(null);
+                case "tourismbigdata" -> qCloudTourismBigdataMapper.selectList(null);
+                case "trtc" -> qCloudTRTCMapper.selectList(null);
+                case "trtcroom" -> qCloudTRTCRoomMapper.selectList(null);
+                case "tse" -> qCloudTSEMapper.selectList(null);
+                case "tsf" -> qCloudTSFMapper.selectList(null);
+                case "tts" -> qCloudTTSMapper.selectList(null);
+                case "vod" -> qCloudVODMapper.selectList(null);
+                case "vodmedia" -> qCloudVODMediaMapper.selectList(null);
+                case "vodprocess" -> qCloudVODProcessMapper.selectList(null);
+                case "voiceclone" -> qCloudVoiceCloneMapper.selectList(null);
+                case "voicemsg" -> qCloudVoiceMsgMapper.selectList(null);
+                case "vulnmgr" -> qCloudVulnMgrMapper.selectList(null);
+                case "wedata" -> qCloudWeDataMapper.selectList(null);
+                case "welink" -> qCloudWeLinkMapper.selectList(null);
+                case "websearch" -> qCloudWebSearchMapper.selectList(null);
+                case "weda" -> qCloudWedaMapper.selectList(null);
+
                 default -> null;
             };
-            
-            if (resources != null) {
-                return ResponseEntity.ok(resources);
-            } else {
-                return ResponseEntity.badRequest().body("不支持的资源类型: " + type);
-            }
+            if (resources != null) { return ResponseEntity.ok(resources); }
+            else { return ResponseEntity.badRequest().body("unsupported type: " + type); }
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("查询失败: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("query failed: " + e.getMessage());
         }
     }
 
-    /**
-     * 获取阿里云资源
-     * 
-     * @param type 资源类型 (dns)
-     * @return 资源列表
-     */
     @GetMapping("/aliyun/{type}")
     public ResponseEntity<?> getAliyunResources(@PathVariable String type) {
         try {
@@ -153,15 +565,10 @@ public class ResourceController {
                 case "dns" -> aCloudDnsDomainMapper.selectList(null);
                 default -> null;
             };
-            
-            if (resources != null) {
-                return ResponseEntity.ok(resources);
-            } else {
-                return ResponseEntity.badRequest().body("不支持的资源类型: " + type);
-            }
+            if (resources != null) { return ResponseEntity.ok(resources); }
+            else { return ResponseEntity.badRequest().body("unsupported type: " + type); }
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("查询失败: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("query failed: " + e.getMessage());
         }
     }
 }
-
