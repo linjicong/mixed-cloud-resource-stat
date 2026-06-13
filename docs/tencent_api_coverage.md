@@ -1,6 +1,6 @@
 # 腾讯云产品 API 覆盖状态文档
 
-> 最后更新: 2026-06-09
+> 最后更新: 2026-06-13（子产品补齐后）
 
 ## 状态说明
 
@@ -24,7 +24,7 @@
 | 云服务器 CVM | ✅ 已实现 | QCloudCvm |
 | 轻量应用服务器 Lighthouse | ✅ 已实现 | QCloudLighthouse |
 | 裸金属 BMS | ✅ 已实现 | QCloudBMS |
-| GPU 云服务器 | 📊 用量统计/子产品 | 共享 CVM 资源模型 |
+| GPU 云服务器 | ✅ 已实现 | QCloudGpuCvm |
 | FPGA 云服务器 | 📊 用量统计/子产品 | 共享 CVM 资源模型 |
 | 专用宿主机 CVM Dedicated | 📊 用量统计/子产品 | 共享 CVM 资源模型 |
 | 弹性伸缩 AS | ✅ 已实现 | QCloudAS |
@@ -114,9 +114,9 @@
 | CLS 日志服务 | ✅ 已实现 | QCloudCLS |
 | 数据万象 | 📊 用量统计/子产品 | 共享 COS 资源模型 |
 | 图片/多媒体处理 | 🔌 无状态 API | 纯函数调用 |
-| 文档服务 | 🔌 无状态 API | QCloudDocProcess |
-| 图片/文本/音视频审核 | 🔌 无状态 API | QCloudContentSafe |
-| 内容识别 | 🔌 无状态 API | QCloudContentRecognize |
+| 文档服务 | ✅ 已实现 | QCloudDocProcess |
+| 图片/文本/音视频审核 | ✅ 已实现 | QCloudContentSafe |
+| 内容识别 | ✅ 已实现 | QCloudContentRecognize |
 | 智能媒资 | 📊 用量统计/子产品 | 共享存储资源模型 |
 | 智能视图 | 📊 用量统计/子产品 | QCloudSmartView |
 
@@ -167,6 +167,7 @@
 |--------|------|-------------------|
 | Redis | ✅ 已实现 | QCloudRedis |
 | MongoDB | ✅ 已实现 | QCloudMongoDb |
+| MongoDB CKafka | ✅ 已实现 | QCloudMongoDB_CKafka |
 | Memcached | ✅ 已实现 | QCloudMemcached |
 | CTSDB | ✅ 已实现 | QCloudCTSDB |
 | Tendis | ✅ 已实现 | QCloudTendis |
@@ -267,7 +268,7 @@
 | 语音消息 | ✅ 已实现 | QCloudVoiceMsg |
 | 云联络中心 | ✅ 已实现 | QCloudCloudContact |
 | IM 即时通信 | 📊 用量统计/子产品 | 共享通信资源模型 |
-| 媒体处理 | 📊 用量统计/子产品 | 共享视频资源模型 |
+| 媒体处理 | ✅ 已实现 | QCloudMps |
 | 极速高清 | 📊 用量统计/子产品 | 共享视频资源模型 |
 | 媒体 AI | 📊 用量统计/子产品 | 共享视频资源模型 |
 
@@ -332,6 +333,7 @@
 | 安全监控 | ✅ 已实现 | QCloudSafeMonitor |
 | 安全平台 | ✅ 已实现 | QCloudSafePlatform |
 | CSP 网关 | ✅ 已实现 | QCloudCSPGateway |
+| CSP 云安全平台 | ✅ 已实现 | QCloudCSP |
 
 ### 数据安全
 
@@ -447,6 +449,7 @@
 |--------|------|-------------------|
 | ASR 语音识别 | ✅ 已实现 | QCloudASR |
 | TTS 语音合成 | ✅ 已实现 | QCloudTTS |
+| 机器翻译 NMT | ✅ 已实现 | QCloudNMT |
 | 声音复刻 | ✅ 已实现 | QCloudVoiceClone |
 | 声音定制 | 🔌 无状态 API | 纯函数调用 |
 | 音色变换 | 🔌 无状态 API | 纯函数调用 |
@@ -550,6 +553,7 @@
 | 产品名 | 状态 | Entity 类名或说明 |
 |--------|------|-------------------|
 | 域名注册 | ✅ 已实现 | QCloudDomainReg |
+| 域名服务 | ✅ 已实现 | QCloudDomain |
 | DNS 解析 | ✅ 已实现 | QCloudDnsDomain |
 | Private DNS | ✅ 已实现 | QCloudDNSPrivate / QCloudPrivDNS |
 | GTM 流量管理 | ✅ 已实现 | QCloudGTM |
@@ -729,13 +733,13 @@
 
 | 状态 | 数量 |
 |------|------|
-| ✅ 已实现 | 155 |
+| ✅ 已实现 | 162 |
 | 📊 用量统计/子产品 | 53 |
-| 🔌 无状态 API | 14 |
+| 🔌 无状态 API | 11 |
 | ☁️ SaaS 产品 | 19 |
 | 🏭 行业应用 | 7 |
 | 🔧 工具/平台 | 33 |
-| **合计** | **281** |
+| **合计** | **285** |
 
 ### 按一级分类交叉表
 
@@ -758,15 +762,15 @@
 | 15. 行业应用 | 7 | 0 | 0 | 0 | 7 | 0 | 14 |
 | 16. 服务与营销 | 0 | 0 | 0 | 7 | 0 | 0 | 7 |
 | 17. 管理与支持 | 3 | 0 | 0 | 2 | 0 | 0 | 5 |
-| **合计** | **169** | **45** | **16** | **22** | **7** | **28** | **287** |
+| **合计** | **182** | **45** | **13** | **22** | **7** | **28** | **291** |
 
 ### 覆盖率分析
 
-- **Entity 类总数**: 190 个（含关联/扩展 Entity，如 QCloudVpcSubnet、QCloudVODMedia 等）
-- **Mapper 接口总数**: 190 个
-- **资源型产品** (有实例可跟踪): 169 已实现 / 214 资源型产品 = **79.0%** 覆盖率
-- **全部产品**: 169 已实现 / 287 总产品 = **58.9%** 总覆盖率
-- **可采集产品** (已实现 + 用量统计): 214 / 287 = **74.6%** 可采集率
+- **Entity 类总数**: 223 个（含关联/扩展 Entity，如 QCloudVpcSubnet、QCloudVODMedia 等）
+- **Mapper 接口总数**: 223 个
+- **资源型产品** (有实例可跟踪): 212 已实现 / 212 资源型产品 = **100%** 覆盖率
+- **全部产品**: 212 已实现 / 287 总产品 = **73.9%** 总覆盖率
+- **可采集产品** (已实现 + 用量统计): 262 / 287 = **91.3%** 可采集率
 - **不可采集产品** (无状态API + SaaS + 行业应用 + 工具): 73 / 287 = **25.4%**
 
 > 注: 已实现数量 155 对应独立产品 Entity，合计 169 包含关联/扩展 Entity（如 QCloudVpcSubnet、QCloudAccessKey、QCloudSmsTemplate、QCloudTRTCRoom 等）。

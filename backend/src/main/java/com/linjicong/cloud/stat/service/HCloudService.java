@@ -225,6 +225,24 @@ public class HCloudService implements CloudService {
     private HCloudRamMapper hCloudRamMapper;
     @Resource
     private HCloudCocMapper hCloudCocMapper;
+    @Resource
+    private HCloudFlexusEcsXMapper hCloudFlexusEcsXMapper;
+    @Resource
+    private HCloudFlexusEcsLMapper hCloudFlexusEcsLMapper;
+    @Resource
+    private HCloudGacsMapper hCloudGacsMapper;
+    @Resource
+    private HCloudFacsMapper hCloudFacsMapper;
+    @Resource
+    private HCloudFlexusObsMapper hCloudFlexusObsMapper;
+    @Resource
+    private HCloudSfsTurboMapper hCloudSfsTurboMapper;
+    @Resource
+    private HCloudDssMapper hCloudDssMapper;
+    @Resource
+    private HCloudBrsMapper hCloudBrsMapper;
+    @Resource
+    private HCloudCsbsMapper hCloudCsbsMapper;
 
     /**
      * 同步所有华为云资源
@@ -320,6 +338,15 @@ public class HCloudService implements CloudService {
         total += syncOrganizations(hCloudClient, cloudConf);
         total += syncRam(hCloudClient, cloudConf);
         total += syncCoc(hCloudClient, cloudConf);
+        total += syncFlexusEcsX(hCloudClient, cloudConf);
+        total += syncFlexusEcsL(hCloudClient, cloudConf);
+        total += syncGacs(hCloudClient, cloudConf);
+        total += syncFacs(hCloudClient, cloudConf);
+        total += syncFlexusObs(hCloudClient, cloudConf);
+        total += syncSfsTurbo(hCloudClient, cloudConf);
+        total += syncDss(hCloudClient, cloudConf);
+        total += syncBrs(hCloudClient, cloudConf);
+        total += syncCsbs(hCloudClient, cloudConf);
         return total;
     }
 
@@ -3067,6 +3094,125 @@ public class HCloudService implements CloudService {
                     .set(HCloudCoc::getDeleted, 1);
             hCloudCocMapper.update(null, uw);
         }
+        return insertCount;
+    }
+
+    // ==================== 子产品 ====================
+
+    private int syncFlexusEcsX(HCloudClient hCloudClient, CloudConf cloudConf) {
+        List<HCloudFlexusEcsX> apiList = hCloudClient.listFlexusEcsX();
+        List<HCloudFlexusEcsX> dbList = hCloudFlexusEcsXMapper.selectByConfName(cloudConf.getName());
+        Map<String, HCloudFlexusEcsX> apiMap = apiList.stream().filter(e -> e.getId() != null).collect(Collectors.toMap(HCloudFlexusEcsX::getId, e -> e, (a, b) -> a));
+        Map<String, HCloudFlexusEcsX> dbMap = dbList.stream().filter(e -> e.getId() != null).collect(Collectors.toMap(HCloudFlexusEcsX::getId, e -> e, (a, b) -> a));
+        List<HCloudFlexusEcsX> toInsert = apiList.stream().filter(e -> e.getId() != null && !dbMap.containsKey(e.getId())).collect(Collectors.toList());
+        Set<String> toDeleteIds = dbMap.keySet().stream().filter(id -> !apiMap.containsKey(id)).collect(Collectors.toSet());
+        int insertCount = 0;
+        if (!toInsert.isEmpty()) insertCount = hCloudFlexusEcsXMapper.insertBatch(toInsert);
+        if (!toDeleteIds.isEmpty()) { LambdaUpdateWrapper<HCloudFlexusEcsX> uw = new LambdaUpdateWrapper<>(); uw.eq(HCloudFlexusEcsX::getConfName, cloudConf.getName()).in(HCloudFlexusEcsX::getId, toDeleteIds).set(HCloudFlexusEcsX::getDeleted, 1); hCloudFlexusEcsXMapper.update(null, uw); }
+        return insertCount;
+    }
+
+    private int syncFlexusEcsL(HCloudClient hCloudClient, CloudConf cloudConf) {
+        List<HCloudFlexusEcsL> apiList = hCloudClient.listFlexusEcsL();
+        List<HCloudFlexusEcsL> dbList = hCloudFlexusEcsLMapper.selectByConfName(cloudConf.getName());
+        Map<String, HCloudFlexusEcsL> apiMap = apiList.stream().filter(e -> e.getId() != null).collect(Collectors.toMap(HCloudFlexusEcsL::getId, e -> e, (a, b) -> a));
+        Map<String, HCloudFlexusEcsL> dbMap = dbList.stream().filter(e -> e.getId() != null).collect(Collectors.toMap(HCloudFlexusEcsL::getId, e -> e, (a, b) -> a));
+        List<HCloudFlexusEcsL> toInsert = apiList.stream().filter(e -> e.getId() != null && !dbMap.containsKey(e.getId())).collect(Collectors.toList());
+        Set<String> toDeleteIds = dbMap.keySet().stream().filter(id -> !apiMap.containsKey(id)).collect(Collectors.toSet());
+        int insertCount = 0;
+        if (!toInsert.isEmpty()) insertCount = hCloudFlexusEcsLMapper.insertBatch(toInsert);
+        if (!toDeleteIds.isEmpty()) { LambdaUpdateWrapper<HCloudFlexusEcsL> uw = new LambdaUpdateWrapper<>(); uw.eq(HCloudFlexusEcsL::getConfName, cloudConf.getName()).in(HCloudFlexusEcsL::getId, toDeleteIds).set(HCloudFlexusEcsL::getDeleted, 1); hCloudFlexusEcsLMapper.update(null, uw); }
+        return insertCount;
+    }
+
+    private int syncGacs(HCloudClient hCloudClient, CloudConf cloudConf) {
+        List<HCloudGacs> apiList = hCloudClient.listGacs();
+        List<HCloudGacs> dbList = hCloudGacsMapper.selectByConfName(cloudConf.getName());
+        Map<String, HCloudGacs> apiMap = apiList.stream().filter(e -> e.getId() != null).collect(Collectors.toMap(HCloudGacs::getId, e -> e, (a, b) -> a));
+        Map<String, HCloudGacs> dbMap = dbList.stream().filter(e -> e.getId() != null).collect(Collectors.toMap(HCloudGacs::getId, e -> e, (a, b) -> a));
+        List<HCloudGacs> toInsert = apiList.stream().filter(e -> e.getId() != null && !dbMap.containsKey(e.getId())).collect(Collectors.toList());
+        Set<String> toDeleteIds = dbMap.keySet().stream().filter(id -> !apiMap.containsKey(id)).collect(Collectors.toSet());
+        int insertCount = 0;
+        if (!toInsert.isEmpty()) insertCount = hCloudGacsMapper.insertBatch(toInsert);
+        if (!toDeleteIds.isEmpty()) { LambdaUpdateWrapper<HCloudGacs> uw = new LambdaUpdateWrapper<>(); uw.eq(HCloudGacs::getConfName, cloudConf.getName()).in(HCloudGacs::getId, toDeleteIds).set(HCloudGacs::getDeleted, 1); hCloudGacsMapper.update(null, uw); }
+        return insertCount;
+    }
+
+    private int syncFacs(HCloudClient hCloudClient, CloudConf cloudConf) {
+        List<HCloudFacs> apiList = hCloudClient.listFacs();
+        List<HCloudFacs> dbList = hCloudFacsMapper.selectByConfName(cloudConf.getName());
+        Map<String, HCloudFacs> apiMap = apiList.stream().filter(e -> e.getId() != null).collect(Collectors.toMap(HCloudFacs::getId, e -> e, (a, b) -> a));
+        Map<String, HCloudFacs> dbMap = dbList.stream().filter(e -> e.getId() != null).collect(Collectors.toMap(HCloudFacs::getId, e -> e, (a, b) -> a));
+        List<HCloudFacs> toInsert = apiList.stream().filter(e -> e.getId() != null && !dbMap.containsKey(e.getId())).collect(Collectors.toList());
+        Set<String> toDeleteIds = dbMap.keySet().stream().filter(id -> !apiMap.containsKey(id)).collect(Collectors.toSet());
+        int insertCount = 0;
+        if (!toInsert.isEmpty()) insertCount = hCloudFacsMapper.insertBatch(toInsert);
+        if (!toDeleteIds.isEmpty()) { LambdaUpdateWrapper<HCloudFacs> uw = new LambdaUpdateWrapper<>(); uw.eq(HCloudFacs::getConfName, cloudConf.getName()).in(HCloudFacs::getId, toDeleteIds).set(HCloudFacs::getDeleted, 1); hCloudFacsMapper.update(null, uw); }
+        return insertCount;
+    }
+
+    private int syncFlexusObs(HCloudClient hCloudClient, CloudConf cloudConf) {
+        List<HCloudFlexusObs> apiList = hCloudClient.listFlexusObs();
+        List<HCloudFlexusObs> dbList = hCloudFlexusObsMapper.selectByConfName(cloudConf.getName());
+        Map<String, HCloudFlexusObs> apiMap = apiList.stream().filter(e -> e.getBucketName() != null).collect(Collectors.toMap(HCloudFlexusObs::getBucketName, e -> e, (a, b) -> a));
+        Map<String, HCloudFlexusObs> dbMap = dbList.stream().filter(e -> e.getBucketName() != null).collect(Collectors.toMap(HCloudFlexusObs::getBucketName, e -> e, (a, b) -> a));
+        List<HCloudFlexusObs> toInsert = apiList.stream().filter(e -> e.getBucketName() != null && !dbMap.containsKey(e.getBucketName())).collect(Collectors.toList());
+        Set<String> toDeleteIds = dbMap.keySet().stream().filter(id -> !apiMap.containsKey(id)).collect(Collectors.toSet());
+        int insertCount = 0;
+        if (!toInsert.isEmpty()) insertCount = hCloudFlexusObsMapper.insertBatch(toInsert);
+        if (!toDeleteIds.isEmpty()) { LambdaUpdateWrapper<HCloudFlexusObs> uw = new LambdaUpdateWrapper<>(); uw.eq(HCloudFlexusObs::getConfName, cloudConf.getName()).in(HCloudFlexusObs::getBucketName, toDeleteIds).set(HCloudFlexusObs::getDeleted, 1); hCloudFlexusObsMapper.update(null, uw); }
+        return insertCount;
+    }
+
+    private int syncSfsTurbo(HCloudClient hCloudClient, CloudConf cloudConf) {
+        List<HCloudSfsTurbo> apiList = hCloudClient.listSfsTurbo();
+        List<HCloudSfsTurbo> dbList = hCloudSfsTurboMapper.selectByConfName(cloudConf.getName());
+        Map<String, HCloudSfsTurbo> apiMap = apiList.stream().filter(e -> e.getId() != null).collect(Collectors.toMap(HCloudSfsTurbo::getId, e -> e, (a, b) -> a));
+        Map<String, HCloudSfsTurbo> dbMap = dbList.stream().filter(e -> e.getId() != null).collect(Collectors.toMap(HCloudSfsTurbo::getId, e -> e, (a, b) -> a));
+        List<HCloudSfsTurbo> toInsert = apiList.stream().filter(e -> e.getId() != null && !dbMap.containsKey(e.getId())).collect(Collectors.toList());
+        Set<String> toDeleteIds = dbMap.keySet().stream().filter(id -> !apiMap.containsKey(id)).collect(Collectors.toSet());
+        int insertCount = 0;
+        if (!toInsert.isEmpty()) insertCount = hCloudSfsTurboMapper.insertBatch(toInsert);
+        if (!toDeleteIds.isEmpty()) { LambdaUpdateWrapper<HCloudSfsTurbo> uw = new LambdaUpdateWrapper<>(); uw.eq(HCloudSfsTurbo::getConfName, cloudConf.getName()).in(HCloudSfsTurbo::getId, toDeleteIds).set(HCloudSfsTurbo::getDeleted, 1); hCloudSfsTurboMapper.update(null, uw); }
+        return insertCount;
+    }
+
+    private int syncDss(HCloudClient hCloudClient, CloudConf cloudConf) {
+        List<HCloudDss> apiList = hCloudClient.listDss();
+        List<HCloudDss> dbList = hCloudDssMapper.selectByConfName(cloudConf.getName());
+        Map<String, HCloudDss> apiMap = apiList.stream().filter(e -> e.getId() != null).collect(Collectors.toMap(HCloudDss::getId, e -> e, (a, b) -> a));
+        Map<String, HCloudDss> dbMap = dbList.stream().filter(e -> e.getId() != null).collect(Collectors.toMap(HCloudDss::getId, e -> e, (a, b) -> a));
+        List<HCloudDss> toInsert = apiList.stream().filter(e -> e.getId() != null && !dbMap.containsKey(e.getId())).collect(Collectors.toList());
+        Set<String> toDeleteIds = dbMap.keySet().stream().filter(id -> !apiMap.containsKey(id)).collect(Collectors.toSet());
+        int insertCount = 0;
+        if (!toInsert.isEmpty()) insertCount = hCloudDssMapper.insertBatch(toInsert);
+        if (!toDeleteIds.isEmpty()) { LambdaUpdateWrapper<HCloudDss> uw = new LambdaUpdateWrapper<>(); uw.eq(HCloudDss::getConfName, cloudConf.getName()).in(HCloudDss::getId, toDeleteIds).set(HCloudDss::getDeleted, 1); hCloudDssMapper.update(null, uw); }
+        return insertCount;
+    }
+
+    private int syncBrs(HCloudClient hCloudClient, CloudConf cloudConf) {
+        List<HCloudBrs> apiList = hCloudClient.listBrs();
+        List<HCloudBrs> dbList = hCloudBrsMapper.selectByConfName(cloudConf.getName());
+        Map<String, HCloudBrs> apiMap = apiList.stream().filter(e -> e.getId() != null).collect(Collectors.toMap(HCloudBrs::getId, e -> e, (a, b) -> a));
+        Map<String, HCloudBrs> dbMap = dbList.stream().filter(e -> e.getId() != null).collect(Collectors.toMap(HCloudBrs::getId, e -> e, (a, b) -> a));
+        List<HCloudBrs> toInsert = apiList.stream().filter(e -> e.getId() != null && !dbMap.containsKey(e.getId())).collect(Collectors.toList());
+        Set<String> toDeleteIds = dbMap.keySet().stream().filter(id -> !apiMap.containsKey(id)).collect(Collectors.toSet());
+        int insertCount = 0;
+        if (!toInsert.isEmpty()) insertCount = hCloudBrsMapper.insertBatch(toInsert);
+        if (!toDeleteIds.isEmpty()) { LambdaUpdateWrapper<HCloudBrs> uw = new LambdaUpdateWrapper<>(); uw.eq(HCloudBrs::getConfName, cloudConf.getName()).in(HCloudBrs::getId, toDeleteIds).set(HCloudBrs::getDeleted, 1); hCloudBrsMapper.update(null, uw); }
+        return insertCount;
+    }
+
+    private int syncCsbs(HCloudClient hCloudClient, CloudConf cloudConf) {
+        List<HCloudCsbs> apiList = hCloudClient.listCsbs();
+        List<HCloudCsbs> dbList = hCloudCsbsMapper.selectByConfName(cloudConf.getName());
+        Map<String, HCloudCsbs> apiMap = apiList.stream().filter(e -> e.getId() != null).collect(Collectors.toMap(HCloudCsbs::getId, e -> e, (a, b) -> a));
+        Map<String, HCloudCsbs> dbMap = dbList.stream().filter(e -> e.getId() != null).collect(Collectors.toMap(HCloudCsbs::getId, e -> e, (a, b) -> a));
+        List<HCloudCsbs> toInsert = apiList.stream().filter(e -> e.getId() != null && !dbMap.containsKey(e.getId())).collect(Collectors.toList());
+        Set<String> toDeleteIds = dbMap.keySet().stream().filter(id -> !apiMap.containsKey(id)).collect(Collectors.toSet());
+        int insertCount = 0;
+        if (!toInsert.isEmpty()) insertCount = hCloudCsbsMapper.insertBatch(toInsert);
+        if (!toDeleteIds.isEmpty()) { LambdaUpdateWrapper<HCloudCsbs> uw = new LambdaUpdateWrapper<>(); uw.eq(HCloudCsbs::getConfName, cloudConf.getName()).in(HCloudCsbs::getId, toDeleteIds).set(HCloudCsbs::getDeleted, 1); hCloudCsbsMapper.update(null, uw); }
         return insertCount;
     }
 }

@@ -12,6 +12,30 @@ const routes = [
     meta: { title: '仪表盘' }
   },
   {
+    path: '/summary',
+    name: 'CrossCloudSummary',
+    component: () => import('@/views/Summary.vue'),
+    meta: { title: '跨云汇总' }
+  },
+  {
+    path: '/huawei',
+    name: 'HuaweiOverview',
+    component: () => import('@/views/huawei/Overview.vue'),
+    meta: { title: '华为云总览' }
+  },
+  {
+    path: '/tencent',
+    name: 'TencentOverview',
+    component: () => import('@/views/tencent/Overview.vue'),
+    meta: { title: '腾讯云总览' }
+  },
+  {
+    path: '/aliyun',
+    name: 'AliyunOverview',
+    component: () => import('@/views/aliyun/Overview.vue'),
+    meta: { title: '阿里云总览' }
+  },
+  {
     path: '/config',
     children: [
       {

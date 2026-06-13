@@ -96,28 +96,43 @@ export const cloudApi = {
   },
   
   // 获取华为云资源
-  getHuaweiResources(type) {
-    return request.get(`/huawei/${type}`)
+  getHuaweiResources(type, confName) {
+    const params = confName ? { confName } : {}
+    return request.get(`/huawei/${type}`, { params })
   },
-  
+
   // 获取腾讯云资源
-  getTencentResources(type) {
-    return request.get(`/tencent/${type}`)
+  getTencentResources(type, confName) {
+    const params = confName ? { confName } : {}
+    return request.get(`/tencent/${type}`, { params })
   },
-  
+
   // 获取阿里云资源
-  getAliyunResources(type) {
-    return request.get(`/aliyun/${type}`)
+  getAliyunResources(type, confName) {
+    const params = confName ? { confName } : {}
+    return request.get(`/aliyun/${type}`, { params })
   },
-  
+
   // 同步资源数据
   syncResources(provider) {
     return request.post(`/sync/${provider}`)
   },
-  
+
   // 获取统计数据
   getStatistics() {
     return request.get('/statistics')
+  },
+
+  // 获取按云厂商分组的资源统计
+  getProviderStats(confName) {
+    const params = confName ? { confName } : {}
+    return request.get('/summary/provider-stats', { params })
+  },
+
+  // 获取跨云对比数据
+  getCrossCloudStats(confName) {
+    const params = confName ? { confName } : {}
+    return request.get('/summary/cross-cloud', { params })
   }
 }
 

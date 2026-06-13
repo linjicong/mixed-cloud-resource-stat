@@ -1277,4 +1277,70 @@ public class HCloudClient{
         // TODO: SDK类不可用 - com.huaweicloud.sdk.coc.v1.CocClient
         return new ArrayList<>();
     }
+
+    // ==================== 子产品 ====================
+
+    /**
+     * 华为云-Flexus 云服务器 X 实例（共享 ECS API）
+     */
+    public List<HCloudFlexusEcsX> listFlexusEcsX() {
+        return BeanUtils.cgLibCopyList(listEcs(), HCloudFlexusEcsX::new);
+    }
+
+    /**
+     * 华为云-Flexus 云服务器 L 实例（共享 ECS API）
+     */
+    public List<HCloudFlexusEcsL> listFlexusEcsL() {
+        return BeanUtils.cgLibCopyList(listEcs(), HCloudFlexusEcsL::new);
+    }
+
+    /**
+     * 华为云-GPU 加速云服务器 GACS（共享 ECS API）
+     */
+    public List<HCloudGacs> listGacs() {
+        return BeanUtils.cgLibCopyList(listEcs(), HCloudGacs::new);
+    }
+
+    /**
+     * 华为云-FPGA 加速云服务器 FACS（共享 ECS API）
+     */
+    public List<HCloudFacs> listFacs() {
+        return BeanUtils.cgLibCopyList(listEcs(), HCloudFacs::new);
+    }
+
+    /**
+     * 华为云-Flexus 对象存储（共享 OBS API）
+     */
+    public List<HCloudFlexusObs> listFlexusObs() {
+        return BeanUtils.cgLibCopyList(listObs(), HCloudFlexusObs::new);
+    }
+
+    /**
+     * 华为云-SFS Turbo（共享 SFS API）
+     */
+    public List<HCloudSfsTurbo> listSfsTurbo() {
+        return BeanUtils.cgLibCopyList(listSfs(), HCloudSfsTurbo::new);
+    }
+
+    /**
+     * 华为云-专属分布式存储 DSS
+     */
+    public List<HCloudDss> listDss() {
+        // TODO: SDK类不可用 - com.huaweicloud.sdk.dss.v1.DssClient
+        return new ArrayList<>();
+    }
+
+    /**
+     * 华为云-业务恢复服务 BRS（共享 CBR API）
+     */
+    public List<HCloudBrs> listBrs() {
+        return BeanUtils.cgLibCopyList(listBackups(), HCloudBrs::new);
+    }
+
+    /**
+     * 华为云-云服务器备份 CSBS（共享 CBR API）
+     */
+    public List<HCloudCsbs> listCsbs() {
+        return BeanUtils.cgLibCopyList(listBackups(), HCloudCsbs::new);
+    }
 }

@@ -429,6 +429,72 @@ public class QCloudService implements CloudService {
     private QCloudWebSearchMapper qCloudWebSearchMapper;
     @Resource
     private QCloudWedaMapper qCloudWedaMapper;
+    @Resource
+    private QCloudGpuCvmMapper qCloudGpuCvmMapper;
+    @Resource
+    private QCloudFpgaCvmMapper qCloudFpgaCvmMapper;
+    @Resource
+    private QCloudCvmDedicatedMapper qCloudCvmDedicatedMapper;
+    @Resource
+    private QCloudHpcClusterMapper qCloudHpcClusterMapper;
+    @Resource
+    private QCloudHpcPlatformMapper qCloudHpcPlatformMapper;
+    @Resource
+    private QCloudGooseFSMapper qCloudGooseFSMapper;
+    @Resource
+    private QCloudCiMapper qCloudCiMapper;
+    @Resource
+    private QCloudSmartMediaMapper qCloudSmartMediaMapper;
+    @Resource
+    private QCloudTdsqlBoundlessMapper qCloudTdsqlBoundlessMapper;
+    @Resource
+    private QCloudVectorDbMapper qCloudVectorDbMapper;
+    @Resource
+    private QCloudTdsqlDistributedMapper qCloudTdsqlDistributedMapper;
+    @Resource
+    private QCloudDesktopMapper qCloudDesktopMapper;
+    @Resource
+    private QCloudFlowLogMapper qCloudFlowLogMapper;
+    @Resource
+    private QCloudBandwidthPackageMapper qCloudBandwidthPackageMapper;
+    @Resource
+    private QCloudTrafficPackageMapper qCloudTrafficPackageMapper;
+    @Resource
+    private QCloudIpv6Mapper qCloudIpv6Mapper;
+    @Resource
+    private QCloudCcMapper qCloudCcMapper;
+    @Resource
+    private QCloudVpnMapper qCloudVpnMapper;
+    @Resource
+    private QCloudPeeringMapper qCloudPeeringMapper;
+    @Resource
+    private QCloudSdwanMapper qCloudSdwanMapper;
+    @Resource
+    private QCloudWsAMapper qCloudWsAMapper;
+    @Resource
+    private QCloudScdnMapper qCloudScdnMapper;
+    @Resource
+    private QCloudEcmMapper qCloudEcmMapper;
+    @Resource
+    private QCloudImMapper qCloudImMapper;
+    @Resource
+    private QCloudMpsMapper qCloudMpsMapper;
+    @Resource
+    private QCloudEnhanceMediaMapper qCloudEnhanceMediaMapper;
+    @Resource
+    private QCloudMediaAiMapper qCloudMediaAiMapper;
+    @Resource
+    private QCloudThreatIntelMapper qCloudThreatIntelMapper;
+    @Resource
+    private QCloudAntiFraudMapper qCloudAntiFraudMapper;
+    @Resource
+    private QCloudCfwMapper qCloudCfwMapper;
+    @Resource
+    private QCloudGaapV2Mapper qCloudGaapV2Mapper;
+    @Resource
+    private QCloudDedicatedZoneMapper qCloudDedicatedZoneMapper;
+    @Resource
+    private QCloudEdgeZoneMapper qCloudEdgeZoneMapper;
 
     /**
      * 同步所有腾讯云资源
@@ -625,6 +691,39 @@ public class QCloudService implements CloudService {
         total += syncWeLink(qCloudClient, cloudConf);
         total += syncWebSearch(qCloudClient, cloudConf);
         total += syncWeda(qCloudClient, cloudConf);
+        total += syncGpuCvm(qCloudClient, cloudConf);
+        total += syncFpgaCvm(qCloudClient, cloudConf);
+        total += syncCvmDedicated(qCloudClient, cloudConf);
+        total += syncHpcCluster(qCloudClient, cloudConf);
+        total += syncHpcPlatform(qCloudClient, cloudConf);
+        total += syncGooseFS(qCloudClient, cloudConf);
+        total += syncCi(qCloudClient, cloudConf);
+        total += syncSmartMedia(qCloudClient, cloudConf);
+        total += syncTdsqlBoundless(qCloudClient, cloudConf);
+        total += syncVectorDb(qCloudClient, cloudConf);
+        total += syncTdsqlDistributed(qCloudClient, cloudConf);
+        total += syncDesktop(qCloudClient, cloudConf);
+        total += syncFlowLog(qCloudClient, cloudConf);
+        total += syncBandwidthPackage(qCloudClient, cloudConf);
+        total += syncTrafficPackage(qCloudClient, cloudConf);
+        total += syncIpv6(qCloudClient, cloudConf);
+        total += syncCc(qCloudClient, cloudConf);
+        total += syncVpn(qCloudClient, cloudConf);
+        total += syncPeering(qCloudClient, cloudConf);
+        total += syncSdwan(qCloudClient, cloudConf);
+        total += syncWsA(qCloudClient, cloudConf);
+        total += syncScdn(qCloudClient, cloudConf);
+        total += syncEcm(qCloudClient, cloudConf);
+        total += syncIm(qCloudClient, cloudConf);
+        total += syncMps(qCloudClient, cloudConf);
+        total += syncEnhanceMedia(qCloudClient, cloudConf);
+        total += syncMediaAi(qCloudClient, cloudConf);
+        total += syncThreatIntel(qCloudClient, cloudConf);
+        total += syncAntiFraud(qCloudClient, cloudConf);
+        total += syncCfw(qCloudClient, cloudConf);
+        total += syncGaapV2(qCloudClient, cloudConf);
+        total += syncDedicatedZone(qCloudClient, cloudConf);
+        total += syncEdgeZone(qCloudClient, cloudConf);
         return total;
     }
 
@@ -6881,6 +6980,437 @@ public class QCloudService implements CloudService {
                     .set(QCloudWeda::getDeleted, 1);
             qCloudWedaMapper.update(null, uw);
         }
+        return insertCount;
+    }
+
+    // ==================== 子产品 ====================
+
+    private int syncGpuCvm(QCloudClient qCloudClient, CloudConf cloudConf) {
+        List<QCloudGpuCvm> apiList = qCloudClient.listGpuCvm();
+        List<QCloudGpuCvm> dbList = qCloudGpuCvmMapper.selectByConfName(cloudConf.getName());
+        Map<String, QCloudGpuCvm> apiMap = apiList.stream().filter(e -> e.getInstanceId() != null).collect(Collectors.toMap(QCloudGpuCvm::getInstanceId, e -> e, (a, b) -> a));
+        Map<String, QCloudGpuCvm> dbMap = dbList.stream().filter(e -> e.getInstanceId() != null).collect(Collectors.toMap(QCloudGpuCvm::getInstanceId, e -> e, (a, b) -> a));
+        List<QCloudGpuCvm> toInsert = apiList.stream().filter(e -> e.getInstanceId() != null && !dbMap.containsKey(e.getInstanceId())).collect(Collectors.toList());
+        Set<String> toDeleteIds = dbMap.keySet().stream().filter(id -> !apiMap.containsKey(id)).collect(Collectors.toSet());
+        int insertCount = 0;
+        if (!toInsert.isEmpty()) insertCount = qCloudGpuCvmMapper.insertBatch(toInsert);
+        if (!toDeleteIds.isEmpty()) { LambdaUpdateWrapper<QCloudGpuCvm> uw = new LambdaUpdateWrapper<>(); uw.eq(QCloudGpuCvm::getConfName, cloudConf.getName()).in(QCloudGpuCvm::getInstanceId, toDeleteIds).set(QCloudGpuCvm::getDeleted, 1); qCloudGpuCvmMapper.update(null, uw); }
+        return insertCount;
+    }
+
+    private int syncFpgaCvm(QCloudClient qCloudClient, CloudConf cloudConf) {
+        List<QCloudFpgaCvm> apiList = qCloudClient.listFpgaCvm();
+        List<QCloudFpgaCvm> dbList = qCloudFpgaCvmMapper.selectByConfName(cloudConf.getName());
+        Map<String, QCloudFpgaCvm> apiMap = apiList.stream().filter(e -> e.getInstanceId() != null).collect(Collectors.toMap(QCloudFpgaCvm::getInstanceId, e -> e, (a, b) -> a));
+        Map<String, QCloudFpgaCvm> dbMap = dbList.stream().filter(e -> e.getInstanceId() != null).collect(Collectors.toMap(QCloudFpgaCvm::getInstanceId, e -> e, (a, b) -> a));
+        List<QCloudFpgaCvm> toInsert = apiList.stream().filter(e -> e.getInstanceId() != null && !dbMap.containsKey(e.getInstanceId())).collect(Collectors.toList());
+        Set<String> toDeleteIds = dbMap.keySet().stream().filter(id -> !apiMap.containsKey(id)).collect(Collectors.toSet());
+        int insertCount = 0;
+        if (!toInsert.isEmpty()) insertCount = qCloudFpgaCvmMapper.insertBatch(toInsert);
+        if (!toDeleteIds.isEmpty()) { LambdaUpdateWrapper<QCloudFpgaCvm> uw = new LambdaUpdateWrapper<>(); uw.eq(QCloudFpgaCvm::getConfName, cloudConf.getName()).in(QCloudFpgaCvm::getInstanceId, toDeleteIds).set(QCloudFpgaCvm::getDeleted, 1); qCloudFpgaCvmMapper.update(null, uw); }
+        return insertCount;
+    }
+
+    private int syncCvmDedicated(QCloudClient qCloudClient, CloudConf cloudConf) {
+        List<QCloudCvmDedicated> apiList = qCloudClient.listCvmDedicated();
+        List<QCloudCvmDedicated> dbList = qCloudCvmDedicatedMapper.selectByConfName(cloudConf.getName());
+        Map<String, QCloudCvmDedicated> apiMap = apiList.stream().filter(e -> e.getInstanceId() != null).collect(Collectors.toMap(QCloudCvmDedicated::getInstanceId, e -> e, (a, b) -> a));
+        Map<String, QCloudCvmDedicated> dbMap = dbList.stream().filter(e -> e.getInstanceId() != null).collect(Collectors.toMap(QCloudCvmDedicated::getInstanceId, e -> e, (a, b) -> a));
+        List<QCloudCvmDedicated> toInsert = apiList.stream().filter(e -> e.getInstanceId() != null && !dbMap.containsKey(e.getInstanceId())).collect(Collectors.toList());
+        Set<String> toDeleteIds = dbMap.keySet().stream().filter(id -> !apiMap.containsKey(id)).collect(Collectors.toSet());
+        int insertCount = 0;
+        if (!toInsert.isEmpty()) insertCount = qCloudCvmDedicatedMapper.insertBatch(toInsert);
+        if (!toDeleteIds.isEmpty()) { LambdaUpdateWrapper<QCloudCvmDedicated> uw = new LambdaUpdateWrapper<>(); uw.eq(QCloudCvmDedicated::getConfName, cloudConf.getName()).in(QCloudCvmDedicated::getInstanceId, toDeleteIds).set(QCloudCvmDedicated::getDeleted, 1); qCloudCvmDedicatedMapper.update(null, uw); }
+        return insertCount;
+    }
+
+    private int syncHpcCluster(QCloudClient qCloudClient, CloudConf cloudConf) {
+        List<QCloudHpcCluster> apiList = qCloudClient.listHpcCluster();
+        List<QCloudHpcCluster> dbList = qCloudHpcClusterMapper.selectByConfName(cloudConf.getName());
+        Map<String, QCloudHpcCluster> apiMap = apiList.stream().filter(e -> e.getClusterId() != null).collect(Collectors.toMap(QCloudHpcCluster::getClusterId, e -> e, (a, b) -> a));
+        Map<String, QCloudHpcCluster> dbMap = dbList.stream().filter(e -> e.getClusterId() != null).collect(Collectors.toMap(QCloudHpcCluster::getClusterId, e -> e, (a, b) -> a));
+        List<QCloudHpcCluster> toInsert = apiList.stream().filter(e -> e.getClusterId() != null && !dbMap.containsKey(e.getClusterId())).collect(Collectors.toList());
+        Set<String> toDeleteIds = dbMap.keySet().stream().filter(id -> !apiMap.containsKey(id)).collect(Collectors.toSet());
+        int insertCount = 0;
+        if (!toInsert.isEmpty()) insertCount = qCloudHpcClusterMapper.insertBatch(toInsert);
+        if (!toDeleteIds.isEmpty()) { LambdaUpdateWrapper<QCloudHpcCluster> uw = new LambdaUpdateWrapper<>(); uw.eq(QCloudHpcCluster::getConfName, cloudConf.getName()).in(QCloudHpcCluster::getClusterId, toDeleteIds).set(QCloudHpcCluster::getDeleted, 1); qCloudHpcClusterMapper.update(null, uw); }
+        return insertCount;
+    }
+
+    private int syncHpcPlatform(QCloudClient qCloudClient, CloudConf cloudConf) {
+        List<QCloudHpcPlatform> apiList = qCloudClient.listHpcPlatform();
+        List<QCloudHpcPlatform> dbList = qCloudHpcPlatformMapper.selectByConfName(cloudConf.getName());
+        Map<String, QCloudHpcPlatform> apiMap = apiList.stream().filter(e -> e.getClusterId() != null).collect(Collectors.toMap(QCloudHpcPlatform::getClusterId, e -> e, (a, b) -> a));
+        Map<String, QCloudHpcPlatform> dbMap = dbList.stream().filter(e -> e.getClusterId() != null).collect(Collectors.toMap(QCloudHpcPlatform::getClusterId, e -> e, (a, b) -> a));
+        List<QCloudHpcPlatform> toInsert = apiList.stream().filter(e -> e.getClusterId() != null && !dbMap.containsKey(e.getClusterId())).collect(Collectors.toList());
+        Set<String> toDeleteIds = dbMap.keySet().stream().filter(id -> !apiMap.containsKey(id)).collect(Collectors.toSet());
+        int insertCount = 0;
+        if (!toInsert.isEmpty()) insertCount = qCloudHpcPlatformMapper.insertBatch(toInsert);
+        if (!toDeleteIds.isEmpty()) { LambdaUpdateWrapper<QCloudHpcPlatform> uw = new LambdaUpdateWrapper<>(); uw.eq(QCloudHpcPlatform::getConfName, cloudConf.getName()).in(QCloudHpcPlatform::getClusterId, toDeleteIds).set(QCloudHpcPlatform::getDeleted, 1); qCloudHpcPlatformMapper.update(null, uw); }
+        return insertCount;
+    }
+
+    private int syncGooseFS(QCloudClient qCloudClient, CloudConf cloudConf) {
+        List<QCloudGooseFS> apiList = qCloudClient.listGooseFS();
+        List<QCloudGooseFS> dbList = qCloudGooseFSMapper.selectByConfName(cloudConf.getName());
+        Map<String, QCloudGooseFS> apiMap = apiList.stream().filter(e -> e.getClusterId() != null).collect(Collectors.toMap(QCloudGooseFS::getClusterId, e -> e, (a, b) -> a));
+        Map<String, QCloudGooseFS> dbMap = dbList.stream().filter(e -> e.getClusterId() != null).collect(Collectors.toMap(QCloudGooseFS::getClusterId, e -> e, (a, b) -> a));
+        List<QCloudGooseFS> toInsert = apiList.stream().filter(e -> e.getClusterId() != null && !dbMap.containsKey(e.getClusterId())).collect(Collectors.toList());
+        Set<String> toDeleteIds = dbMap.keySet().stream().filter(id -> !apiMap.containsKey(id)).collect(Collectors.toSet());
+        int insertCount = 0;
+        if (!toInsert.isEmpty()) insertCount = qCloudGooseFSMapper.insertBatch(toInsert);
+        if (!toDeleteIds.isEmpty()) { LambdaUpdateWrapper<QCloudGooseFS> uw = new LambdaUpdateWrapper<>(); uw.eq(QCloudGooseFS::getConfName, cloudConf.getName()).in(QCloudGooseFS::getClusterId, toDeleteIds).set(QCloudGooseFS::getDeleted, 1); qCloudGooseFSMapper.update(null, uw); }
+        return insertCount;
+    }
+
+    private int syncCi(QCloudClient qCloudClient, CloudConf cloudConf) {
+        List<QCloudCi> apiList = qCloudClient.listCi();
+        List<QCloudCi> dbList = qCloudCiMapper.selectByConfName(cloudConf.getName());
+        Map<String, QCloudCi> apiMap = apiList.stream().filter(e -> e.getBucketId() != null).collect(Collectors.toMap(QCloudCi::getBucketId, e -> e, (a, b) -> a));
+        Map<String, QCloudCi> dbMap = dbList.stream().filter(e -> e.getBucketId() != null).collect(Collectors.toMap(QCloudCi::getBucketId, e -> e, (a, b) -> a));
+        List<QCloudCi> toInsert = apiList.stream().filter(e -> e.getBucketId() != null && !dbMap.containsKey(e.getBucketId())).collect(Collectors.toList());
+        Set<String> toDeleteIds = dbMap.keySet().stream().filter(id -> !apiMap.containsKey(id)).collect(Collectors.toSet());
+        int insertCount = 0;
+        if (!toInsert.isEmpty()) insertCount = qCloudCiMapper.insertBatch(toInsert);
+        if (!toDeleteIds.isEmpty()) { LambdaUpdateWrapper<QCloudCi> uw = new LambdaUpdateWrapper<>(); uw.eq(QCloudCi::getConfName, cloudConf.getName()).in(QCloudCi::getBucketId, toDeleteIds).set(QCloudCi::getDeleted, 1); qCloudCiMapper.update(null, uw); }
+        return insertCount;
+    }
+
+    private int syncSmartMedia(QCloudClient qCloudClient, CloudConf cloudConf) {
+        List<QCloudSmartMedia> apiList = qCloudClient.listSmartMedia();
+        List<QCloudSmartMedia> dbList = qCloudSmartMediaMapper.selectByConfName(cloudConf.getName());
+        Map<String, QCloudSmartMedia> apiMap = apiList.stream().filter(e -> e.getBucketId() != null).collect(Collectors.toMap(QCloudSmartMedia::getBucketId, e -> e, (a, b) -> a));
+        Map<String, QCloudSmartMedia> dbMap = dbList.stream().filter(e -> e.getBucketId() != null).collect(Collectors.toMap(QCloudSmartMedia::getBucketId, e -> e, (a, b) -> a));
+        List<QCloudSmartMedia> toInsert = apiList.stream().filter(e -> e.getBucketId() != null && !dbMap.containsKey(e.getBucketId())).collect(Collectors.toList());
+        Set<String> toDeleteIds = dbMap.keySet().stream().filter(id -> !apiMap.containsKey(id)).collect(Collectors.toSet());
+        int insertCount = 0;
+        if (!toInsert.isEmpty()) insertCount = qCloudSmartMediaMapper.insertBatch(toInsert);
+        if (!toDeleteIds.isEmpty()) { LambdaUpdateWrapper<QCloudSmartMedia> uw = new LambdaUpdateWrapper<>(); uw.eq(QCloudSmartMedia::getConfName, cloudConf.getName()).in(QCloudSmartMedia::getBucketId, toDeleteIds).set(QCloudSmartMedia::getDeleted, 1); qCloudSmartMediaMapper.update(null, uw); }
+        return insertCount;
+    }
+
+    private int syncTdsqlBoundless(QCloudClient qCloudClient, CloudConf cloudConf) {
+        List<QCloudTdsqlBoundless> apiList = qCloudClient.listTdsqlBoundless();
+        List<QCloudTdsqlBoundless> dbList = qCloudTdsqlBoundlessMapper.selectByConfName(cloudConf.getName());
+        Map<String, QCloudTdsqlBoundless> apiMap = apiList.stream().filter(e -> e.getInstanceId() != null).collect(Collectors.toMap(QCloudTdsqlBoundless::getInstanceId, e -> e, (a, b) -> a));
+        Map<String, QCloudTdsqlBoundless> dbMap = dbList.stream().filter(e -> e.getInstanceId() != null).collect(Collectors.toMap(QCloudTdsqlBoundless::getInstanceId, e -> e, (a, b) -> a));
+        List<QCloudTdsqlBoundless> toInsert = apiList.stream().filter(e -> e.getInstanceId() != null && !dbMap.containsKey(e.getInstanceId())).collect(Collectors.toList());
+        Set<String> toDeleteIds = dbMap.keySet().stream().filter(id -> !apiMap.containsKey(id)).collect(Collectors.toSet());
+        int insertCount = 0;
+        if (!toInsert.isEmpty()) insertCount = qCloudTdsqlBoundlessMapper.insertBatch(toInsert);
+        if (!toDeleteIds.isEmpty()) { LambdaUpdateWrapper<QCloudTdsqlBoundless> uw = new LambdaUpdateWrapper<>(); uw.eq(QCloudTdsqlBoundless::getConfName, cloudConf.getName()).in(QCloudTdsqlBoundless::getInstanceId, toDeleteIds).set(QCloudTdsqlBoundless::getDeleted, 1); qCloudTdsqlBoundlessMapper.update(null, uw); }
+        return insertCount;
+    }
+
+    private int syncVectorDb(QCloudClient qCloudClient, CloudConf cloudConf) {
+        List<QCloudVectorDb> apiList = qCloudClient.listVectorDb();
+        List<QCloudVectorDb> dbList = qCloudVectorDbMapper.selectByConfName(cloudConf.getName());
+        Map<String, QCloudVectorDb> apiMap = apiList.stream().filter(e -> e.getInstanceId() != null).collect(Collectors.toMap(QCloudVectorDb::getInstanceId, e -> e, (a, b) -> a));
+        Map<String, QCloudVectorDb> dbMap = dbList.stream().filter(e -> e.getInstanceId() != null).collect(Collectors.toMap(QCloudVectorDb::getInstanceId, e -> e, (a, b) -> a));
+        List<QCloudVectorDb> toInsert = apiList.stream().filter(e -> e.getInstanceId() != null && !dbMap.containsKey(e.getInstanceId())).collect(Collectors.toList());
+        Set<String> toDeleteIds = dbMap.keySet().stream().filter(id -> !apiMap.containsKey(id)).collect(Collectors.toSet());
+        int insertCount = 0;
+        if (!toInsert.isEmpty()) insertCount = qCloudVectorDbMapper.insertBatch(toInsert);
+        if (!toDeleteIds.isEmpty()) { LambdaUpdateWrapper<QCloudVectorDb> uw = new LambdaUpdateWrapper<>(); uw.eq(QCloudVectorDb::getConfName, cloudConf.getName()).in(QCloudVectorDb::getInstanceId, toDeleteIds).set(QCloudVectorDb::getDeleted, 1); qCloudVectorDbMapper.update(null, uw); }
+        return insertCount;
+    }
+
+    private int syncTdsqlDistributed(QCloudClient qCloudClient, CloudConf cloudConf) {
+        List<QCloudTdsqlDistributed> apiList = qCloudClient.listTdsqlDistributed();
+        List<QCloudTdsqlDistributed> dbList = qCloudTdsqlDistributedMapper.selectByConfName(cloudConf.getName());
+        Map<String, QCloudTdsqlDistributed> apiMap = apiList.stream().filter(e -> e.getInstanceId() != null).collect(Collectors.toMap(QCloudTdsqlDistributed::getInstanceId, e -> e, (a, b) -> a));
+        Map<String, QCloudTdsqlDistributed> dbMap = dbList.stream().filter(e -> e.getInstanceId() != null).collect(Collectors.toMap(QCloudTdsqlDistributed::getInstanceId, e -> e, (a, b) -> a));
+        List<QCloudTdsqlDistributed> toInsert = apiList.stream().filter(e -> e.getInstanceId() != null && !dbMap.containsKey(e.getInstanceId())).collect(Collectors.toList());
+        Set<String> toDeleteIds = dbMap.keySet().stream().filter(id -> !apiMap.containsKey(id)).collect(Collectors.toSet());
+        int insertCount = 0;
+        if (!toInsert.isEmpty()) insertCount = qCloudTdsqlDistributedMapper.insertBatch(toInsert);
+        if (!toDeleteIds.isEmpty()) { LambdaUpdateWrapper<QCloudTdsqlDistributed> uw = new LambdaUpdateWrapper<>(); uw.eq(QCloudTdsqlDistributed::getConfName, cloudConf.getName()).in(QCloudTdsqlDistributed::getInstanceId, toDeleteIds).set(QCloudTdsqlDistributed::getDeleted, 1); qCloudTdsqlDistributedMapper.update(null, uw); }
+        return insertCount;
+    }
+
+    private int syncDesktop(QCloudClient qCloudClient, CloudConf cloudConf) {
+        List<QCloudDesktop> apiList = qCloudClient.listDesktop();
+        List<QCloudDesktop> dbList = qCloudDesktopMapper.selectByConfName(cloudConf.getName());
+        Map<String, QCloudDesktop> apiMap = apiList.stream().filter(e -> e.getDesktopId() != null).collect(Collectors.toMap(QCloudDesktop::getDesktopId, e -> e, (a, b) -> a));
+        Map<String, QCloudDesktop> dbMap = dbList.stream().filter(e -> e.getDesktopId() != null).collect(Collectors.toMap(QCloudDesktop::getDesktopId, e -> e, (a, b) -> a));
+        List<QCloudDesktop> toInsert = apiList.stream().filter(e -> e.getDesktopId() != null && !dbMap.containsKey(e.getDesktopId())).collect(Collectors.toList());
+        Set<String> toDeleteIds = dbMap.keySet().stream().filter(id -> !apiMap.containsKey(id)).collect(Collectors.toSet());
+        int insertCount = 0;
+        if (!toInsert.isEmpty()) insertCount = qCloudDesktopMapper.insertBatch(toInsert);
+        if (!toDeleteIds.isEmpty()) { LambdaUpdateWrapper<QCloudDesktop> uw = new LambdaUpdateWrapper<>(); uw.eq(QCloudDesktop::getConfName, cloudConf.getName()).in(QCloudDesktop::getDesktopId, toDeleteIds).set(QCloudDesktop::getDeleted, 1); qCloudDesktopMapper.update(null, uw); }
+        return insertCount;
+    }
+
+    private int syncFlowLog(QCloudClient qCloudClient, CloudConf cloudConf) {
+        List<QCloudFlowLog> apiList = qCloudClient.listFlowLog();
+        List<QCloudFlowLog> dbList = qCloudFlowLogMapper.selectByConfName(cloudConf.getName());
+        Map<String, QCloudFlowLog> apiMap = apiList.stream().filter(e -> e.getFlowLogId() != null).collect(Collectors.toMap(QCloudFlowLog::getFlowLogId, e -> e, (a, b) -> a));
+        Map<String, QCloudFlowLog> dbMap = dbList.stream().filter(e -> e.getFlowLogId() != null).collect(Collectors.toMap(QCloudFlowLog::getFlowLogId, e -> e, (a, b) -> a));
+        List<QCloudFlowLog> toInsert = apiList.stream().filter(e -> e.getFlowLogId() != null && !dbMap.containsKey(e.getFlowLogId())).collect(Collectors.toList());
+        Set<String> toDeleteIds = dbMap.keySet().stream().filter(id -> !apiMap.containsKey(id)).collect(Collectors.toSet());
+        int insertCount = 0;
+        if (!toInsert.isEmpty()) insertCount = qCloudFlowLogMapper.insertBatch(toInsert);
+        if (!toDeleteIds.isEmpty()) { LambdaUpdateWrapper<QCloudFlowLog> uw = new LambdaUpdateWrapper<>(); uw.eq(QCloudFlowLog::getConfName, cloudConf.getName()).in(QCloudFlowLog::getFlowLogId, toDeleteIds).set(QCloudFlowLog::getDeleted, 1); qCloudFlowLogMapper.update(null, uw); }
+        return insertCount;
+    }
+
+    private int syncBandwidthPackage(QCloudClient qCloudClient, CloudConf cloudConf) {
+        List<QCloudBandwidthPackage> apiList = qCloudClient.listBandwidthPackage();
+        List<QCloudBandwidthPackage> dbList = qCloudBandwidthPackageMapper.selectByConfName(cloudConf.getName());
+        Map<String, QCloudBandwidthPackage> apiMap = apiList.stream().filter(e -> e.getBandwidthPackageId() != null).collect(Collectors.toMap(QCloudBandwidthPackage::getBandwidthPackageId, e -> e, (a, b) -> a));
+        Map<String, QCloudBandwidthPackage> dbMap = dbList.stream().filter(e -> e.getBandwidthPackageId() != null).collect(Collectors.toMap(QCloudBandwidthPackage::getBandwidthPackageId, e -> e, (a, b) -> a));
+        List<QCloudBandwidthPackage> toInsert = apiList.stream().filter(e -> e.getBandwidthPackageId() != null && !dbMap.containsKey(e.getBandwidthPackageId())).collect(Collectors.toList());
+        Set<String> toDeleteIds = dbMap.keySet().stream().filter(id -> !apiMap.containsKey(id)).collect(Collectors.toSet());
+        int insertCount = 0;
+        if (!toInsert.isEmpty()) insertCount = qCloudBandwidthPackageMapper.insertBatch(toInsert);
+        if (!toDeleteIds.isEmpty()) { LambdaUpdateWrapper<QCloudBandwidthPackage> uw = new LambdaUpdateWrapper<>(); uw.eq(QCloudBandwidthPackage::getConfName, cloudConf.getName()).in(QCloudBandwidthPackage::getBandwidthPackageId, toDeleteIds).set(QCloudBandwidthPackage::getDeleted, 1); qCloudBandwidthPackageMapper.update(null, uw); }
+        return insertCount;
+    }
+
+    private int syncTrafficPackage(QCloudClient qCloudClient, CloudConf cloudConf) {
+        List<QCloudTrafficPackage> apiList = qCloudClient.listTrafficPackage();
+        List<QCloudTrafficPackage> dbList = qCloudTrafficPackageMapper.selectByConfName(cloudConf.getName());
+        Map<String, QCloudTrafficPackage> apiMap = apiList.stream().filter(e -> e.getTrafficPackageId() != null).collect(Collectors.toMap(QCloudTrafficPackage::getTrafficPackageId, e -> e, (a, b) -> a));
+        Map<String, QCloudTrafficPackage> dbMap = dbList.stream().filter(e -> e.getTrafficPackageId() != null).collect(Collectors.toMap(QCloudTrafficPackage::getTrafficPackageId, e -> e, (a, b) -> a));
+        List<QCloudTrafficPackage> toInsert = apiList.stream().filter(e -> e.getTrafficPackageId() != null && !dbMap.containsKey(e.getTrafficPackageId())).collect(Collectors.toList());
+        Set<String> toDeleteIds = dbMap.keySet().stream().filter(id -> !apiMap.containsKey(id)).collect(Collectors.toSet());
+        int insertCount = 0;
+        if (!toInsert.isEmpty()) insertCount = qCloudTrafficPackageMapper.insertBatch(toInsert);
+        if (!toDeleteIds.isEmpty()) { LambdaUpdateWrapper<QCloudTrafficPackage> uw = new LambdaUpdateWrapper<>(); uw.eq(QCloudTrafficPackage::getConfName, cloudConf.getName()).in(QCloudTrafficPackage::getTrafficPackageId, toDeleteIds).set(QCloudTrafficPackage::getDeleted, 1); qCloudTrafficPackageMapper.update(null, uw); }
+        return insertCount;
+    }
+
+    private int syncIpv6(QCloudClient qCloudClient, CloudConf cloudConf) {
+        List<QCloudIpv6> apiList = qCloudClient.listIpv6();
+        List<QCloudIpv6> dbList = qCloudIpv6Mapper.selectByConfName(cloudConf.getName());
+        Map<String, QCloudIpv6> apiMap = apiList.stream().filter(e -> e.getIpv6Address() != null).collect(Collectors.toMap(QCloudIpv6::getIpv6Address, e -> e, (a, b) -> a));
+        Map<String, QCloudIpv6> dbMap = dbList.stream().filter(e -> e.getIpv6Address() != null).collect(Collectors.toMap(QCloudIpv6::getIpv6Address, e -> e, (a, b) -> a));
+        List<QCloudIpv6> toInsert = apiList.stream().filter(e -> e.getIpv6Address() != null && !dbMap.containsKey(e.getIpv6Address())).collect(Collectors.toList());
+        Set<String> toDeleteIds = dbMap.keySet().stream().filter(id -> !apiMap.containsKey(id)).collect(Collectors.toSet());
+        int insertCount = 0;
+        if (!toInsert.isEmpty()) insertCount = qCloudIpv6Mapper.insertBatch(toInsert);
+        if (!toDeleteIds.isEmpty()) { LambdaUpdateWrapper<QCloudIpv6> uw = new LambdaUpdateWrapper<>(); uw.eq(QCloudIpv6::getConfName, cloudConf.getName()).in(QCloudIpv6::getIpv6Address, toDeleteIds).set(QCloudIpv6::getDeleted, 1); qCloudIpv6Mapper.update(null, uw); }
+        return insertCount;
+    }
+
+    private int syncCc(QCloudClient qCloudClient, CloudConf cloudConf) {
+        List<QCloudCc> apiList = qCloudClient.listCc();
+        List<QCloudCc> dbList = qCloudCcMapper.selectByConfName(cloudConf.getName());
+        Map<String, QCloudCc> apiMap = apiList.stream().filter(e -> e.getCcnId() != null).collect(Collectors.toMap(QCloudCc::getCcnId, e -> e, (a, b) -> a));
+        Map<String, QCloudCc> dbMap = dbList.stream().filter(e -> e.getCcnId() != null).collect(Collectors.toMap(QCloudCc::getCcnId, e -> e, (a, b) -> a));
+        List<QCloudCc> toInsert = apiList.stream().filter(e -> e.getCcnId() != null && !dbMap.containsKey(e.getCcnId())).collect(Collectors.toList());
+        Set<String> toDeleteIds = dbMap.keySet().stream().filter(id -> !apiMap.containsKey(id)).collect(Collectors.toSet());
+        int insertCount = 0;
+        if (!toInsert.isEmpty()) insertCount = qCloudCcMapper.insertBatch(toInsert);
+        if (!toDeleteIds.isEmpty()) { LambdaUpdateWrapper<QCloudCc> uw = new LambdaUpdateWrapper<>(); uw.eq(QCloudCc::getConfName, cloudConf.getName()).in(QCloudCc::getCcnId, toDeleteIds).set(QCloudCc::getDeleted, 1); qCloudCcMapper.update(null, uw); }
+        return insertCount;
+    }
+
+    private int syncVpn(QCloudClient qCloudClient, CloudConf cloudConf) {
+        List<QCloudVpn> apiList = qCloudClient.listVpn();
+        List<QCloudVpn> dbList = qCloudVpnMapper.selectByConfName(cloudConf.getName());
+        Map<String, QCloudVpn> apiMap = apiList.stream().filter(e -> e.getVpnGatewayId() != null).collect(Collectors.toMap(QCloudVpn::getVpnGatewayId, e -> e, (a, b) -> a));
+        Map<String, QCloudVpn> dbMap = dbList.stream().filter(e -> e.getVpnGatewayId() != null).collect(Collectors.toMap(QCloudVpn::getVpnGatewayId, e -> e, (a, b) -> a));
+        List<QCloudVpn> toInsert = apiList.stream().filter(e -> e.getVpnGatewayId() != null && !dbMap.containsKey(e.getVpnGatewayId())).collect(Collectors.toList());
+        Set<String> toDeleteIds = dbMap.keySet().stream().filter(id -> !apiMap.containsKey(id)).collect(Collectors.toSet());
+        int insertCount = 0;
+        if (!toInsert.isEmpty()) insertCount = qCloudVpnMapper.insertBatch(toInsert);
+        if (!toDeleteIds.isEmpty()) { LambdaUpdateWrapper<QCloudVpn> uw = new LambdaUpdateWrapper<>(); uw.eq(QCloudVpn::getConfName, cloudConf.getName()).in(QCloudVpn::getVpnGatewayId, toDeleteIds).set(QCloudVpn::getDeleted, 1); qCloudVpnMapper.update(null, uw); }
+        return insertCount;
+    }
+
+    private int syncPeering(QCloudClient qCloudClient, CloudConf cloudConf) {
+        List<QCloudPeering> apiList = qCloudClient.listPeering();
+        List<QCloudPeering> dbList = qCloudPeeringMapper.selectByConfName(cloudConf.getName());
+        Map<String, QCloudPeering> apiMap = apiList.stream().filter(e -> e.getPeeringConnectionId() != null).collect(Collectors.toMap(QCloudPeering::getPeeringConnectionId, e -> e, (a, b) -> a));
+        Map<String, QCloudPeering> dbMap = dbList.stream().filter(e -> e.getPeeringConnectionId() != null).collect(Collectors.toMap(QCloudPeering::getPeeringConnectionId, e -> e, (a, b) -> a));
+        List<QCloudPeering> toInsert = apiList.stream().filter(e -> e.getPeeringConnectionId() != null && !dbMap.containsKey(e.getPeeringConnectionId())).collect(Collectors.toList());
+        Set<String> toDeleteIds = dbMap.keySet().stream().filter(id -> !apiMap.containsKey(id)).collect(Collectors.toSet());
+        int insertCount = 0;
+        if (!toInsert.isEmpty()) insertCount = qCloudPeeringMapper.insertBatch(toInsert);
+        if (!toDeleteIds.isEmpty()) { LambdaUpdateWrapper<QCloudPeering> uw = new LambdaUpdateWrapper<>(); uw.eq(QCloudPeering::getConfName, cloudConf.getName()).in(QCloudPeering::getPeeringConnectionId, toDeleteIds).set(QCloudPeering::getDeleted, 1); qCloudPeeringMapper.update(null, uw); }
+        return insertCount;
+    }
+
+    private int syncSdwan(QCloudClient qCloudClient, CloudConf cloudConf) {
+        List<QCloudSdwan> apiList = qCloudClient.listSdwan();
+        List<QCloudSdwan> dbList = qCloudSdwanMapper.selectByConfName(cloudConf.getName());
+        Map<String, QCloudSdwan> apiMap = apiList.stream().filter(e -> e.getInstanceId() != null).collect(Collectors.toMap(QCloudSdwan::getInstanceId, e -> e, (a, b) -> a));
+        Map<String, QCloudSdwan> dbMap = dbList.stream().filter(e -> e.getInstanceId() != null).collect(Collectors.toMap(QCloudSdwan::getInstanceId, e -> e, (a, b) -> a));
+        List<QCloudSdwan> toInsert = apiList.stream().filter(e -> e.getInstanceId() != null && !dbMap.containsKey(e.getInstanceId())).collect(Collectors.toList());
+        Set<String> toDeleteIds = dbMap.keySet().stream().filter(id -> !apiMap.containsKey(id)).collect(Collectors.toSet());
+        int insertCount = 0;
+        if (!toInsert.isEmpty()) insertCount = qCloudSdwanMapper.insertBatch(toInsert);
+        if (!toDeleteIds.isEmpty()) { LambdaUpdateWrapper<QCloudSdwan> uw = new LambdaUpdateWrapper<>(); uw.eq(QCloudSdwan::getConfName, cloudConf.getName()).in(QCloudSdwan::getInstanceId, toDeleteIds).set(QCloudSdwan::getDeleted, 1); qCloudSdwanMapper.update(null, uw); }
+        return insertCount;
+    }
+
+    private int syncWsA(QCloudClient qCloudClient, CloudConf cloudConf) {
+        List<QCloudWsA> apiList = qCloudClient.listWsA();
+        List<QCloudWsA> dbList = qCloudWsAMapper.selectByConfName(cloudConf.getName());
+        Map<String, QCloudWsA> apiMap = apiList.stream().filter(e -> e.getDomain() != null).collect(Collectors.toMap(QCloudWsA::getDomain, e -> e, (a, b) -> a));
+        Map<String, QCloudWsA> dbMap = dbList.stream().filter(e -> e.getDomain() != null).collect(Collectors.toMap(QCloudWsA::getDomain, e -> e, (a, b) -> a));
+        List<QCloudWsA> toInsert = apiList.stream().filter(e -> e.getDomain() != null && !dbMap.containsKey(e.getDomain())).collect(Collectors.toList());
+        Set<String> toDeleteIds = dbMap.keySet().stream().filter(id -> !apiMap.containsKey(id)).collect(Collectors.toSet());
+        int insertCount = 0;
+        if (!toInsert.isEmpty()) insertCount = qCloudWsAMapper.insertBatch(toInsert);
+        if (!toDeleteIds.isEmpty()) { LambdaUpdateWrapper<QCloudWsA> uw = new LambdaUpdateWrapper<>(); uw.eq(QCloudWsA::getConfName, cloudConf.getName()).in(QCloudWsA::getDomain, toDeleteIds).set(QCloudWsA::getDeleted, 1); qCloudWsAMapper.update(null, uw); }
+        return insertCount;
+    }
+
+    private int syncScdn(QCloudClient qCloudClient, CloudConf cloudConf) {
+        List<QCloudScdn> apiList = qCloudClient.listScdn();
+        List<QCloudScdn> dbList = qCloudScdnMapper.selectByConfName(cloudConf.getName());
+        Map<String, QCloudScdn> apiMap = apiList.stream().filter(e -> e.getDomain() != null).collect(Collectors.toMap(QCloudScdn::getDomain, e -> e, (a, b) -> a));
+        Map<String, QCloudScdn> dbMap = dbList.stream().filter(e -> e.getDomain() != null).collect(Collectors.toMap(QCloudScdn::getDomain, e -> e, (a, b) -> a));
+        List<QCloudScdn> toInsert = apiList.stream().filter(e -> e.getDomain() != null && !dbMap.containsKey(e.getDomain())).collect(Collectors.toList());
+        Set<String> toDeleteIds = dbMap.keySet().stream().filter(id -> !apiMap.containsKey(id)).collect(Collectors.toSet());
+        int insertCount = 0;
+        if (!toInsert.isEmpty()) insertCount = qCloudScdnMapper.insertBatch(toInsert);
+        if (!toDeleteIds.isEmpty()) { LambdaUpdateWrapper<QCloudScdn> uw = new LambdaUpdateWrapper<>(); uw.eq(QCloudScdn::getConfName, cloudConf.getName()).in(QCloudScdn::getDomain, toDeleteIds).set(QCloudScdn::getDeleted, 1); qCloudScdnMapper.update(null, uw); }
+        return insertCount;
+    }
+
+    private int syncEcm(QCloudClient qCloudClient, CloudConf cloudConf) {
+        List<QCloudEcm> apiList = qCloudClient.listEcm();
+        List<QCloudEcm> dbList = qCloudEcmMapper.selectByConfName(cloudConf.getName());
+        Map<String, QCloudEcm> apiMap = apiList.stream().filter(e -> e.getInstanceId() != null).collect(Collectors.toMap(QCloudEcm::getInstanceId, e -> e, (a, b) -> a));
+        Map<String, QCloudEcm> dbMap = dbList.stream().filter(e -> e.getInstanceId() != null).collect(Collectors.toMap(QCloudEcm::getInstanceId, e -> e, (a, b) -> a));
+        List<QCloudEcm> toInsert = apiList.stream().filter(e -> e.getInstanceId() != null && !dbMap.containsKey(e.getInstanceId())).collect(Collectors.toList());
+        Set<String> toDeleteIds = dbMap.keySet().stream().filter(id -> !apiMap.containsKey(id)).collect(Collectors.toSet());
+        int insertCount = 0;
+        if (!toInsert.isEmpty()) insertCount = qCloudEcmMapper.insertBatch(toInsert);
+        if (!toDeleteIds.isEmpty()) { LambdaUpdateWrapper<QCloudEcm> uw = new LambdaUpdateWrapper<>(); uw.eq(QCloudEcm::getConfName, cloudConf.getName()).in(QCloudEcm::getInstanceId, toDeleteIds).set(QCloudEcm::getDeleted, 1); qCloudEcmMapper.update(null, uw); }
+        return insertCount;
+    }
+
+    private int syncIm(QCloudClient qCloudClient, CloudConf cloudConf) {
+        List<QCloudIm> apiList = qCloudClient.listIm();
+        List<QCloudIm> dbList = qCloudImMapper.selectByConfName(cloudConf.getName());
+        Map<String, QCloudIm> apiMap = apiList.stream().filter(e -> e.getAppId() != null).collect(Collectors.toMap(QCloudIm::getAppId, e -> e, (a, b) -> a));
+        Map<String, QCloudIm> dbMap = dbList.stream().filter(e -> e.getAppId() != null).collect(Collectors.toMap(QCloudIm::getAppId, e -> e, (a, b) -> a));
+        List<QCloudIm> toInsert = apiList.stream().filter(e -> e.getAppId() != null && !dbMap.containsKey(e.getAppId())).collect(Collectors.toList());
+        Set<String> toDeleteIds = dbMap.keySet().stream().filter(id -> !apiMap.containsKey(id)).collect(Collectors.toSet());
+        int insertCount = 0;
+        if (!toInsert.isEmpty()) insertCount = qCloudImMapper.insertBatch(toInsert);
+        if (!toDeleteIds.isEmpty()) { LambdaUpdateWrapper<QCloudIm> uw = new LambdaUpdateWrapper<>(); uw.eq(QCloudIm::getConfName, cloudConf.getName()).in(QCloudIm::getAppId, toDeleteIds).set(QCloudIm::getDeleted, 1); qCloudImMapper.update(null, uw); }
+        return insertCount;
+    }
+
+    private int syncMps(QCloudClient qCloudClient, CloudConf cloudConf) {
+        List<QCloudMps> apiList = qCloudClient.listMps();
+        List<QCloudMps> dbList = qCloudMpsMapper.selectByConfName(cloudConf.getName());
+        Map<String, QCloudMps> apiMap = apiList.stream().filter(e -> e.getTaskId() != null).collect(Collectors.toMap(QCloudMps::getTaskId, e -> e, (a, b) -> a));
+        Map<String, QCloudMps> dbMap = dbList.stream().filter(e -> e.getTaskId() != null).collect(Collectors.toMap(QCloudMps::getTaskId, e -> e, (a, b) -> a));
+        List<QCloudMps> toInsert = apiList.stream().filter(e -> e.getTaskId() != null && !dbMap.containsKey(e.getTaskId())).collect(Collectors.toList());
+        Set<String> toDeleteIds = dbMap.keySet().stream().filter(id -> !apiMap.containsKey(id)).collect(Collectors.toSet());
+        int insertCount = 0;
+        if (!toInsert.isEmpty()) insertCount = qCloudMpsMapper.insertBatch(toInsert);
+        if (!toDeleteIds.isEmpty()) { LambdaUpdateWrapper<QCloudMps> uw = new LambdaUpdateWrapper<>(); uw.eq(QCloudMps::getConfName, cloudConf.getName()).in(QCloudMps::getTaskId, toDeleteIds).set(QCloudMps::getDeleted, 1); qCloudMpsMapper.update(null, uw); }
+        return insertCount;
+    }
+
+    private int syncEnhanceMedia(QCloudClient qCloudClient, CloudConf cloudConf) {
+        List<QCloudEnhanceMedia> apiList = qCloudClient.listEnhanceMedia();
+        List<QCloudEnhanceMedia> dbList = qCloudEnhanceMediaMapper.selectByConfName(cloudConf.getName());
+        Map<String, QCloudEnhanceMedia> apiMap = apiList.stream().filter(e -> e.getTaskId() != null).collect(Collectors.toMap(QCloudEnhanceMedia::getTaskId, e -> e, (a, b) -> a));
+        Map<String, QCloudEnhanceMedia> dbMap = dbList.stream().filter(e -> e.getTaskId() != null).collect(Collectors.toMap(QCloudEnhanceMedia::getTaskId, e -> e, (a, b) -> a));
+        List<QCloudEnhanceMedia> toInsert = apiList.stream().filter(e -> e.getTaskId() != null && !dbMap.containsKey(e.getTaskId())).collect(Collectors.toList());
+        Set<String> toDeleteIds = dbMap.keySet().stream().filter(id -> !apiMap.containsKey(id)).collect(Collectors.toSet());
+        int insertCount = 0;
+        if (!toInsert.isEmpty()) insertCount = qCloudEnhanceMediaMapper.insertBatch(toInsert);
+        if (!toDeleteIds.isEmpty()) { LambdaUpdateWrapper<QCloudEnhanceMedia> uw = new LambdaUpdateWrapper<>(); uw.eq(QCloudEnhanceMedia::getConfName, cloudConf.getName()).in(QCloudEnhanceMedia::getTaskId, toDeleteIds).set(QCloudEnhanceMedia::getDeleted, 1); qCloudEnhanceMediaMapper.update(null, uw); }
+        return insertCount;
+    }
+
+    private int syncMediaAi(QCloudClient qCloudClient, CloudConf cloudConf) {
+        List<QCloudMediaAi> apiList = qCloudClient.listMediaAi();
+        List<QCloudMediaAi> dbList = qCloudMediaAiMapper.selectByConfName(cloudConf.getName());
+        Map<String, QCloudMediaAi> apiMap = apiList.stream().filter(e -> e.getTaskId() != null).collect(Collectors.toMap(QCloudMediaAi::getTaskId, e -> e, (a, b) -> a));
+        Map<String, QCloudMediaAi> dbMap = dbList.stream().filter(e -> e.getTaskId() != null).collect(Collectors.toMap(QCloudMediaAi::getTaskId, e -> e, (a, b) -> a));
+        List<QCloudMediaAi> toInsert = apiList.stream().filter(e -> e.getTaskId() != null && !dbMap.containsKey(e.getTaskId())).collect(Collectors.toList());
+        Set<String> toDeleteIds = dbMap.keySet().stream().filter(id -> !apiMap.containsKey(id)).collect(Collectors.toSet());
+        int insertCount = 0;
+        if (!toInsert.isEmpty()) insertCount = qCloudMediaAiMapper.insertBatch(toInsert);
+        if (!toDeleteIds.isEmpty()) { LambdaUpdateWrapper<QCloudMediaAi> uw = new LambdaUpdateWrapper<>(); uw.eq(QCloudMediaAi::getConfName, cloudConf.getName()).in(QCloudMediaAi::getTaskId, toDeleteIds).set(QCloudMediaAi::getDeleted, 1); qCloudMediaAiMapper.update(null, uw); }
+        return insertCount;
+    }
+
+    private int syncThreatIntel(QCloudClient qCloudClient, CloudConf cloudConf) {
+        List<QCloudThreatIntel> apiList = qCloudClient.listThreatIntel();
+        List<QCloudThreatIntel> dbList = qCloudThreatIntelMapper.selectByConfName(cloudConf.getName());
+        Map<String, QCloudThreatIntel> apiMap = apiList.stream().filter(e -> e.getIndicatorId() != null).collect(Collectors.toMap(QCloudThreatIntel::getIndicatorId, e -> e, (a, b) -> a));
+        Map<String, QCloudThreatIntel> dbMap = dbList.stream().filter(e -> e.getIndicatorId() != null).collect(Collectors.toMap(QCloudThreatIntel::getIndicatorId, e -> e, (a, b) -> a));
+        List<QCloudThreatIntel> toInsert = apiList.stream().filter(e -> e.getIndicatorId() != null && !dbMap.containsKey(e.getIndicatorId())).collect(Collectors.toList());
+        Set<String> toDeleteIds = dbMap.keySet().stream().filter(id -> !apiMap.containsKey(id)).collect(Collectors.toSet());
+        int insertCount = 0;
+        if (!toInsert.isEmpty()) insertCount = qCloudThreatIntelMapper.insertBatch(toInsert);
+        if (!toDeleteIds.isEmpty()) { LambdaUpdateWrapper<QCloudThreatIntel> uw = new LambdaUpdateWrapper<>(); uw.eq(QCloudThreatIntel::getConfName, cloudConf.getName()).in(QCloudThreatIntel::getIndicatorId, toDeleteIds).set(QCloudThreatIntel::getDeleted, 1); qCloudThreatIntelMapper.update(null, uw); }
+        return insertCount;
+    }
+
+    private int syncAntiFraud(QCloudClient qCloudClient, CloudConf cloudConf) {
+        List<QCloudAntiFraud> apiList = qCloudClient.listAntiFraud();
+        List<QCloudAntiFraud> dbList = qCloudAntiFraudMapper.selectByConfName(cloudConf.getName());
+        Map<String, QCloudAntiFraud> apiMap = apiList.stream().filter(e -> e.getTaskId() != null).collect(Collectors.toMap(QCloudAntiFraud::getTaskId, e -> e, (a, b) -> a));
+        Map<String, QCloudAntiFraud> dbMap = dbList.stream().filter(e -> e.getTaskId() != null).collect(Collectors.toMap(QCloudAntiFraud::getTaskId, e -> e, (a, b) -> a));
+        List<QCloudAntiFraud> toInsert = apiList.stream().filter(e -> e.getTaskId() != null && !dbMap.containsKey(e.getTaskId())).collect(Collectors.toList());
+        Set<String> toDeleteIds = dbMap.keySet().stream().filter(id -> !apiMap.containsKey(id)).collect(Collectors.toSet());
+        int insertCount = 0;
+        if (!toInsert.isEmpty()) insertCount = qCloudAntiFraudMapper.insertBatch(toInsert);
+        if (!toDeleteIds.isEmpty()) { LambdaUpdateWrapper<QCloudAntiFraud> uw = new LambdaUpdateWrapper<>(); uw.eq(QCloudAntiFraud::getConfName, cloudConf.getName()).in(QCloudAntiFraud::getTaskId, toDeleteIds).set(QCloudAntiFraud::getDeleted, 1); qCloudAntiFraudMapper.update(null, uw); }
+        return insertCount;
+    }
+
+    private int syncCfw(QCloudClient qCloudClient, CloudConf cloudConf) {
+        List<QCloudCfw> apiList = qCloudClient.listCfw();
+        List<QCloudCfw> dbList = qCloudCfwMapper.selectByConfName(cloudConf.getName());
+        Map<String, QCloudCfw> apiMap = apiList.stream().filter(e -> e.getInstanceId() != null).collect(Collectors.toMap(QCloudCfw::getInstanceId, e -> e, (a, b) -> a));
+        Map<String, QCloudCfw> dbMap = dbList.stream().filter(e -> e.getInstanceId() != null).collect(Collectors.toMap(QCloudCfw::getInstanceId, e -> e, (a, b) -> a));
+        List<QCloudCfw> toInsert = apiList.stream().filter(e -> e.getInstanceId() != null && !dbMap.containsKey(e.getInstanceId())).collect(Collectors.toList());
+        Set<String> toDeleteIds = dbMap.keySet().stream().filter(id -> !apiMap.containsKey(id)).collect(Collectors.toSet());
+        int insertCount = 0;
+        if (!toInsert.isEmpty()) insertCount = qCloudCfwMapper.insertBatch(toInsert);
+        if (!toDeleteIds.isEmpty()) { LambdaUpdateWrapper<QCloudCfw> uw = new LambdaUpdateWrapper<>(); uw.eq(QCloudCfw::getConfName, cloudConf.getName()).in(QCloudCfw::getInstanceId, toDeleteIds).set(QCloudCfw::getDeleted, 1); qCloudCfwMapper.update(null, uw); }
+        return insertCount;
+    }
+
+    private int syncGaapV2(QCloudClient qCloudClient, CloudConf cloudConf) {
+        List<QCloudGaapV2> apiList = qCloudClient.listGaapV2();
+        List<QCloudGaapV2> dbList = qCloudGaapV2Mapper.selectByConfName(cloudConf.getName());
+        Map<String, QCloudGaapV2> apiMap = apiList.stream().filter(e -> e.getProxyId() != null).collect(Collectors.toMap(QCloudGaapV2::getProxyId, e -> e, (a, b) -> a));
+        Map<String, QCloudGaapV2> dbMap = dbList.stream().filter(e -> e.getProxyId() != null).collect(Collectors.toMap(QCloudGaapV2::getProxyId, e -> e, (a, b) -> a));
+        List<QCloudGaapV2> toInsert = apiList.stream().filter(e -> e.getProxyId() != null && !dbMap.containsKey(e.getProxyId())).collect(Collectors.toList());
+        Set<String> toDeleteIds = dbMap.keySet().stream().filter(id -> !apiMap.containsKey(id)).collect(Collectors.toSet());
+        int insertCount = 0;
+        if (!toInsert.isEmpty()) insertCount = qCloudGaapV2Mapper.insertBatch(toInsert);
+        if (!toDeleteIds.isEmpty()) { LambdaUpdateWrapper<QCloudGaapV2> uw = new LambdaUpdateWrapper<>(); uw.eq(QCloudGaapV2::getConfName, cloudConf.getName()).in(QCloudGaapV2::getProxyId, toDeleteIds).set(QCloudGaapV2::getDeleted, 1); qCloudGaapV2Mapper.update(null, uw); }
+        return insertCount;
+    }
+
+    private int syncDedicatedZone(QCloudClient qCloudClient, CloudConf cloudConf) {
+        List<QCloudDedicatedZone> apiList = qCloudClient.listDedicatedZone();
+        List<QCloudDedicatedZone> dbList = qCloudDedicatedZoneMapper.selectByConfName(cloudConf.getName());
+        Map<String, QCloudDedicatedZone> apiMap = apiList.stream().filter(e -> e.getZoneId() != null).collect(Collectors.toMap(QCloudDedicatedZone::getZoneId, e -> e, (a, b) -> a));
+        Map<String, QCloudDedicatedZone> dbMap = dbList.stream().filter(e -> e.getZoneId() != null).collect(Collectors.toMap(QCloudDedicatedZone::getZoneId, e -> e, (a, b) -> a));
+        List<QCloudDedicatedZone> toInsert = apiList.stream().filter(e -> e.getZoneId() != null && !dbMap.containsKey(e.getZoneId())).collect(Collectors.toList());
+        Set<String> toDeleteIds = dbMap.keySet().stream().filter(id -> !apiMap.containsKey(id)).collect(Collectors.toSet());
+        int insertCount = 0;
+        if (!toInsert.isEmpty()) insertCount = qCloudDedicatedZoneMapper.insertBatch(toInsert);
+        if (!toDeleteIds.isEmpty()) { LambdaUpdateWrapper<QCloudDedicatedZone> uw = new LambdaUpdateWrapper<>(); uw.eq(QCloudDedicatedZone::getConfName, cloudConf.getName()).in(QCloudDedicatedZone::getZoneId, toDeleteIds).set(QCloudDedicatedZone::getDeleted, 1); qCloudDedicatedZoneMapper.update(null, uw); }
+        return insertCount;
+    }
+
+    private int syncEdgeZone(QCloudClient qCloudClient, CloudConf cloudConf) {
+        List<QCloudEdgeZone> apiList = qCloudClient.listEdgeZone();
+        List<QCloudEdgeZone> dbList = qCloudEdgeZoneMapper.selectByConfName(cloudConf.getName());
+        Map<String, QCloudEdgeZone> apiMap = apiList.stream().filter(e -> e.getZoneId() != null).collect(Collectors.toMap(QCloudEdgeZone::getZoneId, e -> e, (a, b) -> a));
+        Map<String, QCloudEdgeZone> dbMap = dbList.stream().filter(e -> e.getZoneId() != null).collect(Collectors.toMap(QCloudEdgeZone::getZoneId, e -> e, (a, b) -> a));
+        List<QCloudEdgeZone> toInsert = apiList.stream().filter(e -> e.getZoneId() != null && !dbMap.containsKey(e.getZoneId())).collect(Collectors.toList());
+        Set<String> toDeleteIds = dbMap.keySet().stream().filter(id -> !apiMap.containsKey(id)).collect(Collectors.toSet());
+        int insertCount = 0;
+        if (!toInsert.isEmpty()) insertCount = qCloudEdgeZoneMapper.insertBatch(toInsert);
+        if (!toDeleteIds.isEmpty()) { LambdaUpdateWrapper<QCloudEdgeZone> uw = new LambdaUpdateWrapper<>(); uw.eq(QCloudEdgeZone::getConfName, cloudConf.getName()).in(QCloudEdgeZone::getZoneId, toDeleteIds).set(QCloudEdgeZone::getDeleted, 1); qCloudEdgeZoneMapper.update(null, uw); }
         return insertCount;
     }
 }

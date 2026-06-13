@@ -1534,4 +1534,164 @@ public class QCloudClient{
             return BeanUtils.cgLibCopyList(ListUtil.toList(client.DescribeWorkflows(new com.tencentcloudapi.mps.v20190612.models.DescribeWorkflowsRequest()).getWorkflowInfoSet()), QCloudBizProcess::new);
         } catch (TencentCloudSDKException e) { throw new ClientException(e); }
     }
+
+    // ==================== 子产品 ====================
+
+    public List<QCloudGpuCvm> listGpuCvm() {
+        return BeanUtils.cgLibCopyList(listCvm(), QCloudGpuCvm::new);
+    }
+
+    public List<QCloudFpgaCvm> listFpgaCvm() {
+        return BeanUtils.cgLibCopyList(listCvm(), QCloudFpgaCvm::new);
+    }
+
+    public List<QCloudCvmDedicated> listCvmDedicated() {
+        return BeanUtils.cgLibCopyList(listCvm(), QCloudCvmDedicated::new);
+    }
+
+    public List<QCloudHpcCluster> listHpcCluster() {
+        // TODO: 独立 API
+        return new ArrayList<>();
+    }
+
+    public List<QCloudHpcPlatform> listHpcPlatform() {
+        // TODO: 独立 API
+        return new ArrayList<>();
+    }
+
+    public List<QCloudGooseFS> listGooseFS() {
+        // TODO: 独立 API
+        return new ArrayList<>();
+    }
+
+    public List<QCloudCi> listCi() {
+        // TODO: 独立 API
+        return new ArrayList<>();
+    }
+
+    public List<QCloudSmartMedia> listSmartMedia() {
+        // TODO: 独立 API
+        return new ArrayList<>();
+    }
+
+    public List<QCloudTdsqlBoundless> listTdsqlBoundless() {
+        return BeanUtils.cgLibCopyList(listDCDB(), QCloudTdsqlBoundless::new);
+    }
+
+    public List<QCloudVectorDb> listVectorDb() {
+        // TODO: 独立 API
+        return new ArrayList<>();
+    }
+
+    public List<QCloudTdsqlDistributed> listTdsqlDistributed() {
+        return BeanUtils.cgLibCopyList(listDCDB(), QCloudTdsqlDistributed::new);
+    }
+
+    public List<QCloudDesktop> listDesktop() {
+        // TODO: 独立 API
+        return new ArrayList<>();
+    }
+
+    public List<QCloudFlowLog> listFlowLog() {
+        // TODO: 独立 API
+        return new ArrayList<>();
+    }
+
+    public List<QCloudBandwidthPackage> listBandwidthPackage() {
+        // TODO: 独立 API
+        return new ArrayList<>();
+    }
+
+    public List<QCloudTrafficPackage> listTrafficPackage() {
+        // TODO: 独立 API
+        return new ArrayList<>();
+    }
+
+    public List<QCloudIpv6> listIpv6() {
+        // TODO: 独立 API
+        return new ArrayList<>();
+    }
+
+    public List<QCloudCc> listCc() {
+        // TODO: 独立 API
+        return new ArrayList<>();
+    }
+
+    public List<QCloudVpn> listVpn() {
+        // TODO: 独立 API
+        return new ArrayList<>();
+    }
+
+    public List<QCloudPeering> listPeering() {
+        // TODO: 独立 API
+        return new ArrayList<>();
+    }
+
+    public List<QCloudSdwan> listSdwan() {
+        // TODO: 独立 API
+        return new ArrayList<>();
+    }
+
+    public List<QCloudWsA> listWsA() {
+        return BeanUtils.cgLibCopyList(listCdnDomain(), QCloudWsA::new);
+    }
+
+    public List<QCloudScdn> listScdn() {
+        return BeanUtils.cgLibCopyList(listCdnDomain(), QCloudScdn::new);
+    }
+
+    public List<QCloudEcm> listEcm() {
+        // TODO: 独立 API
+        return new ArrayList<>();
+    }
+
+    public List<QCloudIm> listIm() {
+        // TODO: 独立 API
+        return new ArrayList<>();
+    }
+
+    public List<QCloudMps> listMps() {
+        // TODO: 独立 API
+        return new ArrayList<>();
+    }
+
+    public List<QCloudEnhanceMedia> listEnhanceMedia() {
+        // TODO: 独立 API
+        return new ArrayList<>();
+    }
+
+    public List<QCloudMediaAi> listMediaAi() {
+        // TODO: 独立 API
+        return new ArrayList<>();
+    }
+
+    public List<QCloudThreatIntel> listThreatIntel() {
+        // TODO: 独立 API
+        return new ArrayList<>();
+    }
+
+    public List<QCloudAntiFraud> listAntiFraud() {
+        // TODO: 独立 API
+        return new ArrayList<>();
+    }
+
+    public List<QCloudCfw> listCfw() {
+        // TODO: 独立 API
+        return new ArrayList<>();
+    }
+
+    public List<QCloudGaapV2> listGaapV2() {
+        // TODO: 独立 API
+        return new ArrayList<>();
+    }
+
+    public List<QCloudDedicatedZone> listDedicatedZone() {
+        // TODO: 独立 API
+        return new ArrayList<>();
+    }
+
+    public List<QCloudEdgeZone> listEdgeZone() {
+        // TODO: 独立 API
+        return new ArrayList<>();
+    }
 }

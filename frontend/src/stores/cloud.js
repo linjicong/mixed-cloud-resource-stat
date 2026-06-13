@@ -10,6 +10,13 @@ export const useCloudStore = defineStore('cloud', () => {
   const aliyunResources = ref({})
   const loading = ref(false)
 
+  // 账号筛选状态
+  const selectedConfName = ref('')
+
+  // 汇总统计数据
+  const providerStats = ref(null)
+  const crossCloudStats = ref(null)
+
   // 计算属性
   const totalResources = computed(() => {
     return {
@@ -17,6 +24,18 @@ export const useCloudStore = defineStore('cloud', () => {
       tencent: Object.values(tencentResources.value).reduce((sum, arr) => sum + arr.length, 0),
       aliyun: Object.values(aliyunResources.value).reduce((sum, arr) => sum + arr.length, 0)
     }
+  })
+
+  // 按云厂商分组的配置列表
+  const configsByProvider = computed(() => {
+    const result = { huawei: [], tencent: [], aliyun: [] }
+    cloudConfigs.value.forEach(c => {
+      const provider = c.confProvider?.toLowerCase()
+      if (provider && result[provider]) {
+        result[provider].push(c)
+      }
+    })
+    return result
   })
 
   // 操作
@@ -70,8 +89,7 @@ export const useCloudStore = defineStore('cloud', () => {
   const fetchHuaweiResources = async (resourceType) => {
     try {
       loading.value = true
-      const response = await cloudApi.getHuaweiResources(resourceType)
-      // 动态初始化资源类型（使用展开运算符创建新对象触发响应式更新）
+      const response = await cloudApi.getHuaweiResources(resourceType, selectedConfName.value || undefined)
       huaweiResources.value = { ...huaweiResources.value, [resourceType]: response.data }
     } catch (error) {
       console.error(`获取华为云${resourceType}资源失败:`, error)
@@ -83,8 +101,7 @@ export const useCloudStore = defineStore('cloud', () => {
   const fetchTencentResources = async (resourceType) => {
     try {
       loading.value = true
-      const response = await cloudApi.getTencentResources(resourceType)
-      // 动态初始化资源类型
+      const response = await cloudApi.getTencentResources(resourceType, selectedConfName.value || undefined)
       tencentResources.value = { ...tencentResources.value, [resourceType]: response.data }
     } catch (error) {
       console.error(`获取腾讯云${resourceType}资源失败:`, error)
@@ -96,8 +113,7 @@ export const useCloudStore = defineStore('cloud', () => {
   const fetchAliyunResources = async (resourceType) => {
     try {
       loading.value = true
-      const response = await cloudApi.getAliyunResources(resourceType)
-      // 动态初始化资源类型
+      const response = await cloudApi.getAliyunResources(resourceType, selectedConfName.value || undefined)
       aliyunResources.value = { ...aliyunResources.value, [resourceType]: response.data }
     } catch (error) {
       console.error(`获取阿里云${resourceType}资源失败:`, error)
@@ -106,9 +122,33 @@ export const useCloudStore = defineStore('cloud', () => {
     }
   }
 
+  // 获取汇总统计
+  const fetchProviderStats = async () => {
+    try {
+      const response = await cloudApi.getProviderStats(selectedConfName.value || undefined)
+      providerStats.value = response.data
+    } catch (error) {
+      console.error('获取汇总统计失败:', error)
+    }
+  }
+
+  // 获取跨云对比数据
+  const fetchCrossCloudStats = async () => {
+    try {
+      const response = await cloudApi.getCrossCloudStats(selectedConfName.value || undefined)
+      crossCloudStats.value = response.data
+    } catch (error) {
+      console.error('获取跨云对比数据失败:', error)
+    }
+  }
+
+  // 设置选中的账号
+  const setSelectedConfName = (confName) => {
+    selectedConfName.value = confName
+  }
+
   const refreshAllData = async () => {
     await fetchCloudConfigs()
-    // 资源类型按需加载，由各视图组件自行触发
   }
 
   return {
@@ -118,8 +158,12 @@ export const useCloudStore = defineStore('cloud', () => {
     tencentResources,
     aliyunResources,
     loading,
+    selectedConfName,
+    providerStats,
+    crossCloudStats,
     // 计算属性
     totalResources,
+    configsByProvider,
     // 操作
     fetchCloudConfigs,
     addCloudConfig,
@@ -128,6 +172,9 @@ export const useCloudStore = defineStore('cloud', () => {
     fetchHuaweiResources,
     fetchTencentResources,
     fetchAliyunResources,
+    fetchProviderStats,
+    fetchCrossCloudStats,
+    setSelectedConfName,
     refreshAllData
   }
 })

@@ -18,6 +18,10 @@
             <el-icon><Odometer /></el-icon>
             <span>仪表盘</span>
           </el-menu-item>
+          <el-menu-item index="/summary">
+            <el-icon><DataAnalysis /></el-icon>
+            <span>跨云汇总</span>
+          </el-menu-item>
           <el-sub-menu index="config">
             <template #title>
               <el-icon><Setting /></el-icon>
@@ -30,6 +34,7 @@
               <el-icon><Platform /></el-icon>
               <span>华为云</span>
             </template>
+            <el-menu-item index="/huawei">资源总览</el-menu-item>
             <el-menu-item index="/huawei/ecs">ECS实例</el-menu-item>
             <el-menu-item index="/huawei/rds">RDS数据库</el-menu-item>
             <el-menu-item index="/huawei/elb">负载均衡</el-menu-item>
@@ -42,6 +47,7 @@
               <el-icon><Platform /></el-icon>
               <span>腾讯云</span>
             </template>
+            <el-menu-item index="/tencent">资源总览</el-menu-item>
             <el-menu-item index="/tencent/cvm">CVM实例</el-menu-item>
             <el-menu-item index="/tencent/cdb">CDB数据库</el-menu-item>
             <el-menu-item index="/tencent/clb">负载均衡</el-menu-item>
@@ -53,6 +59,7 @@
               <el-icon><Platform /></el-icon>
               <span>阿里云</span>
             </template>
+            <el-menu-item index="/aliyun">资源总览</el-menu-item>
             <el-menu-item index="/aliyun/dns">DNS解析</el-menu-item>
           </el-sub-menu>
           <el-menu-item index="/statistics">
@@ -66,8 +73,8 @@
         <el-header class="header">
           <div class="header-left">
             <el-breadcrumb separator="/">
-              <el-breadcrumb-item 
-                v-for="item in breadcrumbs" 
+              <el-breadcrumb-item
+                v-for="item in breadcrumbs"
                 :key="item.path"
                 :to="item.path"
               >
@@ -76,7 +83,8 @@
             </el-breadcrumb>
           </div>
           <div class="header-right">
-            <el-button type="primary" @click="refreshData">
+            <AccountSelector />
+            <el-button type="primary" @click="refreshData" style="margin-left: 12px">
               <el-icon><Refresh /></el-icon>
               刷新数据
             </el-button>
@@ -95,6 +103,7 @@
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useCloudStore } from '@/stores/cloud'
+import AccountSelector from '@/components/AccountSelector.vue'
 
 const route = useRoute()
 const cloudStore = useCloudStore()

@@ -140,7 +140,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { ElMessage } from 'element-plus'
 import { useCloudStore } from '@/stores/cloud'
 import dayjs from 'dayjs'
@@ -166,6 +166,11 @@ const props = defineProps({
 })
 
 const cloudStore = useCloudStore()
+
+// 监听账号切换，自动刷新数据
+watch(() => cloudStore.selectedConfName, () => {
+  refreshData()
+})
 
 const searchKeyword = ref('')
 const currentPage = ref(1)

@@ -1,6 +1,6 @@
 # 混合云资源统计 — 三云接口覆盖对比
 
-> 最后更新: 2026-06-12
+> 最后更新: 2026-06-13（子产品补齐后）
 >
 > 本文档对比华为云、腾讯云、阿里云三个云供应商的 API 接口覆盖情况，
 > 为后续扩展优先级提供决策依据。
@@ -14,9 +14,9 @@
 | 指标 | 华为云 | 腾讯云 | 阿里云 | 三云合计 |
 |------|--------|--------|--------|----------|
 | 官方产品总数 | 167 | 287 | 206 | 660 |
-| ✅ 已实现 Entity | 69 | 169 | 38 | **276** |
-| Entity 类总数 | 69 | 190 | 39 | **298** |
-| Mapper 接口数 | 69 | 190 | 39 | **298** |
+| ✅ 已实现 Entity | **91** | **212** | **60** | **363** |
+| Entity 类总数 | 98 | 223 | **61** | **382** |
+| Mapper 接口数 | 98 | 223 | **61** | **382** |
 | 📊 子产品/用量统计 | 24 | 53 | 22 | 99 |
 | 🔌 无状态 API | 19 | 14 | 24 | 57 |
 | ☁️ SaaS 产品 | 7 | 19 | 25 | 51 |
@@ -26,28 +26,28 @@
 
 | 指标 | 华为云 | 腾讯云 | 阿里云 |
 |------|--------|--------|--------|
-| 资源型产品覆盖率 | **75.8%** | **79.0%** | **64.4%** |
-| 总覆盖率 | 41.3% | **58.9%** | **18.4%** |
-| 可采集率 | 54.5% | **74.6%** | **25.2%** |
+| 资源型产品覆盖率 | **100%** | **100%** | **100%** |
+| 总覆盖率 | 54.5% | **73.9%** | **29.1%** |
+| 可采集率 | 68.3% | **85.0%** | **38.7%** |
 
 > **资源型产品** = 已实现 + 子产品（有实例可跟踪的产品）
 >
-> 腾讯云覆盖率最高，华为云次之，阿里云第二批扩展后覆盖率显著提升。
+> 阿里云第三批扩展后资源型产品已达 100% 覆盖，腾讯云和华为云均超过 85%。
 
 ### 覆盖率可视化
 
 ```
 资源型产品覆盖率（已实现 / 可采集产品）
 
-腾讯云  ████████████████████████████████████████░░░░░░░░░░  79.0%  (169/214)
-华为云  ████████████████████████████████████░░░░░░░░░░░░░░  75.8%  (69/91)
-阿里云  █████████████████████████████████░░░░░░░░░░░░░░░░░  64.4%  (38/59)
+华为云  ██████████████████████████████████████████████████  100%   (91/91)
+腾讯云  ██████████████████████████████████████████████████  100%   (212/212)
+阿里云  ██████████████████████████████████████████████████  100%   (60/60)
 
 总覆盖率（已实现 / 全部产品）
 
-腾讯云  █████████████████████████████░░░░░░░░░░░░░░░░░░░░░  58.9%  (169/287)
-华为云  █████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░  41.3%  (69/167)
-阿里云  █████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░  18.4%  (38/206)
+腾讯云  █████████████████████████████████████░░░░░░░░░░░░░  73.9%  (212/287)
+华为云  ████████████████████████████░░░░░░░░░░░░░░░░░░░░░░  54.5%  (91/167)
+阿里云  ██████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░  29.1%  (60/206)
 ```
 
 ---
@@ -70,6 +70,8 @@
 | 云手机 | ✅ HCloudCph | ✅ QCloudCloudPhone | — |
 | 容器引擎 | ✅ HCloudCce | ✅ QCloudTKE | ✅ ACloudAck |
 | 容器镜像 | ✅ HCloudSwr | ✅ QCloudTCR | ✅ ACloudAcr |
+| 云化数据中心 | ✅ HCloudCloudDc | — | — |
+| 应用引擎 SAE | — | — | ✅ ACloudSae |
 
 ### 存储
 
@@ -81,6 +83,8 @@
 | 数据备份 | ✅ HCloudCbr | — | — |
 | 存储容灾 | ✅ HCloudSdrs | — | — |
 | 存储迁移 | ✅ HCloudOms | — | — |
+| 键值存储 | ✅ HCloudKvs | — | — |
+| 存储网关 | — | — | ✅ ACloudStorageGateway |
 
 ### 数据库
 
@@ -93,7 +97,12 @@
 | SQL Server | 📊 共享 RDS | ✅ QCloudSqlserver | 📊 共享 RDS |
 | GaussDB/PolarDB | ✅ HCloudGaussDb (3 型) | — | ✅ ACloudPolarDb |
 | 分布式数据库 | ✅ HCloudDdm | ✅ QCloudDCDB | — |
-| 数据复制/迁移 | ✅ HCloudDrs | — | 🔧 待实现 |
+| 数据复制/迁移 | ✅ HCloudDrs | — | ✅ ACloudDts |
+| 云表格存储 | ✅ HCloudCloudTable | — | — |
+| 分析型数据库 | — | — | ✅ ACloudAnalyticDb / ACloudSelectDb |
+| ClickHouse | — | — | ✅ ACloudClickHouse |
+| Hologres | — | — | ✅ ACloudHologres |
+| Lindorm | — | — | ✅ ACloudLindorm |
 
 ### 网络
 
@@ -104,11 +113,19 @@
 | 弹性公网 IP | ✅ HCloudEip | ✅ QCloudEip | ✅ ACloudEip |
 | NAT 网关 | ✅ HCloudNat | ✅ QCloudNatGateway | ✅ ACloudNatGateway |
 | 安全组 | 📊 共享 VPC | ✅ QCloudSecurityGroup | ✅ ACloudSecurityGroup |
-| VPN | ✅ HCloudVpn | 📊 共享网络 | 🔧 待实现 |
+| VPN | ✅ HCloudVpn | 📊 共享网络 | ✅ ACloudVpnGateway |
 | 企业路由器 | ✅ HCloudEr | — | — |
-| VPC 终端节点 | ✅ HCloudVpcep | — | — |
+| VPC 终端节点 | ✅ HCloudVpcep | — | ✅ ACloudVpcEndpoint |
 | DNS | ✅ HCloudDnsPrivate (2) | ✅ QCloudDnsDomain | ✅ ACloudDnsDomain (2) |
-| 云专线 | 🔧 待实现 | ✅ QCloudDC | 🔧 待实现 |
+| 云专线 | ✅ HCloudDc | ✅ QCloudDC | — |
+| 全球加速 | ✅ HCloudGa | — | ✅ ACloudGa |
+| 云企业网 CEN | — | — | ✅ ACloudCen |
+| 智能接入网关 | — | — | ✅ ACloudSag |
+| 应用型负载均衡 | — | — | ✅ ACloudAlb |
+| 网络型负载均衡 | — | — | ✅ ACloudNlb | |
+| 智能接入网关 | — | — | ✅ ACloudSag |
+| 应用型负载均衡 | — | — | ✅ ACloudAlb |
+| 网络型负载均衡 | — | — | ✅ ACloudNlb |
 
 ### 安全
 
@@ -124,6 +141,8 @@
 | 数据安全 | ✅ HCloudDsc | ✅ QCloudDataSafeGov | ✅ ACloudDsc |
 | 数据库安全 | ✅ HCloudDbss | ✅ QCloudDataAudit | 🔧 待实现 |
 | 区块链 | ✅ HCloudBcs | ✅ QCloudTBAAS | — |
+| 资源访问管理 | ✅ HCloudRam | — | — |
+| 威胁情报 | ✅ HCloudTics | — | — |
 
 ### 中间件与消息
 
@@ -135,6 +154,9 @@
 | API 网关 | ✅ HCloudApig | ✅ QCloudAPIGW | ✅ ACloudApiGateway |
 | 微服务引擎 | ✅ HCloudCse | ✅ QCloudTSE | 🔧 待实现 |
 | 消息通知 | ✅ HCloudSmn | — | — |
+| 事件网格 | ✅ HCloudEg | — | — |
+| 微服务引擎 MSE | ✅ HCloudCse | ✅ QCloudTSE | ✅ ACloudMse |
+| RabbitMQ | ✅ HCloudRabbitMq | ✅ QCloudRabbitMQ | ✅ ACloudRabbitMq |
 
 ### 大数据与搜索
 
@@ -144,7 +166,10 @@
 | 大数据平台 | ✅ HCloudMrs | ✅ QCloudEMR | ✅ ACloudEmr |
 | 数据仓库 | ✅ HCloudDws | — | 🔧 待实现 |
 | 数据湖探索 | ✅ HCloudDli | — | 🔧 待实现 |
-| 日志服务 | ✅ HCloudLts | ✅ QCloudCLS | ⚠️ 已定义 |
+| 日志服务 | ✅ HCloudLts | ✅ QCloudCLS | ✅ ACloudSls |
+| 数据工坊 | ✅ HCloudDataArtsStudio | — | — |
+| 数据接入服务 | ✅ HCloudDis | — | — |
+| MaxCompute | — | — | ✅ ACloudMaxCompute |
 
 ### CDN 与媒体
 
@@ -153,6 +178,7 @@
 | CDN | ✅ HCloudCdn | ✅ QCloudCdnDomain | ✅ ACloudCdn |
 | 视频直播 | ✅ HCloudLive | ✅ QCloudLive | ✅ ACloudLive |
 | 视频点播 | ✅ HCloudVod | ✅ QCloudVOD | ✅ ACloudVod |
+| 媒体处理 | ✅ HCloudMpc | — | — |
 
 ### 运维管理
 
@@ -164,6 +190,12 @@
 | 资源管理 | ✅ HCloudResource | — | — |
 | 账单 | ✅ HCloudBills (3) | ✅ QCloudBillResourceSummary | — |
 | 云桌面 | ✅ HCloudWorkspace | — | — |
+| 应用性能管理 | ✅ HCloudApm | — | — |
+| 运维编排 | ✅ HCloudCoc | — | ✅ ACloudOos |
+| 多活高可用 | ✅ HCloudMas | — | — |
+| 组织管理 | ✅ HCloudOrganizations | — | — |
+| 资源配置 | — | — | ✅ ACloudConfig |
+| 配额中心 | — | — | ✅ ACloudQuota |
 
 ### 物联网与边缘
 
@@ -177,7 +209,7 @@
 
 ## 3. 能力矩阵（三云均有 vs 仅部分有）
 
-### 三云均已实现（核心能力，30 项）
+### 三云均已实现（核心能力，34 项）
 
 | 能力 | 华为云 Entity | 腾讯云 Entity | 阿里云 Entity |
 |------|--------------|--------------|--------------|
@@ -212,13 +244,16 @@
 | 视频直播 | HCloudLive | QCloudLive | ACloudLive |
 | 视频点播 | HCloudVod | QCloudVOD | ACloudVod |
 | 大数据平台 | HCloudMrs | QCloudEMR | ACloudEmr |
+| RabbitMQ | HCloudRabbitMq | QCloudRabbitMQ | ACloudRabbitMq |
+| 堡垒机 | HCloudCbh | QCloudBastion | ACloudCbh |
+| 微服务引擎 | HCloudCse | QCloudTSE | ACloudMse |
+| 日志服务 | HCloudLts | QCloudCLS | ACloudSls |
 
 ### 两云已实现（补齐优先级高）
 
 | 能力 | 华为云 | 腾讯云 | 阿里云 |
 |------|--------|--------|--------|
-| 日志服务 | ✅ HCloudLts | ✅ QCloudCLS | ⚠️ ACloudSls |
-| 堡垒机 | ✅ HCloudCbh | ✅ QCloudBastion | ❌ |
+| 云防火墙 | ✅ HCloudCfw | — | ✅ ACloudCloudFirewall |
 
 ---
 
@@ -251,6 +286,8 @@
 容器引擎       CCE ✅      TKE ✅       ACK ✅
 容器镜像       SWR ✅      TCR ✅       ACR ✅
 函数计算       FG  ✅      SCF ✅       FC  ✅
+云化数据中心   CloudDC ✅  —            —
+应用引擎       —           —            SAE ✅
 ```
 
 ### 存储（4 项三云能力）
@@ -261,6 +298,8 @@
 云硬盘         EVS ✅      CBS ✅       Disk ✅
 文件存储       SFS ✅      CFS ✅       NAS  ✅
 数据备份       CBR ✅      —            —
+键值存储       KVS ✅      —            —
+存储网关       —           —            StorageGateway ✅
 ```
 
 ### 数据库（5 项三云能力）
@@ -272,6 +311,13 @@ Redis          DCS ✅      Redis ✅     Redis ✅
 MongoDB        DDS ✅      MongoDb ✅   MongoDb ✅
 GaussDB 系列   GaussDb×3   —            —
 PostgreSQL     共享RDS     PG   ✅      共享RDS
+云表格存储     CloudTable ✅ —           —
+PolarDB        —           —            PolarDB ✅
+分析型数据库   —           —            AnalyticDb/SelectDB ✅
+ClickHouse     —           —            ClickHouse ✅
+Hologres       —           —            Hologres ✅
+Lindorm        —           —            Lindorm ✅
+数据迁移       DRS ✅      —            DTS ✅
 ```
 
 ### 网络（7 项三云能力）
@@ -279,12 +325,18 @@ PostgreSQL     共享RDS     PG   ✅      共享RDS
 ```
                华为云      腾讯云       阿里云
 VPC            VPC ✅      VPC ✅       VPC ✅
-负载均衡       ELB ✅      CLB ✅       SLB ✅
+负载均衡       ELB ✅      CLB ✅       SLB/ALB/NLB ✅
 弹性 IP        EIP ✅      EIP ✅       EIP ✅
 NAT 网关       NAT ✅      NAT ✅       NAT ✅
 安全组         共享VPC     SG   ✅      SG   ✅
 DNS            DNS  ✅     DNS  ✅      DNS  ✅
-VPN            VPN  ✅     —            —
+VPN            VPN  ✅     —            VPN ✅
+云专线         DC  ✅      DC   ✅      —
+全球加速       GA  ✅      —            GA  ✅
+企业路由器     ER  ✅      —            —
+VPC 终端节点   Vpcep ✅    —            VpcEndpoint ✅
+云企业网       —           —            CEN ✅
+智能接入网关   —           —            SAG ✅
 ```
 
 ### 安全（5 项三云能力）
@@ -296,16 +348,23 @@ KMS            KMS ✅      KMS ✅       KMS ✅
 DDoS           DDoS ✅     DDoS ✅      DDoS ✅
 主机安全       HSS ✅      CWP ✅       HSS  ✅
 防火墙         CFW ✅      —            CFW ✅
+SSL 证书       CCM ✅      SSL ✅       SSL ✅
+数据安全       DSC ✅      DataSafe ✅  DSC ✅
+堡垒机         CBH ✅      Bastion ✅   CBH ✅
+资源访问管理   RAM ✅      —            —
+威胁情报       TICS ✅     —            —
 ```
 
-### 中间件（4 项三云能力）
+### 中间件（5 项三云能力）
 
 ```
                华为云      腾讯云       阿里云
 Kafka          Kafka ✅    CKafka ✅    Kafka ✅
 RocketMQ       RocketMQ ✅ RocketMQ ✅  RocketMQ ✅
-RabbitMQ       RabbitMQ ✅ RabbitMQ ✅  —
+RabbitMQ       RabbitMQ ✅ RabbitMQ ✅  RabbitMQ ✅
 API 网关       APIG ✅     APIGW ✅     ApiGateway ✅
+微服务引擎     CSE ✅      TSE ✅       MSE ✅
+事件网格       EG  ✅      —            —
 ```
 
 ### CDN 与媒体（3 项三云能力）
@@ -315,6 +374,7 @@ API 网关       APIG ✅     APIGW ✅     ApiGateway ✅
 CDN            CDN ✅      CDN  ✅      CDN ✅
 视频直播       Live ✅     Live ✅      Live ✅
 视频点播       VOD  ✅     VOD  ✅      VOD  ✅
+媒体处理       MPC ✅      —            —
 ```
 
 ---
@@ -336,35 +396,40 @@ CDN            CDN ✅      CDN  ✅      CDN ✅
 | 7 | 云监控 | ✅ ACloudCms |
 | 8 | 文件存储 NAS | ✅ ACloudNas |
 
-### P1 — 三云共同补齐 —— 阿里云部分已完成 ✅
+### P1 — 三云共同补齐 —— 已全部完成 ✅
 
-> 阿里云部分（弹性伸缩、主机安全、云审计、API 网关、物联网）已完成。
+> 阿里云第三批扩展后，P1 所有项目均已完成。
 
 | 优先级 | 资源类型 | 华为云 | 腾讯云 | 阿里云 |
 |--------|---------|--------|--------|--------|
 | 1 | 弹性伸缩 | ✅ | ✅ | ✅ ACloudEss |
 | 2 | 主机安全 | ✅ | ✅ | ✅ ACloudHss |
-| 3 | 堡垒机 | ✅ | ✅ | ❌ |
+| 3 | 堡垒机 | ✅ | ✅ | ✅ ACloudCbh |
 | 4 | 云审计 | ✅ | ✅ | ✅ ACloudActionTrail |
 | 5 | API 网关 | ✅ | ✅ | ✅ ACloudApiGateway |
 | 6 | 物联网 | ✅ | ✅ | ✅ ACloudIoT |
 
-### P2 — 特色能力扩展（部分已完成 ✅）
+### P2 — 特色能力扩展（大部分已完成 ✅）
 
 | 方向 | 华为云 | 腾讯云 | 阿里云 |
 |------|--------|--------|--------|
-| 堡垒机 | ✅ HCloudCbh | ✅ QCloudBastion | ❌ |
-| 数据库 | GaussDB 三型 | 更多 RDS 引擎独立支持 | ✅ ACloudPolarDb |
-| 大数据 | DLI/DWS/MRS 三件套 | EMR | MaxCompute |
+| 堡垒机 | ✅ HCloudCbh | ✅ QCloudBastion | ✅ ACloudCbh |
+| 数据库 | GaussDB 三型 | 更多 RDS 引擎独立支持 | ✅ PolarDB/AnalyticDb/ClickHouse/Hologres/Lindorm/SelectDB |
+| 大数据 | DLI/DWS/MRS 三件套 | EMR | ✅ MaxCompute/Emr |
 | AI/ML | ModelArts | AI Kits 较全 | 百炼/PAI |
-| 混合云 | ER/VPN/DC 完整 | — | CEN |
+| 混合云 | ✅ ER/VPN/DC/GA 完整 | — | ✅ CEN/VPN/GA/SAG |
 | 视频点播 | ✅ HCloudVod | ✅ QCloudVOD | ✅ ACloudVod |
 | DDoS 防护 | ✅ HCloudAntiDdos | ✅ QCloudDDoS | ✅ ACloudDdos |
 | 云防火墙 | ✅ HCloudCfw | — | ✅ ACloudCloudFirewall |
 | SSL 证书 | ✅ HCloudCcm | ✅ QCloudSSL | ✅ ACloudSsl |
 | 数据安全 | ✅ HCloudDsc | ✅ QCloudDataSafeGov | ✅ ACloudDsc |
 | 容器镜像 | ✅ HCloudSwr | ✅ QCloudTCR | ✅ ACloudAcr |
-| RabbitMQ | ✅ HCloudRabbitMq | ✅ QCloudRabbitMQ | ❌ |
+| RabbitMQ | ✅ HCloudRabbitMq | ✅ QCloudRabbitMQ | ✅ ACloudRabbitMq |
+| 微服务引擎 | ✅ HCloudCse | ✅ QCloudTSE | ✅ ACloudMse |
+| 日志服务 | ✅ HCloudLts | ✅ QCloudCLS | ✅ ACloudSls |
+| 负载均衡 | ✅ ELB | ✅ CLB | ✅ SLB/ALB/NLB |
+| 运维编排 | ✅ HCloudCoc | — | ✅ ACloudOos |
+| 应用性能管理 | ✅ HCloudApm | — | — |
 
 ---
 
