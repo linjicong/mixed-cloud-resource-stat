@@ -60,6 +60,9 @@ public class CloudFactory {
             case CloudConstant.Q_CLOUD:
                 // 获取腾讯云服务实例
                 return SpringUtil.getBean("QCloudService");
+            case CloudConstant.A_CLOUD:
+                // 获取阿里云服务实例
+                return SpringUtil.getBean("ACloudService");
             default:
                 throw new RuntimeException("供应商配置错误: " + provider);
         }

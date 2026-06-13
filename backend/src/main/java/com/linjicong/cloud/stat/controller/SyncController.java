@@ -66,7 +66,7 @@ public class SyncController {
             String providerConstant = switch (provider.toLowerCase()) {
                 case "huawei", "hcloud" -> CloudConstant.H_CLOUD;
                 case "tencent", "qcloud" -> CloudConstant.Q_CLOUD;
-                case "aliyun", "acloud" -> "ACloud"; // 阿里云暂时不支持同步
+                case "aliyun", "acloud" -> CloudConstant.A_CLOUD;
                 default -> null;
             };
 

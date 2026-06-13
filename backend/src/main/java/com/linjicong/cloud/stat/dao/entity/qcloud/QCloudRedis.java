@@ -24,7 +24,11 @@
 package com.linjicong.cloud.stat.dao.entity.qcloud;
 
 import com.linjicong.cloud.stat.dao.entity.BasicEntity;
+import com.tencentcloudapi.redis.v20180412.models.InstanceSet;
 import lombok.Data;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 
 /**
  * 腾讯云-云数据库Redis
@@ -32,8 +36,115 @@ import lombok.Data;
  * @author linjicong
  * @date 2022-07-28-14:36
  * @version 1.0.0
+ * @see InstanceSet
  */
 @Data
+@Entity
+@Table(name = "q_cloud_redis")
 public class QCloudRedis extends BasicEntity {
 
+    /**
+     * 实例名称
+     */
+    private String InstanceName;
+
+    /**
+     * 实例ID
+     */
+    private String InstanceId;
+
+    /**
+     * 用户APPID
+     */
+    private Long Appid;
+
+    /**
+     * 项目ID
+     */
+    private Long ProjectId;
+
+    /**
+     * 区域ID
+     */
+    private Long RegionId;
+
+    /**
+     * 可用区ID
+     */
+    private Long ZoneId;
+
+    /**
+     * 实例redis分片数
+     */
+    private Long RedisShardNum;
+
+    /**
+     * 实例副本数
+     */
+    private Long RedisReplicasNum;
+
+    /**
+     * 实例分片大小，单位MB
+     */
+    private Long RedisShardSize;
+
+    /**
+     * 实例标称内存大小，单位MB
+     */
+    private Long Size;
+
+    /**
+     * 实例状态
+     */
+    private Long Status;
+
+    /**
+     * 实例带宽，单位Mbps
+     */
+    private Long Bandwidth;
+
+    /**
+     * 实例连接数
+     */
+    private Long UnShardConnLimit;
+
+    /**
+     * 实例付费模式
+     */
+    private Long PayMode;
+
+    /**
+     * 到期时间
+     */
+    private Long DeadlineTime;
+
+    /**
+     * 自动续费标识
+     */
+    private Long AutoRenewFlag;
+
+    /**
+     * 实例创建时间
+     */
+    private Long Createtime;
+
+    /**
+     * 实例vip列表
+     */
+    private String Vip;
+
+    /**
+     * vpc网络ID
+     */
+    private Long VpcId;
+
+    /**
+     * vpc子网ID
+     */
+    private Long SubnetId;
+
+    /**
+     * 组网类型
+     */
+    private Long NetLimit;
 }

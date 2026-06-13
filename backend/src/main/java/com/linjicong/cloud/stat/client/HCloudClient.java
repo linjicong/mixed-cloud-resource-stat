@@ -1140,4 +1140,141 @@ public class HCloudClient{
                 .build();
         return BeanUtils.cgLibCopyList(client.listBlockchains(new com.huaweicloud.sdk.bcs.v2.model.ListBlockchainsRequest()).getBlockchains(), HCloudBcs::new);
     }
+
+    /**
+     * 华为云-云专线
+     */
+    public List<HCloudDc> listDc() {
+        com.huaweicloud.sdk.dc.v3.DcClient client = com.huaweicloud.sdk.dc.v3.DcClient.newBuilder()
+                .withCredential(auth)
+                .withRegion(com.huaweicloud.sdk.dc.v3.region.DcRegion.valueOf(region))
+                .build();
+        return BeanUtils.cgLibCopyList(client.listDirectConnects(new com.huaweicloud.sdk.dc.v3.model.ListDirectConnectsRequest()).getDirectConnects(), HCloudDc::new);
+    }
+
+    /**
+     * 华为云-全球加速
+     */
+    public List<HCloudGa> listGa() {
+        com.huaweicloud.sdk.ga.v1.GaClient client = com.huaweicloud.sdk.ga.v1.GaClient.newBuilder()
+                .withCredential(auth)
+                .withRegion(com.huaweicloud.sdk.ga.v1.region.GaRegion.valueOf(region))
+                .build();
+        return BeanUtils.cgLibCopyList(client.listAccelerators(new com.huaweicloud.sdk.ga.v1.model.ListAcceleratorsRequest()).getAccelerators(), HCloudGa::new);
+    }
+
+    /**
+     * 华为云-事件网格
+     */
+    public List<HCloudEg> listEg() {
+        com.huaweicloud.sdk.eg.v1.EgClient client = com.huaweicloud.sdk.eg.v1.EgClient.newBuilder()
+                .withCredential(auth)
+                .withRegion(com.huaweicloud.sdk.eg.v1.region.EgRegion.valueOf(region))
+                .build();
+        return BeanUtils.cgLibCopyList(client.listChannels(new com.huaweicloud.sdk.eg.v1.model.ListChannelsRequest()).getItems(), HCloudEg::new);
+    }
+
+    /**
+     * 华为云-应用性能管理
+     */
+    public List<HCloudApm> listApm() {
+        // TODO: SDK类不可用 - com.huaweicloud.sdk.apm.v1.ApmClient
+        return new ArrayList<>();
+    }
+
+    /**
+     * 华为云-表格存储
+     */
+    public List<HCloudCloudTable> listCloudTable() {
+        // TODO: SDK类不可用 - com.huaweicloud.sdk.cloudtable.v2.CloudtableClient
+        return new ArrayList<>();
+    }
+
+    /**
+     * 华为云-数据治理中心
+     */
+    public List<HCloudDataArtsStudio> listDataArtsStudio() {
+        // TODO: SDK类不可用 - com.huaweicloud.sdk.dataartsstudio.v1.DataArtsStudioClient
+        return new ArrayList<>();
+    }
+
+    /**
+     * 华为云-数据接入
+     */
+    public List<HCloudDis> listDis() {
+        // TODO: SDK类不可用 - com.huaweicloud.sdk.dis.v2.DisClient
+        return new ArrayList<>();
+    }
+
+    /**
+     * 华为云-多活高可用
+     */
+    public List<HCloudMas> listMas() {
+        // TODO: SDK类不可用 - com.huaweicloud.sdk.mas.v1.MasClient
+        return new ArrayList<>();
+    }
+
+    /**
+     * 华为云-媒体处理
+     */
+    public List<HCloudMpc> listMpc() {
+        // TODO: SDK类不可用 - com.huaweicloud.sdk.mpc.v1.MpcClient
+        return new ArrayList<>();
+    }
+
+    /**
+     * 华为云-云化数据中心
+     */
+    public List<HCloudCloudDc> listCloudDc() {
+        // TODO: SDK类不可用 - com.huaweicloud.sdk.clouddc.v1.CloudDCClient
+        return new ArrayList<>();
+    }
+
+    /**
+     * 华为云-键值存储服务
+     */
+    public List<HCloudKvs> listKvs() {
+        // TODO: SDK类不可用 - com.huaweicloud.sdk.kvs.v1.KvsClient
+        return new ArrayList<>();
+    }
+
+    /**
+     * 华为云-交换数据空间
+     */
+    public List<HCloudEds> listEds() {
+        // TODO: SDK类不可用 - com.huaweicloud.sdk.eds.v1.EdsClient
+        return new ArrayList<>();
+    }
+
+    /**
+     * 华为云-可信智能计算
+     */
+    public List<HCloudTics> listTics() {
+        // TODO: SDK类不可用 - com.huaweicloud.sdk.tics.v1.TicsClient
+        return new ArrayList<>();
+    }
+
+    /**
+     * 华为云-组织
+     */
+    public List<HCloudOrganizations> listOrganizations() {
+        // TODO: SDK类不可用 - com.huaweicloud.sdk.organizations.v1.OrganizationsClient
+        return new ArrayList<>();
+    }
+
+    /**
+     * 华为云-资源访问管理
+     */
+    public List<HCloudRam> listRam() {
+        // TODO: SDK类不可用 - com.huaweicloud.sdk.ram.v1.RamClient
+        return new ArrayList<>();
+    }
+
+    /**
+     * 华为云-云运维中心
+     */
+    public List<HCloudCoc> listCoc() {
+        // TODO: SDK类不可用 - com.huaweicloud.sdk.coc.v1.CocClient
+        return new ArrayList<>();
+    }
 }

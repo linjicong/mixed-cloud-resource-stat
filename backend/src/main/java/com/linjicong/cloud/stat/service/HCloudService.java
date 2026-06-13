@@ -193,6 +193,38 @@ public class HCloudService implements CloudService {
     private HCloudDehMapper hCloudDehMapper;
     @Resource
     private HCloudBcsMapper hCloudBcsMapper;
+    @Resource
+    private HCloudDcMapper hCloudDcMapper;
+    @Resource
+    private HCloudGaMapper hCloudGaMapper;
+    @Resource
+    private HCloudEgMapper hCloudEgMapper;
+    @Resource
+    private HCloudApmMapper hCloudApmMapper;
+    @Resource
+    private HCloudCloudTableMapper hCloudCloudTableMapper;
+    @Resource
+    private HCloudDataArtsStudioMapper hCloudDataArtsStudioMapper;
+    @Resource
+    private HCloudDisMapper hCloudDisMapper;
+    @Resource
+    private HCloudMasMapper hCloudMasMapper;
+    @Resource
+    private HCloudMpcMapper hCloudMpcMapper;
+    @Resource
+    private HCloudCloudDcMapper hCloudCloudDcMapper;
+    @Resource
+    private HCloudKvsMapper hCloudKvsMapper;
+    @Resource
+    private HCloudEdsMapper hCloudEdsMapper;
+    @Resource
+    private HCloudTicsMapper hCloudTicsMapper;
+    @Resource
+    private HCloudOrganizationsMapper hCloudOrganizationsMapper;
+    @Resource
+    private HCloudRamMapper hCloudRamMapper;
+    @Resource
+    private HCloudCocMapper hCloudCocMapper;
 
     /**
      * 同步所有华为云资源
@@ -272,6 +304,22 @@ public class HCloudService implements CloudService {
         total += syncIotDa(hCloudClient, cloudConf);
         total += syncDeh(hCloudClient, cloudConf);
         total += syncBcs(hCloudClient, cloudConf);
+        total += syncDc(hCloudClient, cloudConf);
+        total += syncGa(hCloudClient, cloudConf);
+        total += syncEg(hCloudClient, cloudConf);
+        total += syncApm(hCloudClient, cloudConf);
+        total += syncCloudTable(hCloudClient, cloudConf);
+        total += syncDataArtsStudio(hCloudClient, cloudConf);
+        total += syncDis(hCloudClient, cloudConf);
+        total += syncMas(hCloudClient, cloudConf);
+        total += syncMpc(hCloudClient, cloudConf);
+        total += syncCloudDc(hCloudClient, cloudConf);
+        total += syncKvs(hCloudClient, cloudConf);
+        total += syncEds(hCloudClient, cloudConf);
+        total += syncTics(hCloudClient, cloudConf);
+        total += syncOrganizations(hCloudClient, cloudConf);
+        total += syncRam(hCloudClient, cloudConf);
+        total += syncCoc(hCloudClient, cloudConf);
         return total;
     }
 
@@ -2474,6 +2522,550 @@ public class HCloudService implements CloudService {
                     .in(HCloudBcs::getId, toDeleteIds)
                     .set(HCloudBcs::getDeleted, 1);
             hCloudBcsMapper.update(null, uw);
+        }
+        return insertCount;
+    }
+
+    // ==================== DC (云专线) ====================
+
+    private int syncDc(HCloudClient hCloudClient, CloudConf cloudConf) {
+        List<HCloudDc> apiList = hCloudClient.listDc();
+        List<HCloudDc> dbList = hCloudDcMapper.selectByConfName(cloudConf.getName());
+
+        Map<String, HCloudDc> apiMap = apiList.stream()
+                .filter(e -> e.getId() != null)
+                .collect(Collectors.toMap(HCloudDc::getId, e -> e, (a, b) -> a));
+        Map<String, HCloudDc> dbMap = dbList.stream()
+                .filter(e -> e.getId() != null)
+                .collect(Collectors.toMap(HCloudDc::getId, e -> e, (a, b) -> a));
+
+        List<HCloudDc> toInsert = apiList.stream()
+                .filter(e -> e.getId() != null && !dbMap.containsKey(e.getId()))
+                .collect(Collectors.toList());
+        Set<String> toDeleteIds = dbMap.keySet().stream()
+                .filter(id -> !apiMap.containsKey(id))
+                .collect(Collectors.toSet());
+
+        int insertCount = 0;
+        if (!toInsert.isEmpty()) {
+            insertCount = hCloudDcMapper.insertBatch(toInsert);
+        }
+        if (!toDeleteIds.isEmpty()) {
+            LambdaUpdateWrapper<HCloudDc> uw = new LambdaUpdateWrapper<>();
+            uw.eq(HCloudDc::getConfName, cloudConf.getName())
+                    .in(HCloudDc::getId, toDeleteIds)
+                    .set(HCloudDc::getDeleted, 1);
+            hCloudDcMapper.update(null, uw);
+        }
+        return insertCount;
+    }
+
+    // ==================== GA (全球加速) ====================
+
+    private int syncGa(HCloudClient hCloudClient, CloudConf cloudConf) {
+        List<HCloudGa> apiList = hCloudClient.listGa();
+        List<HCloudGa> dbList = hCloudGaMapper.selectByConfName(cloudConf.getName());
+
+        Map<String, HCloudGa> apiMap = apiList.stream()
+                .filter(e -> e.getId() != null)
+                .collect(Collectors.toMap(HCloudGa::getId, e -> e, (a, b) -> a));
+        Map<String, HCloudGa> dbMap = dbList.stream()
+                .filter(e -> e.getId() != null)
+                .collect(Collectors.toMap(HCloudGa::getId, e -> e, (a, b) -> a));
+
+        List<HCloudGa> toInsert = apiList.stream()
+                .filter(e -> e.getId() != null && !dbMap.containsKey(e.getId()))
+                .collect(Collectors.toList());
+        Set<String> toDeleteIds = dbMap.keySet().stream()
+                .filter(id -> !apiMap.containsKey(id))
+                .collect(Collectors.toSet());
+
+        int insertCount = 0;
+        if (!toInsert.isEmpty()) {
+            insertCount = hCloudGaMapper.insertBatch(toInsert);
+        }
+        if (!toDeleteIds.isEmpty()) {
+            LambdaUpdateWrapper<HCloudGa> uw = new LambdaUpdateWrapper<>();
+            uw.eq(HCloudGa::getConfName, cloudConf.getName())
+                    .in(HCloudGa::getId, toDeleteIds)
+                    .set(HCloudGa::getDeleted, 1);
+            hCloudGaMapper.update(null, uw);
+        }
+        return insertCount;
+    }
+
+    // ==================== EG (事件网格) ====================
+
+    private int syncEg(HCloudClient hCloudClient, CloudConf cloudConf) {
+        List<HCloudEg> apiList = hCloudClient.listEg();
+        List<HCloudEg> dbList = hCloudEgMapper.selectByConfName(cloudConf.getName());
+
+        Map<String, HCloudEg> apiMap = apiList.stream()
+                .filter(e -> e.getChannelId() != null)
+                .collect(Collectors.toMap(HCloudEg::getChannelId, e -> e, (a, b) -> a));
+        Map<String, HCloudEg> dbMap = dbList.stream()
+                .filter(e -> e.getChannelId() != null)
+                .collect(Collectors.toMap(HCloudEg::getChannelId, e -> e, (a, b) -> a));
+
+        List<HCloudEg> toInsert = apiList.stream()
+                .filter(e -> e.getChannelId() != null && !dbMap.containsKey(e.getChannelId()))
+                .collect(Collectors.toList());
+        Set<String> toDeleteIds = dbMap.keySet().stream()
+                .filter(id -> !apiMap.containsKey(id))
+                .collect(Collectors.toSet());
+
+        int insertCount = 0;
+        if (!toInsert.isEmpty()) {
+            insertCount = hCloudEgMapper.insertBatch(toInsert);
+        }
+        if (!toDeleteIds.isEmpty()) {
+            LambdaUpdateWrapper<HCloudEg> uw = new LambdaUpdateWrapper<>();
+            uw.eq(HCloudEg::getConfName, cloudConf.getName())
+                    .in(HCloudEg::getChannelId, toDeleteIds)
+                    .set(HCloudEg::getDeleted, 1);
+            hCloudEgMapper.update(null, uw);
+        }
+        return insertCount;
+    }
+
+    // ==================== APM (应用性能管理) ====================
+
+    private int syncApm(HCloudClient hCloudClient, CloudConf cloudConf) {
+        List<HCloudApm> apiList = hCloudClient.listApm();
+        List<HCloudApm> dbList = hCloudApmMapper.selectByConfName(cloudConf.getName());
+
+        Map<String, HCloudApm> apiMap = apiList.stream()
+                .filter(e -> e.getAppId() != null)
+                .collect(Collectors.toMap(HCloudApm::getAppId, e -> e, (a, b) -> a));
+        Map<String, HCloudApm> dbMap = dbList.stream()
+                .filter(e -> e.getAppId() != null)
+                .collect(Collectors.toMap(HCloudApm::getAppId, e -> e, (a, b) -> a));
+
+        List<HCloudApm> toInsert = apiList.stream()
+                .filter(e -> e.getAppId() != null && !dbMap.containsKey(e.getAppId()))
+                .collect(Collectors.toList());
+        Set<String> toDeleteIds = dbMap.keySet().stream()
+                .filter(id -> !apiMap.containsKey(id))
+                .collect(Collectors.toSet());
+
+        int insertCount = 0;
+        if (!toInsert.isEmpty()) {
+            insertCount = hCloudApmMapper.insertBatch(toInsert);
+        }
+        if (!toDeleteIds.isEmpty()) {
+            LambdaUpdateWrapper<HCloudApm> uw = new LambdaUpdateWrapper<>();
+            uw.eq(HCloudApm::getConfName, cloudConf.getName())
+                    .in(HCloudApm::getAppId, toDeleteIds)
+                    .set(HCloudApm::getDeleted, 1);
+            hCloudApmMapper.update(null, uw);
+        }
+        return insertCount;
+    }
+
+    // ==================== CloudTable (表格存储) ====================
+
+    private int syncCloudTable(HCloudClient hCloudClient, CloudConf cloudConf) {
+        List<HCloudCloudTable> apiList = hCloudClient.listCloudTable();
+        List<HCloudCloudTable> dbList = hCloudCloudTableMapper.selectByConfName(cloudConf.getName());
+
+        Map<String, HCloudCloudTable> apiMap = apiList.stream()
+                .filter(e -> e.getClusterId() != null)
+                .collect(Collectors.toMap(HCloudCloudTable::getClusterId, e -> e, (a, b) -> a));
+        Map<String, HCloudCloudTable> dbMap = dbList.stream()
+                .filter(e -> e.getClusterId() != null)
+                .collect(Collectors.toMap(HCloudCloudTable::getClusterId, e -> e, (a, b) -> a));
+
+        List<HCloudCloudTable> toInsert = apiList.stream()
+                .filter(e -> e.getClusterId() != null && !dbMap.containsKey(e.getClusterId()))
+                .collect(Collectors.toList());
+        Set<String> toDeleteIds = dbMap.keySet().stream()
+                .filter(id -> !apiMap.containsKey(id))
+                .collect(Collectors.toSet());
+
+        int insertCount = 0;
+        if (!toInsert.isEmpty()) {
+            insertCount = hCloudCloudTableMapper.insertBatch(toInsert);
+        }
+        if (!toDeleteIds.isEmpty()) {
+            LambdaUpdateWrapper<HCloudCloudTable> uw = new LambdaUpdateWrapper<>();
+            uw.eq(HCloudCloudTable::getConfName, cloudConf.getName())
+                    .in(HCloudCloudTable::getClusterId, toDeleteIds)
+                    .set(HCloudCloudTable::getDeleted, 1);
+            hCloudCloudTableMapper.update(null, uw);
+        }
+        return insertCount;
+    }
+
+    // ==================== DataArtsStudio (数据治理中心) ====================
+
+    private int syncDataArtsStudio(HCloudClient hCloudClient, CloudConf cloudConf) {
+        List<HCloudDataArtsStudio> apiList = hCloudClient.listDataArtsStudio();
+        List<HCloudDataArtsStudio> dbList = hCloudDataArtsStudioMapper.selectByConfName(cloudConf.getName());
+
+        Map<String, HCloudDataArtsStudio> apiMap = apiList.stream()
+                .filter(e -> e.getWorkspaceId() != null)
+                .collect(Collectors.toMap(HCloudDataArtsStudio::getWorkspaceId, e -> e, (a, b) -> a));
+        Map<String, HCloudDataArtsStudio> dbMap = dbList.stream()
+                .filter(e -> e.getWorkspaceId() != null)
+                .collect(Collectors.toMap(HCloudDataArtsStudio::getWorkspaceId, e -> e, (a, b) -> a));
+
+        List<HCloudDataArtsStudio> toInsert = apiList.stream()
+                .filter(e -> e.getWorkspaceId() != null && !dbMap.containsKey(e.getWorkspaceId()))
+                .collect(Collectors.toList());
+        Set<String> toDeleteIds = dbMap.keySet().stream()
+                .filter(id -> !apiMap.containsKey(id))
+                .collect(Collectors.toSet());
+
+        int insertCount = 0;
+        if (!toInsert.isEmpty()) {
+            insertCount = hCloudDataArtsStudioMapper.insertBatch(toInsert);
+        }
+        if (!toDeleteIds.isEmpty()) {
+            LambdaUpdateWrapper<HCloudDataArtsStudio> uw = new LambdaUpdateWrapper<>();
+            uw.eq(HCloudDataArtsStudio::getConfName, cloudConf.getName())
+                    .in(HCloudDataArtsStudio::getWorkspaceId, toDeleteIds)
+                    .set(HCloudDataArtsStudio::getDeleted, 1);
+            hCloudDataArtsStudioMapper.update(null, uw);
+        }
+        return insertCount;
+    }
+
+    // ==================== DIS (数据接入) ====================
+
+    private int syncDis(HCloudClient hCloudClient, CloudConf cloudConf) {
+        List<HCloudDis> apiList = hCloudClient.listDis();
+        List<HCloudDis> dbList = hCloudDisMapper.selectByConfName(cloudConf.getName());
+
+        Map<String, HCloudDis> apiMap = apiList.stream()
+                .filter(e -> e.getStreamName() != null)
+                .collect(Collectors.toMap(HCloudDis::getStreamName, e -> e, (a, b) -> a));
+        Map<String, HCloudDis> dbMap = dbList.stream()
+                .filter(e -> e.getStreamName() != null)
+                .collect(Collectors.toMap(HCloudDis::getStreamName, e -> e, (a, b) -> a));
+
+        List<HCloudDis> toInsert = apiList.stream()
+                .filter(e -> e.getStreamName() != null && !dbMap.containsKey(e.getStreamName()))
+                .collect(Collectors.toList());
+        Set<String> toDeleteIds = dbMap.keySet().stream()
+                .filter(id -> !apiMap.containsKey(id))
+                .collect(Collectors.toSet());
+
+        int insertCount = 0;
+        if (!toInsert.isEmpty()) {
+            insertCount = hCloudDisMapper.insertBatch(toInsert);
+        }
+        if (!toDeleteIds.isEmpty()) {
+            LambdaUpdateWrapper<HCloudDis> uw = new LambdaUpdateWrapper<>();
+            uw.eq(HCloudDis::getConfName, cloudConf.getName())
+                    .in(HCloudDis::getStreamName, toDeleteIds)
+                    .set(HCloudDis::getDeleted, 1);
+            hCloudDisMapper.update(null, uw);
+        }
+        return insertCount;
+    }
+
+    // ==================== MAS (多活高可用) ====================
+
+    private int syncMas(HCloudClient hCloudClient, CloudConf cloudConf) {
+        List<HCloudMas> apiList = hCloudClient.listMas();
+        List<HCloudMas> dbList = hCloudMasMapper.selectByConfName(cloudConf.getName());
+
+        Map<String, HCloudMas> apiMap = apiList.stream()
+                .filter(e -> e.getNamespaceId() != null)
+                .collect(Collectors.toMap(HCloudMas::getNamespaceId, e -> e, (a, b) -> a));
+        Map<String, HCloudMas> dbMap = dbList.stream()
+                .filter(e -> e.getNamespaceId() != null)
+                .collect(Collectors.toMap(HCloudMas::getNamespaceId, e -> e, (a, b) -> a));
+
+        List<HCloudMas> toInsert = apiList.stream()
+                .filter(e -> e.getNamespaceId() != null && !dbMap.containsKey(e.getNamespaceId()))
+                .collect(Collectors.toList());
+        Set<String> toDeleteIds = dbMap.keySet().stream()
+                .filter(id -> !apiMap.containsKey(id))
+                .collect(Collectors.toSet());
+
+        int insertCount = 0;
+        if (!toInsert.isEmpty()) {
+            insertCount = hCloudMasMapper.insertBatch(toInsert);
+        }
+        if (!toDeleteIds.isEmpty()) {
+            LambdaUpdateWrapper<HCloudMas> uw = new LambdaUpdateWrapper<>();
+            uw.eq(HCloudMas::getConfName, cloudConf.getName())
+                    .in(HCloudMas::getNamespaceId, toDeleteIds)
+                    .set(HCloudMas::getDeleted, 1);
+            hCloudMasMapper.update(null, uw);
+        }
+        return insertCount;
+    }
+
+    // ==================== MPC (媒体处理) ====================
+
+    private int syncMpc(HCloudClient hCloudClient, CloudConf cloudConf) {
+        List<HCloudMpc> apiList = hCloudClient.listMpc();
+        List<HCloudMpc> dbList = hCloudMpcMapper.selectByConfName(cloudConf.getName());
+
+        Map<String, HCloudMpc> apiMap = apiList.stream()
+                .filter(e -> e.getJobId() != null)
+                .collect(Collectors.toMap(HCloudMpc::getJobId, e -> e, (a, b) -> a));
+        Map<String, HCloudMpc> dbMap = dbList.stream()
+                .filter(e -> e.getJobId() != null)
+                .collect(Collectors.toMap(HCloudMpc::getJobId, e -> e, (a, b) -> a));
+
+        List<HCloudMpc> toInsert = apiList.stream()
+                .filter(e -> e.getJobId() != null && !dbMap.containsKey(e.getJobId()))
+                .collect(Collectors.toList());
+        Set<String> toDeleteIds = dbMap.keySet().stream()
+                .filter(id -> !apiMap.containsKey(id))
+                .collect(Collectors.toSet());
+
+        int insertCount = 0;
+        if (!toInsert.isEmpty()) {
+            insertCount = hCloudMpcMapper.insertBatch(toInsert);
+        }
+        if (!toDeleteIds.isEmpty()) {
+            LambdaUpdateWrapper<HCloudMpc> uw = new LambdaUpdateWrapper<>();
+            uw.eq(HCloudMpc::getConfName, cloudConf.getName())
+                    .in(HCloudMpc::getJobId, toDeleteIds)
+                    .set(HCloudMpc::getDeleted, 1);
+            hCloudMpcMapper.update(null, uw);
+        }
+        return insertCount;
+    }
+
+    // ==================== CloudDc (云化数据中心) ====================
+
+    private int syncCloudDc(HCloudClient hCloudClient, CloudConf cloudConf) {
+        List<HCloudCloudDc> apiList = hCloudClient.listCloudDc();
+        List<HCloudCloudDc> dbList = hCloudCloudDcMapper.selectByConfName(cloudConf.getName());
+
+        Map<String, HCloudCloudDc> apiMap = apiList.stream()
+                .filter(e -> e.getInstanceId() != null)
+                .collect(Collectors.toMap(HCloudCloudDc::getInstanceId, e -> e, (a, b) -> a));
+        Map<String, HCloudCloudDc> dbMap = dbList.stream()
+                .filter(e -> e.getInstanceId() != null)
+                .collect(Collectors.toMap(HCloudCloudDc::getInstanceId, e -> e, (a, b) -> a));
+
+        List<HCloudCloudDc> toInsert = apiList.stream()
+                .filter(e -> e.getInstanceId() != null && !dbMap.containsKey(e.getInstanceId()))
+                .collect(Collectors.toList());
+        Set<String> toDeleteIds = dbMap.keySet().stream()
+                .filter(id -> !apiMap.containsKey(id))
+                .collect(Collectors.toSet());
+
+        int insertCount = 0;
+        if (!toInsert.isEmpty()) {
+            insertCount = hCloudCloudDcMapper.insertBatch(toInsert);
+        }
+        if (!toDeleteIds.isEmpty()) {
+            LambdaUpdateWrapper<HCloudCloudDc> uw = new LambdaUpdateWrapper<>();
+            uw.eq(HCloudCloudDc::getConfName, cloudConf.getName())
+                    .in(HCloudCloudDc::getInstanceId, toDeleteIds)
+                    .set(HCloudCloudDc::getDeleted, 1);
+            hCloudCloudDcMapper.update(null, uw);
+        }
+        return insertCount;
+    }
+
+    // ==================== KVS (键值存储) ====================
+
+    private int syncKvs(HCloudClient hCloudClient, CloudConf cloudConf) {
+        List<HCloudKvs> apiList = hCloudClient.listKvs();
+        List<HCloudKvs> dbList = hCloudKvsMapper.selectByConfName(cloudConf.getName());
+
+        Map<String, HCloudKvs> apiMap = apiList.stream()
+                .filter(e -> e.getTableName() != null)
+                .collect(Collectors.toMap(HCloudKvs::getTableName, e -> e, (a, b) -> a));
+        Map<String, HCloudKvs> dbMap = dbList.stream()
+                .filter(e -> e.getTableName() != null)
+                .collect(Collectors.toMap(HCloudKvs::getTableName, e -> e, (a, b) -> a));
+
+        List<HCloudKvs> toInsert = apiList.stream()
+                .filter(e -> e.getTableName() != null && !dbMap.containsKey(e.getTableName()))
+                .collect(Collectors.toList());
+        Set<String> toDeleteIds = dbMap.keySet().stream()
+                .filter(id -> !apiMap.containsKey(id))
+                .collect(Collectors.toSet());
+
+        int insertCount = 0;
+        if (!toInsert.isEmpty()) {
+            insertCount = hCloudKvsMapper.insertBatch(toInsert);
+        }
+        if (!toDeleteIds.isEmpty()) {
+            LambdaUpdateWrapper<HCloudKvs> uw = new LambdaUpdateWrapper<>();
+            uw.eq(HCloudKvs::getConfName, cloudConf.getName())
+                    .in(HCloudKvs::getTableName, toDeleteIds)
+                    .set(HCloudKvs::getDeleted, 1);
+            hCloudKvsMapper.update(null, uw);
+        }
+        return insertCount;
+    }
+
+    // ==================== EDS (交换数据空间) ====================
+
+    private int syncEds(HCloudClient hCloudClient, CloudConf cloudConf) {
+        List<HCloudEds> apiList = hCloudClient.listEds();
+        List<HCloudEds> dbList = hCloudEdsMapper.selectByConfName(cloudConf.getName());
+
+        Map<String, HCloudEds> apiMap = apiList.stream()
+                .filter(e -> e.getOfferId() != null)
+                .collect(Collectors.toMap(HCloudEds::getOfferId, e -> e, (a, b) -> a));
+        Map<String, HCloudEds> dbMap = dbList.stream()
+                .filter(e -> e.getOfferId() != null)
+                .collect(Collectors.toMap(HCloudEds::getOfferId, e -> e, (a, b) -> a));
+
+        List<HCloudEds> toInsert = apiList.stream()
+                .filter(e -> e.getOfferId() != null && !dbMap.containsKey(e.getOfferId()))
+                .collect(Collectors.toList());
+        Set<String> toDeleteIds = dbMap.keySet().stream()
+                .filter(id -> !apiMap.containsKey(id))
+                .collect(Collectors.toSet());
+
+        int insertCount = 0;
+        if (!toInsert.isEmpty()) {
+            insertCount = hCloudEdsMapper.insertBatch(toInsert);
+        }
+        if (!toDeleteIds.isEmpty()) {
+            LambdaUpdateWrapper<HCloudEds> uw = new LambdaUpdateWrapper<>();
+            uw.eq(HCloudEds::getConfName, cloudConf.getName())
+                    .in(HCloudEds::getOfferId, toDeleteIds)
+                    .set(HCloudEds::getDeleted, 1);
+            hCloudEdsMapper.update(null, uw);
+        }
+        return insertCount;
+    }
+
+    // ==================== TICS (可信智能计算) ====================
+
+    private int syncTics(HCloudClient hCloudClient, CloudConf cloudConf) {
+        List<HCloudTics> apiList = hCloudClient.listTics();
+        List<HCloudTics> dbList = hCloudTicsMapper.selectByConfName(cloudConf.getName());
+
+        Map<String, HCloudTics> apiMap = apiList.stream()
+                .filter(e -> e.getLeagueId() != null)
+                .collect(Collectors.toMap(HCloudTics::getLeagueId, e -> e, (a, b) -> a));
+        Map<String, HCloudTics> dbMap = dbList.stream()
+                .filter(e -> e.getLeagueId() != null)
+                .collect(Collectors.toMap(HCloudTics::getLeagueId, e -> e, (a, b) -> a));
+
+        List<HCloudTics> toInsert = apiList.stream()
+                .filter(e -> e.getLeagueId() != null && !dbMap.containsKey(e.getLeagueId()))
+                .collect(Collectors.toList());
+        Set<String> toDeleteIds = dbMap.keySet().stream()
+                .filter(id -> !apiMap.containsKey(id))
+                .collect(Collectors.toSet());
+
+        int insertCount = 0;
+        if (!toInsert.isEmpty()) {
+            insertCount = hCloudTicsMapper.insertBatch(toInsert);
+        }
+        if (!toDeleteIds.isEmpty()) {
+            LambdaUpdateWrapper<HCloudTics> uw = new LambdaUpdateWrapper<>();
+            uw.eq(HCloudTics::getConfName, cloudConf.getName())
+                    .in(HCloudTics::getLeagueId, toDeleteIds)
+                    .set(HCloudTics::getDeleted, 1);
+            hCloudTicsMapper.update(null, uw);
+        }
+        return insertCount;
+    }
+
+    // ==================== Organizations (组织) ====================
+
+    private int syncOrganizations(HCloudClient hCloudClient, CloudConf cloudConf) {
+        List<HCloudOrganizations> apiList = hCloudClient.listOrganizations();
+        List<HCloudOrganizations> dbList = hCloudOrganizationsMapper.selectByConfName(cloudConf.getName());
+
+        Map<String, HCloudOrganizations> apiMap = apiList.stream()
+                .filter(e -> e.getId() != null)
+                .collect(Collectors.toMap(HCloudOrganizations::getId, e -> e, (a, b) -> a));
+        Map<String, HCloudOrganizations> dbMap = dbList.stream()
+                .filter(e -> e.getId() != null)
+                .collect(Collectors.toMap(HCloudOrganizations::getId, e -> e, (a, b) -> a));
+
+        List<HCloudOrganizations> toInsert = apiList.stream()
+                .filter(e -> e.getId() != null && !dbMap.containsKey(e.getId()))
+                .collect(Collectors.toList());
+        Set<String> toDeleteIds = dbMap.keySet().stream()
+                .filter(id -> !apiMap.containsKey(id))
+                .collect(Collectors.toSet());
+
+        int insertCount = 0;
+        if (!toInsert.isEmpty()) {
+            insertCount = hCloudOrganizationsMapper.insertBatch(toInsert);
+        }
+        if (!toDeleteIds.isEmpty()) {
+            LambdaUpdateWrapper<HCloudOrganizations> uw = new LambdaUpdateWrapper<>();
+            uw.eq(HCloudOrganizations::getConfName, cloudConf.getName())
+                    .in(HCloudOrganizations::getId, toDeleteIds)
+                    .set(HCloudOrganizations::getDeleted, 1);
+            hCloudOrganizationsMapper.update(null, uw);
+        }
+        return insertCount;
+    }
+
+    // ==================== RAM (资源访问管理) ====================
+
+    private int syncRam(HCloudClient hCloudClient, CloudConf cloudConf) {
+        List<HCloudRam> apiList = hCloudClient.listRam();
+        List<HCloudRam> dbList = hCloudRamMapper.selectByConfName(cloudConf.getName());
+
+        Map<String, HCloudRam> apiMap = apiList.stream()
+                .filter(e -> e.getResourceShareId() != null)
+                .collect(Collectors.toMap(HCloudRam::getResourceShareId, e -> e, (a, b) -> a));
+        Map<String, HCloudRam> dbMap = dbList.stream()
+                .filter(e -> e.getResourceShareId() != null)
+                .collect(Collectors.toMap(HCloudRam::getResourceShareId, e -> e, (a, b) -> a));
+
+        List<HCloudRam> toInsert = apiList.stream()
+                .filter(e -> e.getResourceShareId() != null && !dbMap.containsKey(e.getResourceShareId()))
+                .collect(Collectors.toList());
+        Set<String> toDeleteIds = dbMap.keySet().stream()
+                .filter(id -> !apiMap.containsKey(id))
+                .collect(Collectors.toSet());
+
+        int insertCount = 0;
+        if (!toInsert.isEmpty()) {
+            insertCount = hCloudRamMapper.insertBatch(toInsert);
+        }
+        if (!toDeleteIds.isEmpty()) {
+            LambdaUpdateWrapper<HCloudRam> uw = new LambdaUpdateWrapper<>();
+            uw.eq(HCloudRam::getConfName, cloudConf.getName())
+                    .in(HCloudRam::getResourceShareId, toDeleteIds)
+                    .set(HCloudRam::getDeleted, 1);
+            hCloudRamMapper.update(null, uw);
+        }
+        return insertCount;
+    }
+
+    // ==================== COC (云运维中心) ====================
+
+    private int syncCoc(HCloudClient hCloudClient, CloudConf cloudConf) {
+        List<HCloudCoc> apiList = hCloudClient.listCoc();
+        List<HCloudCoc> dbList = hCloudCocMapper.selectByConfName(cloudConf.getName());
+
+        Map<String, HCloudCoc> apiMap = apiList.stream()
+                .filter(e -> e.getIncidentId() != null)
+                .collect(Collectors.toMap(HCloudCoc::getIncidentId, e -> e, (a, b) -> a));
+        Map<String, HCloudCoc> dbMap = dbList.stream()
+                .filter(e -> e.getIncidentId() != null)
+                .collect(Collectors.toMap(HCloudCoc::getIncidentId, e -> e, (a, b) -> a));
+
+        List<HCloudCoc> toInsert = apiList.stream()
+                .filter(e -> e.getIncidentId() != null && !dbMap.containsKey(e.getIncidentId()))
+                .collect(Collectors.toList());
+        Set<String> toDeleteIds = dbMap.keySet().stream()
+                .filter(id -> !apiMap.containsKey(id))
+                .collect(Collectors.toSet());
+
+        int insertCount = 0;
+        if (!toInsert.isEmpty()) {
+            insertCount = hCloudCocMapper.insertBatch(toInsert);
+        }
+        if (!toDeleteIds.isEmpty()) {
+            LambdaUpdateWrapper<HCloudCoc> uw = new LambdaUpdateWrapper<>();
+            uw.eq(HCloudCoc::getConfName, cloudConf.getName())
+                    .in(HCloudCoc::getIncidentId, toDeleteIds)
+                    .set(HCloudCoc::getDeleted, 1);
+            hCloudCocMapper.update(null, uw);
         }
         return insertCount;
     }

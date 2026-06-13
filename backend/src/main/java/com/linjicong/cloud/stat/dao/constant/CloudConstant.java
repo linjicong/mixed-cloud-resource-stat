@@ -36,4 +36,6 @@ public class CloudConstant {
     public static final String H_CLOUD = "HCloud";
     /** 腾讯云 */
     public static final String Q_CLOUD = "QCloud";
+    /** 阿里云 */
+    public static final String A_CLOUD = "ACloud";
 }

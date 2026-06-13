@@ -5,24 +5,9 @@ import { cloudApi } from '@/apis/cloud'
 export const useCloudStore = defineStore('cloud', () => {
   // 状态
   const cloudConfigs = ref([])
-  const huaweiResources = ref({
-    ecs: [],
-    rds: [],
-    elb: [],
-    evs: [],
-    vpc: [],
-    bills: []
-  })
-  const tencentResources = ref({
-    cvm: [],
-    cdb: [],
-    clb: [],
-    cbs: [],
-    bills: []
-  })
-  const aliyunResources = ref({
-    dns: []
-  })
+  const huaweiResources = ref({})
+  const tencentResources = ref({})
+  const aliyunResources = ref({})
   const loading = ref(false)
 
   // 计算属性
@@ -86,7 +71,8 @@ export const useCloudStore = defineStore('cloud', () => {
     try {
       loading.value = true
       const response = await cloudApi.getHuaweiResources(resourceType)
-      huaweiResources.value[resourceType] = response.data
+      // 动态初始化资源类型（使用展开运算符创建新对象触发响应式更新）
+      huaweiResources.value = { ...huaweiResources.value, [resourceType]: response.data }
     } catch (error) {
       console.error(`获取华为云${resourceType}资源失败:`, error)
     } finally {
@@ -98,7 +84,8 @@ export const useCloudStore = defineStore('cloud', () => {
     try {
       loading.value = true
       const response = await cloudApi.getTencentResources(resourceType)
-      tencentResources.value[resourceType] = response.data
+      // 动态初始化资源类型
+      tencentResources.value = { ...tencentResources.value, [resourceType]: response.data }
     } catch (error) {
       console.error(`获取腾讯云${resourceType}资源失败:`, error)
     } finally {
@@ -110,7 +97,8 @@ export const useCloudStore = defineStore('cloud', () => {
     try {
       loading.value = true
       const response = await cloudApi.getAliyunResources(resourceType)
-      aliyunResources.value[resourceType] = response.data
+      // 动态初始化资源类型
+      aliyunResources.value = { ...aliyunResources.value, [resourceType]: response.data }
     } catch (error) {
       console.error(`获取阿里云${resourceType}资源失败:`, error)
     } finally {
@@ -119,19 +107,8 @@ export const useCloudStore = defineStore('cloud', () => {
   }
 
   const refreshAllData = async () => {
-    await Promise.all([
-      fetchCloudConfigs(),
-      fetchHuaweiResources('ecs'),
-      fetchHuaweiResources('rds'),
-      fetchHuaweiResources('elb'),
-      fetchHuaweiResources('evs'),
-      fetchHuaweiResources('vpc'),
-      fetchTencentResources('cvm'),
-      fetchTencentResources('cdb'),
-      fetchTencentResources('clb'),
-      fetchTencentResources('cbs'),
-      fetchAliyunResources('dns')
-    ])
+    await fetchCloudConfigs()
+    // 资源类型按需加载，由各视图组件自行触发
   }
 
   return {
