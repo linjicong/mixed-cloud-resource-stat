@@ -27,7 +27,7 @@ import com.huaweicloud.sdk.vpc.v3.model.CloudResource;
 import com.huaweicloud.sdk.vpc.v3.model.Tag;
 import com.huaweicloud.sdk.vpc.v3.model.Vpc;
 import com.linjicong.cloud.stat.dao.entity.BasicEntity;
-import com.vladmihalcea.hibernate.type.json.JsonStringType;
+import io.hypersistence.utils.hibernate.type.json.JsonStringType;
 import lombok.Data;
 import org.hibernate.annotations.Type;
 

@@ -26,7 +26,7 @@ package com.linjicong.cloud.stat.dao.entity.hcloud;
 import com.huaweicloud.sdk.cbr.v1.model.BackupExtendInfo;
 import com.huaweicloud.sdk.cbr.v1.model.ResourceExtraInfo;
 import com.linjicong.cloud.stat.dao.entity.BasicEntity;
-import com.vladmihalcea.hibernate.type.json.JsonStringType;
+import io.hypersistence.utils.hibernate.type.json.JsonStringType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.Type;

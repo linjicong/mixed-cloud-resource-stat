@@ -1,3 +1,4 @@
+// Java 25 Preview: JEP-488 (Primitive Patterns)
 /*
  * MIT License
  *

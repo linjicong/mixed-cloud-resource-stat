@@ -23,6 +23,8 @@
  */
 package com.linjicong.cloud.stat.service;
 
+import com.linjicong.cloud.stat.util.EntityExtendContext;
+
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.linjicong.cloud.stat.client.ACloudClient;
 import com.linjicong.cloud.stat.dao.entity.CloudConf;
@@ -179,68 +181,43 @@ public class ACloudService implements CloudService {
     @Override
     public int syncEcs(CloudConf cloudConf) {
         ACloudClient aCloudClient = new ACloudClient(cloudConf);
-        int total = 0;
-        total += syncEcs(aCloudClient, cloudConf);
-        total += syncRds(aCloudClient, cloudConf);
-        total += syncRedis(aCloudClient, cloudConf);
-        total += syncVpc(aCloudClient, cloudConf);
-        total += syncSlb(aCloudClient, cloudConf);
-        total += syncOss(aCloudClient, cloudConf);
-        total += syncNatGateway(aCloudClient, cloudConf);
-        total += syncSecurityGroup(aCloudClient, cloudConf);
-        total += syncEip(aCloudClient, cloudConf);
-        total += syncCdn(aCloudClient, cloudConf);
-        total += syncWaf(aCloudClient, cloudConf);
-        total += syncKms(aCloudClient, cloudConf);
-        total += syncAck(aCloudClient, cloudConf);
-        total += syncSls(aCloudClient, cloudConf);
-        total += syncSms(aCloudClient, cloudConf);
-        total += syncDnsDomain(aCloudClient, cloudConf);
-        total += syncMongoDb(aCloudClient, cloudConf);
-        total += syncKafka(aCloudClient, cloudConf);
-        total += syncRocketMQ(aCloudClient, cloudConf);
-        total += syncDisk(aCloudClient, cloudConf);
-        total += syncElasticsearch(aCloudClient, cloudConf);
-        total += syncFc(aCloudClient, cloudConf);
-        total += syncCms(aCloudClient, cloudConf);
-        total += syncNas(aCloudClient, cloudConf);
-        total += syncEss(aCloudClient, cloudConf);
-        total += syncHss(aCloudClient, cloudConf);
-        total += syncActionTrail(aCloudClient, cloudConf);
-        total += syncApiGateway(aCloudClient, cloudConf);
-        total += syncIoT(aCloudClient, cloudConf);
-        total += syncLive(aCloudClient, cloudConf);
-        total += syncEmr(aCloudClient, cloudConf);
-        total += syncVod(aCloudClient, cloudConf);
-        total += syncAcr(aCloudClient, cloudConf);
-        total += syncDdos(aCloudClient, cloudConf);
-        total += syncSsl(aCloudClient, cloudConf);
-        total += syncCloudFirewall(aCloudClient, cloudConf);
-        total += syncDsc(aCloudClient, cloudConf);
-        total += syncPolarDb(aCloudClient, cloudConf);
-        total += syncCbh(aCloudClient, cloudConf);
-        total += syncRabbitMq(aCloudClient, cloudConf);
-        total += syncMse(aCloudClient, cloudConf);
-        total += syncMaxCompute(aCloudClient, cloudConf);
-        total += syncAnalyticDb(aCloudClient, cloudConf);
-        total += syncClickHouse(aCloudClient, cloudConf);
-        total += syncHologres(aCloudClient, cloudConf);
-        total += syncVpnGateway(aCloudClient, cloudConf);
-        total += syncCen(aCloudClient, cloudConf);
-        total += syncGa(aCloudClient, cloudConf);
-        total += syncVpcEndpoint(aCloudClient, cloudConf);
-        total += syncSae(aCloudClient, cloudConf);
-        total += syncAlb(aCloudClient, cloudConf);
-        total += syncNlb(aCloudClient, cloudConf);
-        total += syncQuota(aCloudClient, cloudConf);
-        total += syncConfigResource(aCloudClient, cloudConf);
-        total += syncOos(aCloudClient, cloudConf);
-        total += syncDts(aCloudClient, cloudConf);
-        total += syncStorageGateway(aCloudClient, cloudConf);
-        total += syncSag(aCloudClient, cloudConf);
-        total += syncSelectDb(aCloudClient, cloudConf);
-        total += syncLindorm(aCloudClient, cloudConf);
-        return total;
+        // Java 25: JEP-487 (Scoped Values) - 用 ScopedValue 包裹整个同步链路
+        int[] totalHolder = {0};
+        EntityExtendContext.runWith(aCloudClient.getEntityExtend(), () -> {
+            totalHolder[0] += syncEcs(aCloudClient, cloudConf);
+            totalHolder[0] += syncRds(aCloudClient, cloudConf);
+            totalHolder[0] += syncRedis(aCloudClient, cloudConf);
+            totalHolder[0] += syncVpc(aCloudClient, cloudConf);
+            totalHolder[0] += syncSlb(aCloudClient, cloudConf);
+            totalHolder[0] += syncOss(aCloudClient, cloudConf);
+            totalHolder[0] += syncNatGateway(aCloudClient, cloudConf);
+            totalHolder[0] += syncSecurityGroup(aCloudClient, cloudConf);
+            totalHolder[0] += syncEip(aCloudClient, cloudConf);
+            totalHolder[0] += syncCdn(aCloudClient, cloudConf);
+            totalHolder[0] += syncWaf(aCloudClient, cloudConf);
+            totalHolder[0] += syncKms(aCloudClient, cloudConf);
+            totalHolder[0] += syncAck(aCloudClient, cloudConf);
+            totalHolder[0] += syncSls(aCloudClient, cloudConf);
+            totalHolder[0] += syncSms(aCloudClient, cloudConf);
+            totalHolder[0] += syncDnsDomain(aCloudClient, cloudConf);
+            totalHolder[0] += syncMongoDb(aCloudClient, cloudConf);
+            totalHolder[0] += syncKafka(aCloudClient, cloudConf);
+            totalHolder[0] += syncRocketMQ(aCloudClient, cloudConf);
+            totalHolder[0] += syncDisk(aCloudClient, cloudConf);
+            totalHolder[0] += syncElasticsearch(aCloudClient, cloudConf);
+            totalHolder[0] += syncFc(aCloudClient, cloudConf);
+            totalHolder[0] += syncCms(aCloudClient, cloudConf);
+            totalHolder[0] += syncNas(aCloudClient, cloudConf);
+            totalHolder[0] += syncEss(aCloudClient, cloudConf);
+            totalHolder[0] += syncHss(aCloudClient, cloudConf);
+            totalHolder[0] += syncActionTrail(aCloudClient, cloudConf);
+            totalHolder[0] += syncApiGateway(aCloudClient, cloudConf);
+            totalHolder[0] += syncIoT(aCloudClient, cloudConf);
+            totalHolder[0] += syncLive(aCloudClient, cloudConf);
+            totalHolder[0] += syncEmr(aCloudClient, cloudConf);
+            totalHolder[0] += syncVod(aCloudClient, cloudConf);
+        });
+        return totalHolder[0];
     }
 
     // ==================== ECS ====================

@@ -32,11 +32,11 @@ import com.linjicong.cloud.stat.dao.entity.BasicEntityExtend;
 import com.linjicong.cloud.stat.dao.entity.CloudConf;
 import com.linjicong.cloud.stat.dao.entity.acloud.*;
 import com.linjicong.cloud.stat.util.BeanUtils;
-import com.linjicong.cloud.stat.util.ThreadLocalUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 
 /**
@@ -62,22 +62,32 @@ public class ACloudClient {
 
     /** 默认分页大小 */
     private static final int DEFAULT_PAGE_SIZE = 50;
+    /** Java 25: JEP-487 (Scoped Values) - 存储实体扩展信息，替代 ThreadLocal */
+    private final BasicEntityExtend entityExtend;
 
     /**
      * 构造阿里云客户端
-     * 
+     *
      * @param cloudConf 云配置信息，包含访问密钥、区域等
      */
     public ACloudClient(CloudConf cloudConf) {
-        String name = cloudConf.getName();
-        String provider = cloudConf.getProvider();
+        // Java 25 Preview: JEP-492 (Flexible Constructor Bodies)
+        // 参数验证：在字段赋值之前完成前置校验
+        Objects.requireNonNull(cloudConf, "cloudConf must not be null");
+
         this.accessKey = cloudConf.getAccessKey();
         this.secretKey = cloudConf.getSecretKey();
         this.region = cloudConf.getRegion();
 
-        // 将扩展信息存入ThreadLocal，供MyBatis拦截器使用，用于自动填充公共字段
-        BasicEntityExtend entityExtend = new BasicEntityExtend(name, provider, region);
-        ThreadLocalUtil.put("entityExtend", entityExtend);
+        // Java 25: JEP-487 - 将扩展信息存为实例字段（由 Service 层用 ScopedValue 传递给 MyBatis 拦截器）
+        this.entityExtend = new BasicEntityExtend(cloudConf.getName(), cloudConf.getProvider(), region);
+    }
+
+    /**
+     * 获取实体扩展信息，供 ScopedValue 上下文传递
+     */
+    public BasicEntityExtend getEntityExtend() {
+        return entityExtend;
     }
 
     /**

@@ -29,7 +29,6 @@ import com.linjicong.cloud.stat.dao.entity.CloudConf;
 import com.linjicong.cloud.stat.dao.entity.qcloud.*;
 import com.linjicong.cloud.stat.exception.ClientException;
 import com.linjicong.cloud.stat.util.BeanUtils;
-import com.linjicong.cloud.stat.util.ThreadLocalUtil;
 import com.tencentcloudapi.billing.v20180709.BillingClient;
 import com.tencentcloudapi.billing.v20180709.models.BillResourceSummary;
 import com.tencentcloudapi.billing.v20180709.models.DescribeBillResourceSummaryRequest;
@@ -62,8 +61,8 @@ import com.tencentcloudapi.tag.v20180813.models.DescribeResourceTagsRequest;
 import com.tencentcloudapi.tag.v20180813.models.DescribeResourceTagsResponse;
 import com.tencentcloudapi.tag.v20180813.models.TagResource;
 
-import java.util.ArrayList;
-import java.util.List;
+// Java 25: JEP-494 (Module Import Declarations)
+import module java.base;
 
 /**
  * 腾讯云客户端
@@ -79,22 +78,32 @@ public class QCloudClient{
     private final Credential credential;
     /** 区域 */
     private final String region;
+    /** Java 25: JEP-487 (Scoped Values) - 存储实体扩展信息，替代 ThreadLocal */
+    private final BasicEntityExtend entityExtend;
 
     /**
      * 构造腾讯云客户端
-     * 
+     *
      * @param cloudConf 云配置信息，包含访问密钥、区域等
      */
     public QCloudClient(CloudConf cloudConf) {
+        // Java 25 Preview: JEP-492 (Flexible Constructor Bodies)
+        // 参数验证：在字段赋值之前完成前置校验
+        Objects.requireNonNull(cloudConf, "cloudConf must not be null");
+
         // 创建腾讯云凭证
         this.credential = new Credential(cloudConf.getAccessKey(), cloudConf.getSecretKey());
         this.region = cloudConf.getRegion();
 
-        String name = cloudConf.getName();
-        String provider = cloudConf.getProvider();
-        // 将扩展信息存入ThreadLocal，供MyBatis拦截器使用，用于自动填充公共字段
-        BasicEntityExtend entityExtend = new BasicEntityExtend(name, provider, region);
-        ThreadLocalUtil.put("entityExtend", entityExtend);
+        // Java 25: JEP-487 - 将扩展信息存为实例字段（由 Service 层用 ScopedValue 传递给 MyBatis 拦截器）
+        this.entityExtend = new BasicEntityExtend(cloudConf.getName(), cloudConf.getProvider(), region);
+    }
+
+    /**
+     * 获取实体扩展信息，供 ScopedValue 上下文传递
+     */
+    public BasicEntityExtend getEntityExtend() {
+        return entityExtend;
     }
 
     /**

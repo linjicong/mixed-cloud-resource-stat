@@ -1,3 +1,4 @@
+// Java 25 Preview: JEP-488 (Primitive Patterns)
 package com.linjicong.cloud.stat.util;
 
 
@@ -244,18 +245,14 @@ public final class SeqUUIDUtil {
 	    private static long getCharIndexNum(char ch) {
 
 	    	int num = ((int)ch);
-	        if ( num >= 48 && num <= 57) {
-	            return num - 48;
-	        } else if (num >= 97 && num <= 122) {
-	            return num - 87;
-	        } else if (num >= 65 && num <= 90) {
-	            return num - 29;
-	        } else if (num == 43)  {
-	            return 62;
-	        } else if (num == 47)  {
-	            return 63;
-	        }
-	        return 0;
+	        return switch (num) {
+	            case int n when n >= 48 && n <= 57 -> n - 48;   // '0'-'9'
+	            case int n when n >= 97 && n <= 122 -> n - 87;  // 'a'-'z'
+	            case int n when n >= 65 && n <= 90 -> n - 29;   // 'A'-'Z'
+	            case 43 -> 62;                                   // '+'
+	            case 47 -> 63;                                   // '/'
+	            default -> 0;
+	        };
 	    }
 	}
 

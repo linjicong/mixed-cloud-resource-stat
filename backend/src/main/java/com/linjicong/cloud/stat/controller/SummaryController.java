@@ -1,5 +1,6 @@
 package com.linjicong.cloud.stat.controller;
 
+import com.linjicong.cloud.stat.dao.mapper.CommonMapper;
 import com.linjicong.cloud.stat.dao.mapper.acloud.*;
 import com.linjicong.cloud.stat.dao.mapper.hcloud.*;
 import com.linjicong.cloud.stat.dao.mapper.qcloud.*;

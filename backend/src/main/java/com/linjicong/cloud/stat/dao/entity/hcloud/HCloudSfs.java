@@ -26,7 +26,7 @@ package com.linjicong.cloud.stat.dao.entity.hcloud;
 import com.huaweicloud.sdk.sfsturbo.v1.model.ActionProgress;
 import com.huaweicloud.sdk.sfsturbo.v1.model.ShareInfo;
 import com.linjicong.cloud.stat.dao.entity.BasicEntity;
-import com.vladmihalcea.hibernate.type.json.JsonStringType;
+import io.hypersistence.utils.hibernate.type.json.JsonStringType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;

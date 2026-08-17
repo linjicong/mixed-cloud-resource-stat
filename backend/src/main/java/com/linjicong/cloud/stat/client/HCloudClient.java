@@ -180,13 +180,11 @@ import com.linjicong.cloud.stat.dao.entity.BasicEntityExtend;
 import com.linjicong.cloud.stat.dao.entity.CloudConf;
 import com.linjicong.cloud.stat.dao.entity.hcloud.*;
 import com.linjicong.cloud.stat.util.BeanUtils;
-import com.linjicong.cloud.stat.util.ThreadLocalUtil;
 import com.obs.services.ObsClient;
 import com.obs.services.model.*;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+// Java 25: JEP-494 (Module Import Declarations)
+import module java.base;
 
 /**
  * 华为云客户端
@@ -210,6 +208,8 @@ public class HCloudClient{
 
     /** 区域 */
     private final String region;
+    /** Java 25: JEP-487 (Scoped Values) - 存储实体扩展信息，替代 ThreadLocal */
+    private final BasicEntityExtend entityExtend;
 
     /**
      * 构造华为云客户端
@@ -218,14 +218,18 @@ public class HCloudClient{
      * @param cloudConf 云配置信息，包含访问密钥、区域等
      */
     public HCloudClient(CloudConf cloudConf) {
+        // Java 25 Preview: JEP-492 (Flexible Constructor Bodies)
+        // 参数验证：在字段赋值之前完成前置校验
+        Objects.requireNonNull(cloudConf, "cloudConf must not be null");
+
         String accessKey = cloudConf.getAccessKey();
         String secretKey = cloudConf.getSecretKey();
         String name = cloudConf.getName();
         String provider = cloudConf.getProvider();
         this.region = cloudConf.getRegion();
-        // 将扩展信息存入ThreadLocal，供MyBatis拦截器使用，用于自动填充公共字段
-        BasicEntityExtend entityExtend = new BasicEntityExtend(name, provider, region);
-        ThreadLocalUtil.put("entityExtend", entityExtend);
+
+        // Java 25: JEP-487 - 将扩展信息存为实例字段（由 Service 层用 ScopedValue 传递给 MyBatis 拦截器）
+        this.entityExtend = new BasicEntityExtend(name, provider, region);
 
         this.auth = new BasicCredentials()
                 .withAk(accessKey)
@@ -234,6 +238,13 @@ public class HCloudClient{
                 .withAk(accessKey)
                 .withSk(secretKey);
         this.obsClient = new ObsClient(accessKey, secretKey, ObsEndpoint.CN_SOUTH_1);
+    }
+
+    /**
+     * 获取实体扩展信息，供 ScopedValue 上下文传递
+     */
+    public BasicEntityExtend getEntityExtend() {
+        return entityExtend;
     }
 
     /**

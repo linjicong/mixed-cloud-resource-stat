@@ -28,7 +28,7 @@ import com.huaweicloud.sdk.evs.v2.model.Link;
 import com.huaweicloud.sdk.evs.v2.model.VolumeDetail;
 import com.huaweicloud.sdk.evs.v2.model.VolumeMetadata;
 import com.linjicong.cloud.stat.dao.entity.BasicEntity;
-import com.vladmihalcea.hibernate.type.json.JsonStringType;
+import io.hypersistence.utils.hibernate.type.json.JsonStringType;
 import lombok.Data;
 import org.hibernate.annotations.Type;
 

@@ -25,7 +25,7 @@ package com.linjicong.cloud.stat.dao.entity.hcloud;
 
 import com.huaweicloud.sdk.drs.v5.model.JobListResp;
 import com.linjicong.cloud.stat.dao.entity.BasicEntity;
-import com.vladmihalcea.hibernate.type.json.JsonStringType;
+import io.hypersistence.utils.hibernate.type.json.JsonStringType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;

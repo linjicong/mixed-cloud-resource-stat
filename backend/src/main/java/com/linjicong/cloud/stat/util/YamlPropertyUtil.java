@@ -1,3 +1,4 @@
+// Java 25 Preview: JEP-488 (Primitive Patterns)
 /*
  * MIT License
  *
@@ -57,10 +58,9 @@ public class YamlPropertyUtil {
         try (InputStream in = YamlPropertyUtil.class.getClassLoader().getResourceAsStream("application.yaml")) {
             Map<String,Object> map = yaml.loadAs(in, Map.class);
             for(Map.Entry<String,Object> entry : map.entrySet()){
-                if(entry.getValue() instanceof Map){
-                    eachYaml(entry.getKey(),(Map<String,Object>)entry.getValue());
-                }else{
-                    map.put(entry.getKey(),entry.getValue().toString());
+                switch (entry.getValue()) {
+                    case Map m -> eachYaml(entry.getKey(), m);
+                    default -> map.put(entry.getKey(), entry.getValue().toString());
                 }
             }
         } catch (IOException e) {
@@ -81,10 +81,9 @@ public class YamlPropertyUtil {
             }else{
                 newKey = entry.getKey();
             }
-            if(entry.getValue() instanceof Map){
-                eachYaml(newKey,(Map<String,Object>)entry.getValue());
-            }else{
-                properties.put(newKey,entry.getValue().toString());
+            switch (entry.getValue()) {
+                case Map m -> eachYaml(newKey, m);
+                default -> properties.put(newKey, entry.getValue().toString());
             }
         }
     }

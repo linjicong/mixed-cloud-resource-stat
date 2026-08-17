@@ -1,3 +1,4 @@
+// Java 25 Preview: JEP-488 (Primitive Patterns)
 package com.linjicong.cloud.stat.util;
 
 import cn.hutool.core.util.ArrayUtil;

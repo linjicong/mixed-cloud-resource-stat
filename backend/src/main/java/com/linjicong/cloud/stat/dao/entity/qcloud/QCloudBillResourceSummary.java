@@ -28,7 +28,7 @@ import com.linjicong.cloud.stat.dao.entity.BasicEntity;
 import com.linjicong.cloud.stat.dao.typehandle.impl.qcloud.billing.BillTagInfoJsonTypeHandle;
 import com.tencentcloudapi.billing.v20180709.models.BillResourceSummary;
 import com.tencentcloudapi.billing.v20180709.models.BillTagInfo;
-import com.vladmihalcea.hibernate.type.json.JsonStringType;
+import io.hypersistence.utils.hibernate.type.json.JsonStringType;
 import lombok.Data;
 import org.hibernate.annotations.Type;
 

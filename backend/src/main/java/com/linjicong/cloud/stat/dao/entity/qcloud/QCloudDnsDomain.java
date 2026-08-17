@@ -29,7 +29,7 @@ import com.linjicong.cloud.stat.dao.typehandle.impl.StringJsonTypeHandle;
 import com.linjicong.cloud.stat.dao.typehandle.impl.qcloud.dns.TagItemJsonTypeHandle;
 import com.tencentcloudapi.cvm.v20170312.models.Instance;
 import com.tencentcloudapi.dnspod.v20210323.models.TagItem;
-import com.vladmihalcea.hibernate.type.json.JsonStringType;
+import io.hypersistence.utils.hibernate.type.json.JsonStringType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;

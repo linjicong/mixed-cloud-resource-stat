@@ -28,7 +28,7 @@ import com.huaweicloud.sdk.ces.v1.model.MetricInfoList;
 import com.huaweicloud.sdk.iam.v3.model.Links;
 import com.linjicong.cloud.stat.dao.entity.BasicEntity;
 import com.linjicong.cloud.stat.dao.typehandle.impl.hcloud.iam.LinksJsonTypeHandle;
-import com.vladmihalcea.hibernate.type.json.JsonStringType;
+import io.hypersistence.utils.hibernate.type.json.JsonStringType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.Data;

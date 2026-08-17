@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import com.linjicong.cloud.stat.dao.entity.BasicEntityExtend;
 import com.linjicong.cloud.stat.dao.mapper.CommonSqlInjector;
-import com.linjicong.cloud.stat.util.ThreadLocalUtil;
+import com.linjicong.cloud.stat.util.EntityExtendContext;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.context.annotation.Bean;
@@ -60,12 +60,13 @@ public class MybatisPlusConfig implements MetaObjectHandler {
         //log.info("start insert fill ....");
         // 自动填充统计日期
         this.strictInsertFill(metaObject, "statDate", Date.class, new Date());
-        // 从ThreadLocal获取扩展信息并填充配置名称
-        this.strictInsertFill(metaObject, "confName", String.class, ((BasicEntityExtend)ThreadLocalUtil.get("entityExtend")).getConfName());
-        // 填充云厂商
-        this.strictInsertFill(metaObject, "confProvider", String.class, ((BasicEntityExtend)ThreadLocalUtil.get("entityExtend")).getConfProvider());
-        // 填充区域
-        this.strictInsertFill(metaObject, "confRegion", String.class, ((BasicEntityExtend)ThreadLocalUtil.get("entityExtend")).getConfRegion());
+        // Java 25: JEP-487 (Scoped Values) - 从 ScopedValue 上下文获取扩展信息（替代原 ThreadLocal）
+        BasicEntityExtend ext = EntityExtendContext.currentOrNull();
+        if (ext != null) {
+            this.strictInsertFill(metaObject, "confName", String.class, ext.getConfName());
+            this.strictInsertFill(metaObject, "confProvider", String.class, ext.getConfProvider());
+            this.strictInsertFill(metaObject, "confRegion", String.class, ext.getConfRegion());
+        }
     }
 
     /**
