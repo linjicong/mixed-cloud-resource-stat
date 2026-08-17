@@ -31,3 +31,12 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### AI tool artifacts (root-anchored, won't affect backend/src) ###
+/.trae/
+/.claude/
+/.specs/
+
+### Accidentally generated files ###
+/backend/EOF
+__pycache__/
