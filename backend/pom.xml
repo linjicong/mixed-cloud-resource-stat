@@ -90,10 +90,27 @@
             <version>3.1.1355</version>
         </dependency>
         <!-- Tencent Cloud COS SDK -->
+        <!-- 排除带漏洞的传递依赖：bcprov-jdk15on(多个高危CVE)、tencentcloud-sdk-java-kms(okhttp2/jaxb-api，项目未使用COS KMS加密) -->
         <dependency>
             <groupId>com.qcloud</groupId>
             <artifactId>cos_api</artifactId>
-            <version>5.6.137</version>
+            <version>5.6.275</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.bouncycastle</groupId>
+                    <artifactId>bcprov-jdk15on</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.tencentcloudapi</groupId>
+                    <artifactId>tencentcloud-sdk-java-kms</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <!-- 替代被排除的bcprov-jdk15on，供COS SDK加密功能使用 -->
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk18on</artifactId>
+            <version>1.85.2</version>
         </dependency>
 
         <!-- ==================== 阿里云 SDK ==================== -->
@@ -221,6 +238,13 @@
             <groupId>com.aliyun</groupId>
             <artifactId>live20161101</artifactId>
             <version>1.1.1</version>
+            <exclusions>
+                <!-- tea-rpc-util带入的旧版javax构件，项目不需要 -->
+                <exclusion>
+                    <groupId>javax.xml.bind</groupId>
+                    <artifactId>jaxb-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.aliyun</groupId>
@@ -295,7 +319,7 @@
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
-            <version>5.8.41</version>
+            <version>5.8.47</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -354,8 +378,32 @@
 
     </dependencies>
 
+    <!-- 构建期拦截：防止带漏洞构件(bcprov-jdk15on/jaxb-api)再次进入依赖树 -->
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>3.6.2</version>
+                <executions>
+                    <execution>
+                        <id>ban-vulnerable-transitives</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <bannedDependencies>
+                                    <excludes>
+                                        <exclude>org.bouncycastle:bcprov-jdk15on</exclude>
+                                        <exclude>javax.xml.bind:jaxb-api</exclude>
+                                    </excludes>
+                                </bannedDependencies>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
@@ -400,6 +448,35 @@
                 <version>3.5.16</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+            <!-- 修复CVE-2024-7254：覆盖volc-sdk-java带入的protobuf-java 3.23.3 -->
+            <dependency>
+                <groupId>com.google.protobuf</groupId>
+                <artifactId>protobuf-java</artifactId>
+                <version>3.25.9</version>
+            </dependency>
+            <!-- 修复guava旧版本漏洞：覆盖volc-sdk-java带入的guava 32.0.0-jre -->
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>33.5.0-jre</version>
+            </dependency>
+            <!-- 统一bcprov版本：覆盖阿里云SDK带入的bcprov-jdk18on 1.78.1 -->
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcprov-jdk18on</artifactId>
+                <version>1.85.2</version>
+            </dependency>
+            <!-- 0.0.3/0.0.5已改用bcprov-jdk18on，消除阿里云SDK带入的bcprov-jdk15on 1.68 -->
+            <dependency>
+                <groupId>com.aliyun</groupId>
+                <artifactId>darabonba-encode-util</artifactId>
+                <version>0.0.3</version>
+            </dependency>
+            <dependency>
+                <groupId>com.aliyun</groupId>
+                <artifactId>darabonba-signature-util</artifactId>
+                <version>0.0.5</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
