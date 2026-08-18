@@ -40,3 +40,7 @@ build/
 ### Accidentally generated files ###
 /backend/EOF
 __pycache__/
+
+### Frontend build artifacts ###
+node_modules/
+frontend/dist/
