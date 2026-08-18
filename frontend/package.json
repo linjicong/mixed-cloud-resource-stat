@@ -1,6 +1,7 @@
 {
   "name": "mixed-cloud-resource-stat-frontend",
   "version": "1.0.0",
+  "packageManager": "pnpm@9.15.9",
   "description": "多云资源统计管理系统前端",
   "scripts": {
     "dev": "vite",
