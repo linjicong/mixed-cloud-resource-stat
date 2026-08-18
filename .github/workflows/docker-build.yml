@@ -45,6 +45,9 @@ jobs:
         context: ./backend
         file: ./backend/Dockerfile
         push: ${{ github.event_name == 'push' }}
+        # 阿里云ACR个人版不支持OCI attestation清单(application/vnd.oci.empty.v1+json)
+        provenance: false
+        sbom: false
         tags: |
           ${{ env.ACR_REGISTRY }}/${{ env.ACR_NAMESPACE }}/${{ env.BACKEND_IMAGE }}:latest
           ${{ env.ACR_REGISTRY }}/${{ env.ACR_NAMESPACE }}/${{ env.BACKEND_IMAGE }}:${{ github.sha }}
@@ -83,6 +86,9 @@ jobs:
         context: ./frontend
         file: ./frontend/Dockerfile
         push: ${{ github.event_name == 'push' }}
+        # 阿里云ACR个人版不支持OCI attestation清单(application/vnd.oci.empty.v1+json)
+        provenance: false
+        sbom: false
         tags: |
           ${{ env.ACR_REGISTRY }}/${{ env.ACR_NAMESPACE }}/${{ env.FRONTEND_IMAGE }}:latest
           ${{ env.ACR_REGISTRY }}/${{ env.ACR_NAMESPACE }}/${{ env.FRONTEND_IMAGE }}:${{ github.sha }}
