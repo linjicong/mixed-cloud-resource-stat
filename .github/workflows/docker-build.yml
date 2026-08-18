@@ -8,7 +8,7 @@ on:
 
 env:
   ACR_REGISTRY: registry.cn-hangzhou.aliyuncs.com
-  ACR_NAMESPACE: your-namespace
+  ACR_NAMESPACE: ${{ vars.ACR_NAMESPACE }}
   BACKEND_IMAGE: mixed-cloud-backend
   FRONTEND_IMAGE: mixed-cloud-frontend
 
