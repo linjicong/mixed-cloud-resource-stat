@@ -64,10 +64,10 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '18'
+        node-version: '22'
 
     - name: Install pnpm
-      run: npm install -g pnpm@8
+      run: npm install -g pnpm@9.15.9
 
     - name: Login to ACR
       if: github.event_name == 'push'
