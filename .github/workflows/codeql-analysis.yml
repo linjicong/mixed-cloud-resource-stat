@@ -26,11 +26,11 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    - name: Set up JDK 17
+    - name: Set up JDK 25
       uses: actions/setup-java@v4
       with:
         distribution: 'temurin'
-        java-version: '17'
+        java-version: '25'
         cache: 'maven'
         cache-dependency-path: './backend/pom.xml'
 
@@ -40,7 +40,10 @@ jobs:
         languages: ${{ matrix.language }}
 
     - name: Build backend
-      run: mvn clean compile -f backend/pom.xml -q
+      run: |
+        java -version
+        mvn -version
+        mvn clean compile -f backend/pom.xml -q
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3
