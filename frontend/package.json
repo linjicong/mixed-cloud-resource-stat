@@ -23,7 +23,7 @@
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.15.0",
-    "@vitejs/plugin-vue": "^6.0.2",
+    "@vitejs/plugin-vue": "^6.0.8",
     "eslint": "^9.22.0",
     "eslint-plugin-vue": "^10.5.1",
     "sass": "^1.102.0",
