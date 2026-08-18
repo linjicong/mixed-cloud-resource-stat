@@ -295,7 +295,7 @@
         <dependency>
             <groupId>com.aliyun</groupId>
             <artifactId>gpdb20160503</artifactId>
-            <version>4.1.0</version>
+            <version>4.13.2</version>
         </dependency>
         <!-- 阿里云 Hologres SDK -->
         <dependency>
