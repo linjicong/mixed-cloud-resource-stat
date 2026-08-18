@@ -20,88 +20,166 @@ import java.util.*;
 public class SummaryController {
 
     // ==================== 华为云 Mapper ====================
-    @Autowired private HCloudEcsMapper hCloudEcsMapper;
-    @Autowired private HCloudRdsMapper hCloudRdsMapper;
-    @Autowired private HCloudElbMapper hCloudElbMapper;
-    @Autowired private HCloudEvsMapper hCloudEvsMapper;
-    @Autowired private HCloudVpcMapper hCloudVpcMapper;
-    @Autowired private HCloudEipMapper hCloudEipMapper;
-    @Autowired private HCloudNatMapper hCloudNatMapper;
-    @Autowired private HCloudObsMapper hCloudObsMapper;
-    @Autowired private HCloudDcsMapper hCloudDcsMapper;
-    @Autowired private HCloudDdsMapper hCloudDdsMapper;
-    @Autowired private HCloudCceMapper hCloudCceMapper;
-    @Autowired private HCloudKafkaMapper hCloudKafkaMapper;
-    @Autowired private HCloudRocketMqMapper hCloudRocketMqMapper;
-    @Autowired private HCloudWafMapper hCloudWafMapper;
-    @Autowired private HCloudAntiDdosMapper hCloudAntiDdosMapper;
-    @Autowired private HCloudKmsMapper hCloudKmsMapper;
-    @Autowired private HCloudCdnMapper hCloudCdnMapper;
-    @Autowired private HCloudCssMapper hCloudCssMapper;
-    @Autowired private HCloudMrsMapper hCloudMrsMapper;
-    @Autowired private HCloudIotDaMapper hCloudIotDaMapper;
-    @Autowired private HCloudFunctionGraphMapper hCloudFunctionGraphMapper;
-    @Autowired private HCloudSfsMapper hCloudSfsMapper;
-    @Autowired private HCloudSwrMapper hCloudSwrMapper;
-    @Autowired private HCloudCesMetricMapper hCloudCesMetricMapper;
-    @Autowired private HCloudCtsMapper hCloudCtsMapper;
-    @Autowired private HCloudLtsMapper hCloudLtsMapper;
+    @Autowired
+    private HCloudEcsMapper hCloudEcsMapper;
+    @Autowired
+    private HCloudRdsMapper hCloudRdsMapper;
+    @Autowired
+    private HCloudElbMapper hCloudElbMapper;
+    @Autowired
+    private HCloudEvsMapper hCloudEvsMapper;
+    @Autowired
+    private HCloudVpcMapper hCloudVpcMapper;
+    @Autowired
+    private HCloudEipMapper hCloudEipMapper;
+    @Autowired
+    private HCloudNatMapper hCloudNatMapper;
+    @Autowired
+    private HCloudObsMapper hCloudObsMapper;
+    @Autowired
+    private HCloudDcsMapper hCloudDcsMapper;
+    @Autowired
+    private HCloudDdsMapper hCloudDdsMapper;
+    @Autowired
+    private HCloudCceMapper hCloudCceMapper;
+    @Autowired
+    private HCloudKafkaMapper hCloudKafkaMapper;
+    @Autowired
+    private HCloudRocketMqMapper hCloudRocketMqMapper;
+    @Autowired
+    private HCloudWafMapper hCloudWafMapper;
+    @Autowired
+    private HCloudAntiDdosMapper hCloudAntiDdosMapper;
+    @Autowired
+    private HCloudKmsMapper hCloudKmsMapper;
+    @Autowired
+    private HCloudCdnMapper hCloudCdnMapper;
+    @Autowired
+    private HCloudCssMapper hCloudCssMapper;
+    @Autowired
+    private HCloudMrsMapper hCloudMrsMapper;
+    @Autowired
+    private HCloudIotDaMapper hCloudIotDaMapper;
+    @Autowired
+    private HCloudFunctionGraphMapper hCloudFunctionGraphMapper;
+    @Autowired
+    private HCloudSfsMapper hCloudSfsMapper;
+    @Autowired
+    private HCloudSwrMapper hCloudSwrMapper;
+    @Autowired
+    private HCloudCesMetricMapper hCloudCesMetricMapper;
+    @Autowired
+    private HCloudCtsMapper hCloudCtsMapper;
+    @Autowired
+    private HCloudLtsMapper hCloudLtsMapper;
 
     // ==================== 腾讯云 Mapper ====================
-    @Autowired private QCloudCvmMapper qCloudCvmMapper;
-    @Autowired private QCloudCdbMapper qCloudCdbMapper;
-    @Autowired private QCloudClbMapper qCloudClbMapper;
-    @Autowired private QCloudCbsMapper qCloudCbsMapper;
-    @Autowired private QCloudVpcMapper qCloudVpcMapper;
-    @Autowired private QCloudEipMapper qCloudEipMapper;
-    @Autowired private QCloudNatGatewayMapper qCloudNatGatewayMapper;
-    @Autowired private QCloudCosMapper qCloudCosMapper;
-    @Autowired private QCloudRedisMapper qCloudRedisMapper;
-    @Autowired private QCloudMongoDbMapper qCloudMongoDbMapper;
-    @Autowired private QCloudTKEMapper qCloudTKEMapper;
-    @Autowired private QCloudCkafkaMapper qCloudCkafkaMapper;
-    @Autowired private QCloudRocketMQMapper qCloudRocketMQMapper;
-    @Autowired private QCloudWAFMapper qCloudWAFMapper;
-    @Autowired private QCloudDDoSMapper qCloudDDoSMapper;
-    @Autowired private QCloudKMSMapper qCloudKMSMapper;
-    @Autowired private QCloudCdnDomainMapper qCloudCdnDomainMapper;
-    @Autowired private QCloudESMapper qCloudESMapper;
-    @Autowired private QCloudEMRMapper qCloudEMRMapper;
-    @Autowired private QCloudIoTMapper qCloudIoTMapper;
-    @Autowired private QCloudScfMapper qCloudScfMapper;
-    @Autowired private QCloudCfsMapper qCloudCfsMapper;
-    @Autowired private QCloudTCRMapper qCloudTCRMapper;
-    @Autowired private QCloudMonitorMapper qCloudMonitorMapper;
-    @Autowired private QCloudAuditMapper qCloudAuditMapper;
-    @Autowired private QCloudCLSMapper qCloudCLSMapper;
+    @Autowired
+    private QCloudCvmMapper qCloudCvmMapper;
+    @Autowired
+    private QCloudCdbMapper qCloudCdbMapper;
+    @Autowired
+    private QCloudClbMapper qCloudClbMapper;
+    @Autowired
+    private QCloudCbsMapper qCloudCbsMapper;
+    @Autowired
+    private QCloudVpcMapper qCloudVpcMapper;
+    @Autowired
+    private QCloudEipMapper qCloudEipMapper;
+    @Autowired
+    private QCloudNatGatewayMapper qCloudNatGatewayMapper;
+    @Autowired
+    private QCloudCosMapper qCloudCosMapper;
+    @Autowired
+    private QCloudRedisMapper qCloudRedisMapper;
+    @Autowired
+    private QCloudMongoDbMapper qCloudMongoDbMapper;
+    @Autowired
+    private QCloudTKEMapper qCloudTKEMapper;
+    @Autowired
+    private QCloudCkafkaMapper qCloudCkafkaMapper;
+    @Autowired
+    private QCloudRocketMQMapper qCloudRocketMQMapper;
+    @Autowired
+    private QCloudWAFMapper qCloudWAFMapper;
+    @Autowired
+    private QCloudDDoSMapper qCloudDDoSMapper;
+    @Autowired
+    private QCloudKMSMapper qCloudKMSMapper;
+    @Autowired
+    private QCloudCdnDomainMapper qCloudCdnDomainMapper;
+    @Autowired
+    private QCloudESMapper qCloudESMapper;
+    @Autowired
+    private QCloudEMRMapper qCloudEMRMapper;
+    @Autowired
+    private QCloudIoTMapper qCloudIoTMapper;
+    @Autowired
+    private QCloudScfMapper qCloudScfMapper;
+    @Autowired
+    private QCloudCfsMapper qCloudCfsMapper;
+    @Autowired
+    private QCloudTCRMapper qCloudTCRMapper;
+    @Autowired
+    private QCloudMonitorMapper qCloudMonitorMapper;
+    @Autowired
+    private QCloudAuditMapper qCloudAuditMapper;
+    @Autowired
+    private QCloudCLSMapper qCloudCLSMapper;
 
     // ==================== 阿里云 Mapper ====================
-    @Autowired private ACloudEcsMapper aCloudEcsMapper;
-    @Autowired private ACloudRdsMapper aCloudRdsMapper;
-    @Autowired private ACloudSlbMapper aCloudSlbMapper;
-    @Autowired private ACloudDiskMapper aCloudDiskMapper;
-    @Autowired private ACloudVpcMapper aCloudVpcMapper;
-    @Autowired private ACloudEipMapper aCloudEipMapper;
-    @Autowired private ACloudNatGatewayMapper aCloudNatGatewayMapper;
-    @Autowired private ACloudOssMapper aCloudOssMapper;
-    @Autowired private ACloudRedisMapper aCloudRedisMapper;
-    @Autowired private ACloudMongoDbMapper aCloudMongoDbMapper;
-    @Autowired private ACloudAckMapper aCloudAckMapper;
-    @Autowired private ACloudKafkaMapper aCloudKafkaMapper;
-    @Autowired private ACloudRocketMQMapper aCloudRocketMQMapper;
-    @Autowired private ACloudWafMapper aCloudWafMapper;
-    @Autowired private ACloudDdosMapper aCloudDdosMapper;
-    @Autowired private ACloudKmsMapper aCloudKmsMapper;
-    @Autowired private ACloudCdnMapper aCloudCdnMapper;
-    @Autowired private ACloudElasticsearchMapper aCloudElasticsearchMapper;
-    @Autowired private ACloudEmrMapper aCloudEmrMapper;
-    @Autowired private ACloudIoTMapper aCloudIoTMapper;
-    @Autowired private ACloudFcMapper aCloudFcMapper;
-    @Autowired private ACloudNasMapper aCloudNasMapper;
-    @Autowired private ACloudAcrMapper aCloudAcrMapper;
-    @Autowired private ACloudCmsMapper aCloudCmsMapper;
-    @Autowired private ACloudActionTrailMapper aCloudActionTrailMapper;
-    @Autowired private ACloudSlsMapper aCloudSlsMapper;
+    @Autowired
+    private ACloudEcsMapper aCloudEcsMapper;
+    @Autowired
+    private ACloudRdsMapper aCloudRdsMapper;
+    @Autowired
+    private ACloudSlbMapper aCloudSlbMapper;
+    @Autowired
+    private ACloudDiskMapper aCloudDiskMapper;
+    @Autowired
+    private ACloudVpcMapper aCloudVpcMapper;
+    @Autowired
+    private ACloudEipMapper aCloudEipMapper;
+    @Autowired
+    private ACloudNatGatewayMapper aCloudNatGatewayMapper;
+    @Autowired
+    private ACloudOssMapper aCloudOssMapper;
+    @Autowired
+    private ACloudRedisMapper aCloudRedisMapper;
+    @Autowired
+    private ACloudMongoDbMapper aCloudMongoDbMapper;
+    @Autowired
+    private ACloudAckMapper aCloudAckMapper;
+    @Autowired
+    private ACloudKafkaMapper aCloudKafkaMapper;
+    @Autowired
+    private ACloudRocketMQMapper aCloudRocketMQMapper;
+    @Autowired
+    private ACloudWafMapper aCloudWafMapper;
+    @Autowired
+    private ACloudDdosMapper aCloudDdosMapper;
+    @Autowired
+    private ACloudKmsMapper aCloudKmsMapper;
+    @Autowired
+    private ACloudCdnMapper aCloudCdnMapper;
+    @Autowired
+    private ACloudElasticsearchMapper aCloudElasticsearchMapper;
+    @Autowired
+    private ACloudEmrMapper aCloudEmrMapper;
+    @Autowired
+    private ACloudIoTMapper aCloudIoTMapper;
+    @Autowired
+    private ACloudFcMapper aCloudFcMapper;
+    @Autowired
+    private ACloudNasMapper aCloudNasMapper;
+    @Autowired
+    private ACloudAcrMapper aCloudAcrMapper;
+    @Autowired
+    private ACloudCmsMapper aCloudCmsMapper;
+    @Autowired
+    private ACloudActionTrailMapper aCloudActionTrailMapper;
+    @Autowired
+    private ACloudSlsMapper aCloudSlsMapper;
 
     /**
      * 获取按云厂商分组的资源统计
