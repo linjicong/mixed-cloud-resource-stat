@@ -187,7 +187,7 @@
         <dependency>
             <groupId>com.aliyun</groupId>
             <artifactId>ons20190214</artifactId>
-            <version>2.0.2</version>
+            <version>3.0.0</version>
         </dependency>
         <dependency>
             <groupId>com.aliyun</groupId>
