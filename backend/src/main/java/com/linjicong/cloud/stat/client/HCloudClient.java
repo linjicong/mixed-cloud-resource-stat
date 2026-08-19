@@ -423,8 +423,8 @@ public class HCloudClient{
         BatchListMetricDataRequest batchListMetricDataRequest = new BatchListMetricDataRequest();
         BatchListMetricDataRequestBody batchListMetricDataRequestBody = new BatchListMetricDataRequestBody();
         batchListMetricDataRequestBody.setMetrics(metricInfos);
-        batchListMetricDataRequestBody.setPeriod("14400"); //查询1天的数据:500个指标最多设置间隔4小时,10个指标间隔5分钟
-        batchListMetricDataRequestBody.setFilter("average");
+        batchListMetricDataRequestBody.setPeriod(BatchPeriod._14400); //查询1天的数据:500个指标最多设置间隔4小时,10个指标间隔5分钟
+        batchListMetricDataRequestBody.setFilter(Filter.AVERAGE);
         batchListMetricDataRequestBody.setFrom(start.getTime());
         batchListMetricDataRequestBody.setTo(end.getTime());
         batchListMetricDataRequest.setBody(batchListMetricDataRequestBody);
