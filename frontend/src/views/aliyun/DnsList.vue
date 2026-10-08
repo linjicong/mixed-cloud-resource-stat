@@ -66,8 +66,8 @@
 
         <!-- 数据表格 -->
         <el-table 
-          :data="filteredDnsList" 
-          v-loading="loading"
+          v-loading="loading" 
+          :data="filteredDnsList"
           class="resource-table"
           stripe
           @selection-change="handleSelectionChange"
@@ -201,8 +201,8 @@
         </div>
         
         <el-table 
-          :data="dnsRecords" 
-          v-loading="recordsLoading"
+          v-loading="recordsLoading" 
+          :data="dnsRecords"
           size="small"
           stripe
         >
@@ -261,7 +261,6 @@ const searchForm = reactive({
 // 分页
 const currentPage = ref(1)
 const pageSize = ref(20)
-const total = ref(0)
 
 // 详情对话框
 const detailVisible = ref(false)
@@ -278,7 +277,7 @@ const selectedRows = ref([])
 // 计算属性
 const dnsList = computed(() => aliyunResources.dns || [])
 
-const filteredDnsList = computed(() => {
+const filteredData = computed(() => {
   let filtered = dnsList.value
 
   if (searchForm.domain) {
@@ -295,12 +294,14 @@ const filteredDnsList = computed(() => {
     filtered = filtered.filter(dns => dns.domainStatus === searchForm.domainStatus)
   }
 
-  total.value = filtered.length
-  
+  return filtered
+})
+
+const total = computed(() => filteredData.value.length)
+
+const filteredDnsList = computed(() => {
   const start = (currentPage.value - 1) * pageSize.value
-  const end = start + pageSize.value
-  
-  return filtered.slice(start, end)
+  return filteredData.value.slice(start, start + pageSize.value)
 })
 
 // 方法
@@ -394,7 +395,7 @@ const viewRecords = (row) => {
   loadDnsRecords(row.domainName)
 }
 
-const loadDnsRecords = async (domainName) => {
+const loadDnsRecords = async () => {
   try {
     recordsLoading.value = true
     // 这里应该调用API获取解析记录
@@ -422,7 +423,7 @@ const loadDnsRecords = async (domainName) => {
         createTime: '2024-01-01 00:00:00'
       }
     ]
-  } catch (error) {
+  } catch {
     ElMessage.error('获取解析记录失败')
   } finally {
     recordsLoading.value = false
@@ -435,7 +436,7 @@ const refreshRecords = () => {
   }
 }
 
-const editRecord = (record) => {
+const editRecord = () => {
   ElMessage.info('编辑解析记录功能开发中...')
 }
 
@@ -449,7 +450,7 @@ const syncData = async () => {
     await cloudStore.syncResources('aliyun')
     ElMessage.success('数据同步完成')
     refreshData()
-  } catch (error) {
+  } catch {
     ElMessage.error('数据同步失败')
   }
 }

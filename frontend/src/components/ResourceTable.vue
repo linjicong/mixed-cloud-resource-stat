@@ -40,8 +40,8 @@
         </div>
 
         <el-table
-          :data="paginatedData"
           v-loading="loading"
+          :data="paginatedData"
           class="resource-table"
           stripe
           @row-dblclick="viewDetail"
@@ -175,7 +175,6 @@ watch(() => cloudStore.selectedConfName, () => {
 const searchKeyword = ref('')
 const currentPage = ref(1)
 const pageSize = ref(20)
-const total = ref(0)
 const detailVisible = ref(false)
 const selectedRow = ref(null)
 
@@ -212,7 +211,6 @@ const filteredData = computed(() => {
 })
 
 const paginatedData = computed(() => {
-  total.value = filteredData.value.length
   const start = (currentPage.value - 1) * pageSize.value
   return filteredData.value.slice(start, start + pageSize.value)
 })
@@ -278,7 +276,7 @@ const syncData = async () => {
     await cloudStore.syncResources(props.provider)
     ElMessage.success('数据同步完成')
     refreshData()
-  } catch (error) {
+  } catch {
     ElMessage.error('数据同步失败')
   }
 }
@@ -286,6 +284,9 @@ const syncData = async () => {
 onMounted(() => {
   cloudStore[fetchMethodName.value](props.resourceType)
 })
+
+const total = computed(() => filteredData.value.length)
+
 </script>
 
 <style lang="scss" scoped>

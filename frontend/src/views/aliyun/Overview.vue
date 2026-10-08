@@ -1,5 +1,5 @@
 <template>
-  <ProviderOverview provider="aliyun" providerLabel="阿里云" :categories="categories" />
+  <ProviderOverview provider="aliyun" provider-label="阿里云" :categories="categories" />
 </template>
 
 <script setup>

@@ -84,7 +84,7 @@
           </div>
           <div class="header-right">
             <AccountSelector />
-            <el-button type="primary" @click="refreshData" style="margin-left: 12px">
+            <el-button type="primary" style="margin-left: 12px" @click="refreshData">
               <el-icon><Refresh /></el-icon>
               刷新数据
             </el-button>
@@ -124,7 +124,7 @@ const breadcrumbs = computed(() => {
   return breadcrumbItems
 })
 
-const getBreadcrumbName = (segment, index) => {
+const getBreadcrumbName = (segment) => {
   const nameMap = {
     dashboard: '仪表盘',
     config: '配置管理',

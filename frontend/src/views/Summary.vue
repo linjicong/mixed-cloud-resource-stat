@@ -119,7 +119,7 @@ const getRoute = (provider, type) => {
 
 const domainTableData = computed(() => {
   const data = crossCloudData.value
-  return Object.entries(data).map(([key, value]) => {
+  return Object.entries(data).map(([, value]) => {
     const h = value.huawei ? Object.values(value.huawei).reduce((s, v) => s + v, 0) : 0
     const t = value.tencent ? Object.values(value.tencent).reduce((s, v) => s + v, 0) : 0
     const a = value.aliyun ? Object.values(value.aliyun).reduce((s, v) => s + v, 0) : 0

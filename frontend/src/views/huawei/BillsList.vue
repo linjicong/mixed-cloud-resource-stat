@@ -145,8 +145,8 @@
           </div>
           <div class="card-content">
             <el-table 
-              :data="filteredBillsList" 
-              v-loading="loading"
+              v-loading="loading" 
+              :data="filteredBillsList"
               class="resource-table"
               stripe
             >
@@ -250,7 +250,6 @@ const searchForm = reactive({
 // 分页
 const currentPage = ref(1)
 const pageSize = ref(20)
-const total = ref(0)
 
 // 详情对话框
 const detailVisible = ref(false)
@@ -259,7 +258,7 @@ const selectedBill = ref(null)
 // 计算属性
 const billsList = computed(() => huaweiResources.bills || [])
 
-const filteredBillsList = computed(() => {
+const filteredData = computed(() => {
   let filtered = billsList.value
 
   if (searchForm.billType) {
@@ -272,12 +271,14 @@ const filteredBillsList = computed(() => {
     )
   }
 
-  total.value = filtered.length
-  
+  return filtered
+})
+
+const total = computed(() => filteredData.value.length)
+
+const filteredBillsList = computed(() => {
   const start = (currentPage.value - 1) * pageSize.value
-  const end = start + pageSize.value
-  
-  return filtered.slice(start, end)
+  return filteredData.value.slice(start, start + pageSize.value)
 })
 
 // 统计数据
@@ -455,7 +456,7 @@ const syncData = async () => {
     await cloudStore.syncResources('huawei')
     ElMessage.success('数据同步完成')
     refreshData()
-  } catch (error) {
+  } catch {
     ElMessage.error('数据同步失败')
   }
 }
