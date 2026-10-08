@@ -1,5 +1,5 @@
 <template>
-  <ProviderOverview provider="tencent" providerLabel="腾讯云" :categories="categories" />
+  <ProviderOverview provider="tencent" provider-label="腾讯云" :categories="categories" />
 </template>
 
 <script setup>

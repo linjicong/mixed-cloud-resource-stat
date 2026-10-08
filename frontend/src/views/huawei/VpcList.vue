@@ -54,8 +54,8 @@
 
         <!-- 数据表格 -->
         <el-table 
-          :data="filteredVpcList" 
-          v-loading="loading"
+          v-loading="loading" 
+          :data="filteredVpcList"
           class="resource-table"
           stripe
         >
@@ -186,7 +186,6 @@ const searchForm = reactive({
 // 分页
 const currentPage = ref(1)
 const pageSize = ref(20)
-const total = ref(0)
 
 // 详情对话框
 const detailVisible = ref(false)
@@ -195,7 +194,7 @@ const selectedVpc = ref(null)
 // 计算属性
 const vpcList = computed(() => huaweiResources.vpc || [])
 
-const filteredVpcList = computed(() => {
+const filteredData = computed(() => {
   let filtered = vpcList.value
 
   if (searchForm.name) {
@@ -208,12 +207,14 @@ const filteredVpcList = computed(() => {
     filtered = filtered.filter(vpc => vpc.status === searchForm.status)
   }
 
-  total.value = filtered.length
-  
+  return filtered
+})
+
+const total = computed(() => filteredData.value.length)
+
+const filteredVpcList = computed(() => {
   const start = (currentPage.value - 1) * pageSize.value
-  const end = start + pageSize.value
-  
-  return filtered.slice(start, end)
+  return filteredData.value.slice(start, start + pageSize.value)
 })
 
 // 方法
@@ -270,7 +271,7 @@ const viewDetail = (row) => {
   detailVisible.value = true
 }
 
-const viewMonitor = (row) => {
+const viewMonitor = () => {
   ElMessage.info('监控功能开发中...')
 }
 
@@ -284,7 +285,7 @@ const syncData = async () => {
     await cloudStore.syncResources('huawei')
     ElMessage.success('数据同步完成')
     refreshData()
-  } catch (error) {
+  } catch {
     ElMessage.error('数据同步失败')
   }
 }

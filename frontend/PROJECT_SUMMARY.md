@@ -165,7 +165,7 @@ mixed-cloud-resource-stat-frontend/
 │   └── main.js            # 入口文件
 ├── package.json           # 项目配置
 ├── vite.config.js         # Vite配置
-├── .eslintrc.js          # ESLint配置
+├── eslint.config.mjs     # ESLint 扁平配置(ESLint 9)
 ├── .gitignore            # Git忽略文件
 ├── README.md             # 项目说明
 ├── start.bat             # Windows启动脚本

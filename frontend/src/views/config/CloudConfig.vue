@@ -20,8 +20,8 @@
       
       <div class="card-content">
         <el-table 
-          :data="cloudConfigs" 
-          v-loading="loading"
+          v-loading="loading" 
+          :data="cloudConfigs"
           class="config-table"
           stripe
         >
@@ -43,8 +43,8 @@
             <template #default="{ row }">
               <el-switch 
                 v-model="row.enable" 
-                @change="toggleEnable(row)"
                 :loading="row.updating"
+                @change="toggleEnable(row)"
               />
             </template>
           </el-table-column>
@@ -59,16 +59,16 @@
               <el-button 
                 type="primary" 
                 size="small" 
-                @click="editConfig(row)"
                 :icon="Edit"
+                @click="editConfig(row)"
               >
                 编辑
               </el-button>
               <el-button 
                 type="danger" 
                 size="small" 
-                @click="deleteConfig(row)"
                 :icon="Delete"
+                @click="deleteConfig(row)"
               >
                 删除
               </el-button>
@@ -139,7 +139,7 @@
       
       <template #footer>
         <el-button @click="dialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="submitForm" :loading="submitting">
+        <el-button type="primary" :loading="submitting" @click="submitForm">
           {{ isEdit ? '更新' : '添加' }}
         </el-button>
       </template>
@@ -276,7 +276,7 @@ const toggleEnable = async (row) => {
     row.updating = true
     await cloudStore.updateCloudConfig(row.pk, { enable: row.enable })
     ElMessage.success('状态更新成功')
-  } catch (error) {
+  } catch {
     row.enable = !row.enable // 回滚状态
     ElMessage.error('状态更新失败')
   } finally {
@@ -299,7 +299,7 @@ const submitForm = async () => {
     }
     
     dialogVisible.value = false
-  } catch (error) {
+  } catch {
     ElMessage.error(isEdit.value ? '更新失败' : '添加失败')
   } finally {
     submitting.value = false

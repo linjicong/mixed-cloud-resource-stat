@@ -18,7 +18,7 @@
           {{ category.label }}
         </h3>
         <el-row :gutter="16">
-          <el-col :span="6" v-for="item in category.items" :key="item.type">
+          <el-col v-for="item in category.items" :key="item.type" :span="6">
             <el-card
               shadow="hover"
               class="resource-card"

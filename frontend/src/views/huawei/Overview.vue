@@ -1,5 +1,5 @@
 <template>
-  <ProviderOverview provider="huawei" providerLabel="华为云" :categories="categories" />
+  <ProviderOverview provider="huawei" provider-label="华为云" :categories="categories" />
 </template>
 
 <script setup>
