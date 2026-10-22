@@ -289,7 +289,7 @@
         <dependency>
             <groupId>com.aliyun</groupId>
             <artifactId>sls20201230</artifactId>
-            <version>5.9.0</version>
+            <version>5.18.1</version>
         </dependency>
         <!-- 阿里云 AnalyticDB PostgreSQL SDK -->
         <dependency>
