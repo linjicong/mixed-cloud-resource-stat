@@ -301,7 +301,7 @@
         <dependency>
             <groupId>com.aliyun</groupId>
             <artifactId>hologram20220601</artifactId>
-            <version>1.2.0</version>
+            <version>1.10.1</version>
         </dependency>
 
         <!-- NOTE: 以下SDK在Maven Central暂不可用，Client方法返回空列表 -->
