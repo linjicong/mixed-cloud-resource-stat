@@ -1,0 +1,174 @@
+```mermaid
+classDiagram
+    class BillController {
+        -BillQueryService billQueryService
+        +kpi(startMonth, endMonth, providers, accounts) ResponseEntity~BillKpiVO~
+        +trend(startMonth, endMonth, providers, accounts, months) ResponseEntity~BillTrendVO~
+        +accounts(startMonth, endMonth, providers, accounts, topN) ResponseEntity~BillAccountVO~
+        +details(startMonth, endMonth, providers, accounts, productMain, chargingMode, pageNum, pageSize, sortField, sortOrder) ResponseEntity~BillDetailPageVO~
+        +productTop(startMonth, endMonth, providers, accounts, topN, dimension) ResponseEntity~BillProductTopVO~
+    }
+
+    class BillQueryService {
+        -List~BillRecordProvider~ providers
+        -BillAggregateMapper aggregateMapper
+        -CloudConfMapper cloudConfMapper
+        +queryKpi(BillQueryCondition) BillKpiVO
+        +queryTrend(BillQueryCondition, int) BillTrendVO
+        +queryAccounts(BillQueryCondition, int) BillAccountVO
+        +queryDetailPage(BillQueryCondition, int, int) BillDetailPageVO
+        +queryProductTop(BillQueryCondition, int, String) BillProductTopVO
+        -buildProviderAvailability(List~String~) List~BillProviderAvailabilityVO~
+        -buildCondition(...) BillQueryCondition
+    }
+
+    class BillRecordProvider {
+        <<interface>>
+        +supports(String provider) boolean
+        +isAvailable() boolean
+        +toUnified(BillQueryCondition condition) List~UnifiedBillRecord~
+    }
+
+    class HCloudFeeRecordProvider {
+        -HCloudBillsFeeRecordsMapper mapper
+        +supports(String) boolean
+        +isAvailable() boolean
+        +toUnified(BillQueryCondition) List~UnifiedBillRecord~
+    }
+
+    class HCloudBreakDownProvider {
+        -HCloudBillsMonthlyBreakDownMapper mapper
+        +supports(String) boolean
+        +isAvailable() boolean
+        +toUnified(BillQueryCondition) List~UnifiedBillRecord~
+    }
+
+    class QCloudBillProvider {
+        -QCloudBillResourceSummaryMapper mapper
+        +supports(String) boolean
+        +isAvailable() boolean
+        +toUnified(BillQueryCondition) List~UnifiedBillRecord~
+    }
+
+    class AliyunBillProviderPlaceholder {
+        <<not implemented this iteration>>
+    }
+
+    class BillAggregateMapper {
+        <<interface>>
+        +sumByRange(BillQueryCondition) AggregateRow
+        +sumByMonth(BillQueryCondition) List~MonthSumRow~
+        +sumByProviderAndMonth(BillQueryCondition) List~ProviderMonthRow~
+        +sumByAccount(BillQueryCondition) List~AccountSumRow~
+        +sumByProduct(BillQueryCondition, int) List~ProductSumRow~
+        +pageDetail(BillQueryCondition, int offset, int limit) List~DetailRow~
+        +countDetail(BillQueryCondition) long
+        +sumDetail(BillQueryCondition) AggregateRow
+    }
+
+    class UnifiedBillRecord {
+        +String account
+        +String provider
+        +String providerLabel
+        +String region
+        +String billMonth
+        +String productMain
+        +String productSub
+        +String chargingMode
+        +String chargingModeRaw
+        +String resourceId
+        +String resourceName
+        +String tradeTime
+        +BigDecimal payAmount
+        +BigDecimal officialAmount
+        +BigDecimal consumeAmount
+        +BigDecimal discountAmount
+        +BigDecimal cashPay
+        +BigDecimal voucherPay
+        +BigDecimal creditPay
+        +BigDecimal debtAmount
+        +BigDecimal eraseAmount
+        +BigDecimal writeoffAmount
+        +AmountSourceEnum amountSource
+        +Boolean amountAnomaly
+        +toDetailRow() DetailRow
+    }
+
+    class BillQueryCondition {
+        +String startMonth
+        +String endMonth
+        +List~String~ providers
+        +List~String~ accounts
+        +String productMain
+        +String chargingMode
+        +String sortField
+        +String sortOrder
+        +previousStartMonth() String
+        +previousEndMonth() String
+        +hasProvider(String) boolean
+        +withRange(String, String) BillQueryCondition
+    }
+
+    class AmountSourceEnum {
+        <<enumeration>>
+        FEE_RECORD
+        BREAK_DOWN
+        RESOURCE_SUMMARY
+    }
+
+    class ChargingModeEnum {
+        <<enumeration>>
+        PREPAID
+        POSTPAID
+        RESERVED
+        RESOURCE_PACK
+        SAVING_PLAN
+        OTHER
+        +label() String
+        +fromHuaweiCode(Integer) ChargingModeEnum
+        +fromTencentText(String) ChargingModeEnum
+    }
+
+    class BillAmountParser {
+        <<utility>>
+        +toDecimal(String) BigDecimal
+        +toDecimal(Object) BigDecimal
+        +toDecimalOrZero(String) BigDecimal
+        +anomalyCount() int
+        +resetAnomalyCount() void
+    }
+
+    class BillMonthUtil {
+        <<utility>>
+        +normalize(String) String
+        +shiftMonth(String, int) String
+        +monthRange(String, String) List~String~
+        +previousRange(String, String) String[]
+    }
+
+    class RatioCalculator {
+        <<utility>>
+        +chainRatio(BigDecimal cur, BigDecimal prev) RatioResult
+        +ratio(BigDecimal part, BigDecimal total) BigDecimal
+    }
+
+    BillController --> BillQueryService
+    BillQueryService --> BillRecordProvider
+    BillQueryService --> BillAggregateMapper
+    BillRecordProvider <|.. HCloudFeeRecordProvider
+    BillRecordProvider <|.. HCloudBreakDownProvider
+    BillRecordProvider <|.. QCloudBillProvider
+    BillRecordProvider <|.. AliyunBillProviderPlaceholder
+    HCloudFeeRecordProvider ..> UnifiedBillRecord : creates
+    HCloudBreakDownProvider ..> UnifiedBillRecord : creates
+    QCloudBillProvider ..> UnifiedBillRecord : creates
+    HCloudFeeRecordProvider ..> BillAmountParser
+    QCloudBillProvider ..> BillAmountParser
+    HCloudFeeRecordProvider ..> ChargingModeEnum
+    QCloudBillProvider ..> ChargingModeEnum
+    BillQueryService ..> BillQueryCondition
+    BillQueryService ..> RatioCalculator
+    BillQueryService ..> BillMonthUtil
+    UnifiedBillRecord --> AmountSourceEnum
+    UnifiedBillRecord --> ChargingModeEnum
+```

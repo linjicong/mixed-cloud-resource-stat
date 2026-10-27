@@ -1,0 +1,538 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ MIT License
+  ~
+  ~ Copyright (c) 2022 linjicong
+  ~
+  ~ Permission is hereby granted, free of charge, to any person obtaining a copy
+  ~ of this software and associated documentation files (the "Software"), to deal
+  ~ in the Software without restriction, including without limitation the rights
+  ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  ~ copies of the Software, and to permit persons to whom the Software is
+  ~ furnished to do so, subject to the following conditions:
+  ~
+  ~ The above copyright notice and this permission notice shall be included in all
+  ~ copies or substantial portions of the Software.
+  ~
+  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  ~ SOFTWARE.
+  -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+  统一账单聚合 SQL。
+
+  设计约束（务必遵守）：
+  1. 零字符串拼接占位符：排序字段走 <choose> 白名单，分页用 #{} 预编译参数。
+  2. 每个 UNION 分支都手写 deleted = 0（手写 SQL 不经过 @TableLogic）。
+  3. 腾讯云金额列为 varchar，统一用 qcAmount 片段做安全 CAST：空串/'-' → NULL。
+  4. 腾讯云账单表【没有 month 列】，账期统一从 pay_time 前 7 位提取（qcBillMonth 片段）。
+  5. 只查 providers 里包含的厂商分支（hasProvider 判断），避免无谓的全表扫描。
+
+  @author linjicong
+  @version 1.0.0
+  @date 2026-01-01
+-->
+<mapper namespace="com.linjicong.cloud.stat.dao.mapper.bill.BillAggregateMapper">
+
+    <!--
+      腾讯云字符串金额 → DECIMAL 的安全转换表达式。
+      TRIM 去空白 → 空串变 NULL → 去千分位逗号 → '-' 变 NULL → CAST。
+      CAST(NULL AS DECIMAL) 结果为 NULL，SUM 自动跳过 NULL，外层再 COALESCE 兜底 0。
+    -->
+    <!--
+      腾讯云字符串金额 → DECIMAL 的安全转换表达式。
+      TRIM 去空白 → 空串变 NULL → 去千分位逗号 → '-' 变 NULL → CAST。
+      CAST(NULL AS DECIMAL) 结果为 NULL，SUM 自动跳过 NULL，外层再 COALESCE 兜底 0。
+      说明：此处用 MyBatis 的 include+property 机制传列名，最终生成的是字面列名（非用户输入），不存在注入风险；
+      为避免使用字符串拼接占位符带来的安全审计告警，这里为每个金额列各定义一个独立片段。
+    -->
+    <sql id="qcCashPay">
+        CAST(NULLIF(REPLACE(NULLIF(TRIM(q.cash_pay_amount), ''), ',', ''), '-') AS DECIMAL(18,4))
+    </sql>
+    <sql id="qcVoucherPay">
+        CAST(NULLIF(REPLACE(NULLIF(TRIM(q.voucher_pay_amount), ''), ',', ''), '-') AS DECIMAL(18,4))
+    </sql>
+    <sql id="qcIncentivePay">
+        CAST(NULLIF(REPLACE(NULLIF(TRIM(q.incentive_pay_amount), ''), ',', ''), '-') AS DECIMAL(18,4))
+    </sql>
+    <sql id="qcTotalCost">
+        CAST(NULLIF(REPLACE(NULLIF(TRIM(q.total_cost), ''), ',', ''), '-') AS DECIMAL(18,4))
+    </sql>
+    <sql id="qcRealTotalCost">
+        CAST(NULLIF(REPLACE(NULLIF(TRIM(q.real_total_cost), ''), ',', ''), '-') AS DECIMAL(18,4))
+    </sql>
+
+    <!--
+      华为云账期表达式。
+      bill_cycle 实测格式为 'YYYY-MM'（无日部分），因此【不能】用 STR_TO_DATE(...,'%Y-%m-%d')
+      ——MySQL 遇到缺失的日字段会返回 NULL，导致所有华为行被过滤掉（已实测踩坑）。
+      统一用前 7 位截取，并用 REGEXP 排除非法值。
+    -->
+    <sql id="hCloudBillMonth">
+        CASE
+            WHEN TRIM(f.bill_cycle) REGEXP '^[0-9]{4}-[0-9]{2}$' THEN TRIM(f.bill_cycle)
+            ELSE NULL
+        END
+    </sql>
+
+    <!--
+      腾讯云账期表达式。
+      【实测核对结论】q_cloud_bill_resource_summary 实际存在 month 列（形如 '2023-03'），
+      与实体 QCloudBillResourceSummary.month 一致；同时 pay_time 存在大量
+      '0000-00-00 00:00:00' 脏值（实测 98 行里 76 行为零值），因此【不能】从 pay_time 推导账期，
+      否则这些行会被归到 '0000-00' 形成假账期或直接丢失。
+      统一口径：优先使用 month 列，仅在 month 为空时回退 pay_time 前 7 位，
+      且用正则排除 '0000-00' 这类非法账期。
+    -->
+    <sql id="qcBillMonth">
+        CASE
+            WHEN q.`month` IS NOT NULL AND q.`month` REGEXP '^[0-9]{4}-[0-9]{2}$'
+                THEN q.`month`
+            WHEN TRIM(q.pay_time) REGEXP '^[0-9]{4}-[0-9]{2}'
+                 AND SUBSTRING(TRIM(q.pay_time), 1, 7) &lt;&gt; '0000-00'
+                THEN SUBSTRING(TRIM(q.pay_time), 1, 7)
+            ELSE NULL
+        END
+    </sql>
+
+    <!--
+      ============================================================
+      统一投影：把三张表(实为两个可用分支)投影成同一列形状。
+      华为 fee_records(pay_amount = cash + coupon + credit) ★ 唯一参与聚合的华为来源
+      腾讯 resource_summary(pay_amount = cash + voucher + incentive)
+      阿里云分支本期注释掉，后续放开注释并补齐列即可接上。
+      ============================================================
+    -->
+    <sql id="unionBody">
+        <!-- ==================== 华为云费用记录（现金流口径） ==================== -->
+        <if test="c.hasProvider('huawei')">
+            SELECT
+                f.conf_name                                          AS account,
+                'huawei'                                             AS provider,
+                COALESCE(NULLIF(f.conf_region, ''), f.region_name)    AS region,
+                <include refid="hCloudBillMonth"/>                    AS bill_month,
+                f.service_type_name                                  AS product_main,
+                f.resource_type_name                                 AS product_sub,
+                CAST(f.charging_mode AS CHAR)                        AS charging_mode_raw,
+                CAST(NULL AS CHAR)                                   AS resource_id,
+                CAST(NULL AS CHAR)                                   AS resource_name,
+                f.trade_time                                         AS trade_time,
+                COALESCE(f.cash_amount, 0) + COALESCE(f.coupon_amount, 0) + COALESCE(f.credit_amount, 0) AS pay_amount,
+                COALESCE(f.official_amount, 0)                       AS official_amount,
+                COALESCE(f.consume_amount, 0)                        AS consume_amount,
+                COALESCE(f.official_discount_amount, 0)              AS discount_amount,
+                COALESCE(f.cash_amount, 0)                           AS cash_pay,
+                COALESCE(f.coupon_amount, 0)                         AS voucher_pay,
+                COALESCE(f.credit_amount, 0)                         AS credit_pay,
+                COALESCE(f.debt_amount, 0)                           AS debt_amount,
+                COALESCE(f.erase_amount, 0)                          AS erase_amount,
+                COALESCE(f.writeoff_amount, 0)                       AS writeoff_amount,
+                'FEE_RECORD'                                         AS amount_source,
+                f.pk                                                 AS src_pk
+            FROM h_cloud_bills_fee_records f
+            WHERE f.deleted = 0
+              <if test="c.startMonth != null and c.startMonth != ''">
+                  AND <include refid="hCloudBillMonth"/> &gt;= #{c.startMonth}
+              </if>
+              <if test="c.endMonth != null and c.endMonth != ''">
+                  AND <include refid="hCloudBillMonth"/> &lt;= #{c.endMonth}
+              </if>
+              <if test="c.hasAccounts()">
+                  AND f.conf_name IN
+                  <foreach collection="c.accounts" item="acc" open="(" separator="," close=")">#{acc}</foreach>
+              </if>
+        </if>
+
+        <!-- ==================== 腾讯云账单资源摘要（字符串金额 CAST） ==================== -->
+        <if test="c.hasProvider('tencent')">
+            <if test="c.hasProvider('huawei')">
+                UNION ALL
+            </if>
+            SELECT
+                q.conf_name                                          AS account,
+                'tencent'                                            AS provider,
+                COALESCE(NULLIF(q.conf_region, ''), q.region_name)    AS region,
+                <include refid="qcBillMonth"/>                        AS bill_month,
+                q.business_code_name                                 AS product_main,
+                q.product_code_name                                  AS product_sub,
+                q.pay_mode_name                                      AS charging_mode_raw,
+                q.resource_id                                        AS resource_id,
+                q.resource_name                                      AS resource_name,
+                q.pay_time                                           AS trade_time,
+                COALESCE(<include refid="qcCashPay"/>, 0)
+              + COALESCE(<include refid="qcVoucherPay"/>, 0)
+              + COALESCE(<include refid="qcIncentivePay"/>, 0)       AS pay_amount,
+                COALESCE(<include refid="qcTotalCost"/>, 0)          AS official_amount,
+                COALESCE(<include refid="qcRealTotalCost"/>, 0)      AS consume_amount,
+                GREATEST(
+                    COALESCE(<include refid="qcTotalCost"/>, 0)
+                  - COALESCE(<include refid="qcRealTotalCost"/>, 0), 0
+                )                                                    AS discount_amount,
+                COALESCE(<include refid="qcCashPay"/>, 0)             AS cash_pay,
+                COALESCE(<include refid="qcVoucherPay"/>, 0)          AS voucher_pay,
+                COALESCE(<include refid="qcIncentivePay"/>, 0)        AS credit_pay,
+                0                                                                                                  AS debt_amount,
+                0                                                                                                  AS erase_amount,
+                0                                                                                                  AS writeoff_amount,
+                'RESOURCE_SUMMARY'                                                                                 AS amount_source,
+                q.pk                                                                                               AS src_pk
+            FROM q_cloud_bill_resource_summary q
+            WHERE q.deleted = 0
+              <if test="c.startMonth != null and c.startMonth != ''">
+                  AND <include refid="qcBillMonth"/> &gt;= #{c.startMonth}
+              </if>
+              <if test="c.endMonth != null and c.endMonth != ''">
+                  AND <include refid="qcBillMonth"/> &lt;= #{c.endMonth}
+              </if>
+              <if test="c.hasAccounts()">
+                  AND q.conf_name IN
+                  <foreach collection="c.accounts" item="acc" open="(" separator="," close=")">#{acc}</foreach>
+              </if>
+        </if>
+
+        <!--
+          ==================== 阿里云（本期未采集，预留骨架） ====================
+          后续接入步骤：取消注释 + 补齐真实表名与列名，列形状必须与上面两个分支严格一致。
+          <if test="c.hasProvider('aliyun')">
+              UNION ALL
+              SELECT ... FROM a_cloud_bill_xxx ...
+          </if>
+        -->
+        <if test="!c.hasProvider('huawei') and !c.hasProvider('tencent')">
+            SELECT CAST(NULL AS CHAR) AS account, CAST(NULL AS CHAR) AS provider, CAST(NULL AS CHAR) AS region,
+                   CAST(NULL AS CHAR) AS bill_month, CAST(NULL AS CHAR) AS product_main, CAST(NULL AS CHAR) AS product_sub,
+                   CAST(NULL AS CHAR) AS charging_mode_raw, CAST(NULL AS CHAR) AS resource_id, CAST(NULL AS CHAR) AS resource_name,
+                   CAST(NULL AS CHAR) AS trade_time, CAST(0 AS DECIMAL(18,4)) AS pay_amount, CAST(0 AS DECIMAL(18,4)) AS official_amount,
+                   CAST(0 AS DECIMAL(18,4)) AS consume_amount, CAST(0 AS DECIMAL(18,4)) AS discount_amount, CAST(0 AS DECIMAL(18,4)) AS cash_pay,
+                   CAST(0 AS DECIMAL(18,4)) AS voucher_pay, CAST(0 AS DECIMAL(18,4)) AS credit_pay, CAST(0 AS DECIMAL(18,4)) AS debt_amount,
+                   CAST(0 AS DECIMAL(18,4)) AS erase_amount, CAST(0 AS DECIMAL(18,4)) AS writeoff_amount, CAST(NULL AS CHAR) AS amount_source,
+                   CAST(NULL AS SIGNED) AS src_pk
+            FROM DUAL
+            WHERE 1 = 0
+        </if>
+    </sql>
+
+    <!--
+      明细筛选（产品大类 / 计费模式）。
+      计费模式过滤：数据库存的是原始值（华为是数字编码，腾讯是 PayModeName 文本），
+      因此这里用 SQL 侧做与 ChargingModeEnum 等价的映射再比较，保证跨厂商口径一致。
+      参数 #{c.chargingMode} 由 Service 归一为 6 个统一中文标签之一。
+    -->
+    <sql id="detailFilter">
+        <if test="c.productMain != null and c.productMain != ''">
+            AND t.product_main = #{c.productMain}
+        </if>
+        <if test="c.chargingMode != null and c.chargingMode != ''">
+            AND (
+                CASE
+                    WHEN t.provider = 'huawei' THEN
+                        CASE CAST(NULLIF(t.charging_mode_raw, '') AS SIGNED)
+                            WHEN 0 THEN '按需'
+                            WHEN 1 THEN '包年包月'
+                            WHEN 3 THEN '预留实例'
+                            WHEN 4 THEN '资源包'
+                            WHEN 10 THEN '节省计划'
+                            ELSE '其他'
+                        END
+                    WHEN t.provider = 'tencent' THEN
+                        CASE
+                            WHEN t.charging_mode_raw LIKE '%节省计划%'
+                              OR LOWER(t.charging_mode_raw) LIKE '%savingsplan%'
+                              OR LOWER(t.charging_mode_raw) LIKE '%savings plan%' THEN '节省计划'
+                            WHEN t.charging_mode_raw LIKE '%资源包%'
+                              OR LOWER(t.charging_mode_raw) LIKE '%resourcepack%'
+                              OR LOWER(t.charging_mode_raw) LIKE '%resource pack%' THEN '资源包'
+                            WHEN t.charging_mode_raw LIKE '%预留%'
+                              OR LOWER(t.charging_mode_raw) LIKE '%reserved%' THEN '预留实例'
+                            WHEN t.charging_mode_raw LIKE '%包年包月%'
+                              OR t.charging_mode_raw LIKE '%预付费%'
+                              OR LOWER(t.charging_mode_raw) LIKE '%prepaid%' THEN '包年包月'
+                            WHEN t.charging_mode_raw LIKE '%按量计费%'
+                              OR t.charging_mode_raw LIKE '%后付费%'
+                              OR t.charging_mode_raw LIKE '%按需%'
+                              OR LOWER(t.charging_mode_raw) LIKE '%postpaid%' THEN '按需'
+                            ELSE '其他'
+                        END
+                    ELSE '其他'
+                END = #{c.chargingMode}
+            )
+        </if>
+    </sql>
+
+    <!-- 区间汇总共用查询体 -->
+    <sql id="aggregateSelect">
+        SELECT
+            COALESCE(SUM(t.pay_amount), 0)      AS payAmount,
+            COALESCE(SUM(t.official_amount), 0) AS officialAmount,
+            COALESCE(SUM(t.discount_amount), 0) AS discountAmount,
+            COUNT(*)                            AS rowCount
+        FROM (
+            <include refid="unionBody"/>
+        ) t
+        <where>
+            <include refid="detailFilter"/>
+        </where>
+    </sql>
+
+    <!--
+      ============================================================
+      1. 区间汇总：KPI 主指标 / 环比上期 / 明细全量合计
+      ============================================================
+    -->
+    <select id="sumByRange" resultType="com.linjicong.cloud.stat.service.bill.bo.RowBO$AggregateRow">
+        <include refid="aggregateSelect"/>
+    </select>
+
+    <!--
+      ============================================================
+      2. 按月汇总（趋势图的合计补充；只返回有数据的月份）
+      ============================================================
+    -->
+    <select id="sumByMonth" resultType="com.linjicong.cloud.stat.service.bill.bo.RowBO$MonthSumRow">
+        SELECT
+            t.bill_month                        AS billMonth,
+            COALESCE(SUM(t.pay_amount), 0)      AS payAmount,
+            COALESCE(SUM(t.official_amount), 0) AS officialAmount,
+            COALESCE(SUM(t.discount_amount), 0) AS discountAmount
+        FROM (
+            <include refid="unionBody"/>
+        ) t
+        WHERE t.bill_month IS NOT NULL
+        GROUP BY t.bill_month
+        ORDER BY t.bill_month
+    </select>
+
+    <!--
+      ============================================================
+      3. 厂商 × 月份汇总（趋势图堆叠柱；Java 侧按笛卡尔积补 0）
+      ============================================================
+    -->
+    <select id="sumByProviderAndMonth" resultType="com.linjicong.cloud.stat.service.bill.bo.RowBO$ProviderMonthRow">
+        SELECT
+            t.provider                     AS provider,
+            t.bill_month                   AS billMonth,
+            COALESCE(SUM(t.pay_amount), 0) AS payAmount
+        FROM (
+            <include refid="unionBody"/>
+        ) t
+        WHERE t.bill_month IS NOT NULL
+        GROUP BY t.provider, t.bill_month
+        ORDER BY t.bill_month, t.provider
+    </select>
+
+    <!--
+      ============================================================
+      4. 账号维度汇总
+      ============================================================
+    -->
+    <select id="sumByAccount" resultType="com.linjicong.cloud.stat.service.bill.bo.RowBO$AccountSumRow">
+        SELECT
+            t.account                           AS account,
+            t.provider                          AS provider,
+            MAX(t.region)                       AS region,
+            COALESCE(SUM(t.pay_amount), 0)      AS payAmount,
+            COALESCE(SUM(t.official_amount), 0) AS officialAmount,
+            COALESCE(SUM(t.discount_amount), 0) AS discountAmount,
+            COUNT(*)                            AS rowCount
+        FROM (
+            <include refid="unionBody"/>
+        ) t
+        GROUP BY t.account, t.provider
+        ORDER BY payAmount DESC
+    </select>
+
+    <!--
+      ============================================================
+      5. 产品维度汇总（产品 TOP 分析）
+         dimension = account 时额外按账号分组
+      ============================================================
+    -->
+    <select id="sumByProduct" resultType="com.linjicong.cloud.stat.service.bill.bo.RowBO$ProductSumRow">
+        SELECT
+            t.product_main                      AS productMain,
+            t.provider                          AS provider,
+            <choose>
+                <when test="dimension != null and dimension == 'account'">t.account</when>
+                <otherwise>CAST(NULL AS CHAR)</otherwise>
+            </choose>                           AS account,
+            COALESCE(SUM(t.pay_amount), 0)                                            AS payAmount,
+            COUNT(DISTINCT t.account)                                                 AS accountCount,
+            COUNT(DISTINCT NULLIF(t.resource_id, ''))                                 AS resourceCount
+        FROM (
+            <include refid="unionBody"/>
+        ) t
+        WHERE t.product_main IS NOT NULL
+          AND t.product_main &lt;&gt; ''
+        GROUP BY t.product_main, t.provider
+        <if test="dimension != null and dimension == 'account'">
+            , t.account
+        </if>
+        ORDER BY payAmount DESC
+    </select>
+
+    <!--
+      ============================================================
+      6. 明细分页（服务端 LIMIT/OFFSET，排序白名单 <choose>）
+      ============================================================
+    -->
+    <select id="pageDetail" resultType="com.linjicong.cloud.stat.service.bill.bo.RowBO$DetailRow">
+        SELECT
+            t.src_pk          AS srcPk,
+            t.account         AS account,
+            t.provider        AS provider,
+            t.region          AS region,
+            t.bill_month      AS billMonth,
+            t.product_main    AS productMain,
+            t.product_sub     AS productSub,
+            t.charging_mode_raw AS chargingModeRaw,
+            t.resource_id     AS resourceId,
+            t.resource_name   AS resourceName,
+            t.trade_time      AS tradeTime,
+            t.pay_amount      AS payAmount,
+            t.official_amount AS officialAmount,
+            t.consume_amount  AS consumeAmount,
+            t.discount_amount AS discountAmount,
+            t.cash_pay        AS cashPay,
+            t.voucher_pay     AS voucherPay,
+            t.credit_pay      AS creditPay,
+            t.debt_amount     AS debtAmount,
+            t.erase_amount    AS eraseAmount,
+            t.writeoff_amount AS writeoffAmount,
+            t.amount_source   AS amountSource
+        FROM (
+            <include refid="unionBody"/>
+        ) t
+        <where>
+            <include refid="detailFilter"/>
+        </where>
+        ORDER BY
+        <choose>
+            <when test="c.sortField != null and c.sortField == 'officialAmount'">t.official_amount</when>
+            <when test="c.sortField != null and c.sortField == 'billMonth'">t.bill_month</when>
+            <when test="c.sortField != null and c.sortField == 'tradeTime'">t.trade_time</when>
+            <otherwise>t.pay_amount</otherwise>
+        </choose>
+        <choose>
+            <when test="c.sortOrder != null and c.sortOrder == 'asc'">ASC</when>
+            <otherwise>DESC</otherwise>
+        </choose>
+        , t.src_pk DESC, t.provider ASC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <!--
+      ============================================================
+      7. 明细总条数（独立 COUNT(*)，不复用 Page 自动 count）
+      ============================================================
+    -->
+    <select id="countDetail" resultType="long">
+        SELECT COUNT(*)
+        FROM (
+            <include refid="unionBody"/>
+        ) t
+        <where>
+            <include refid="detailFilter"/>
+        </where>
+    </select>
+
+    <!--
+      ============================================================
+      8. 明细全量合计（当前筛选条件的 SUM，供明细分页区顶部展示）
+      ============================================================
+    -->
+    <select id="sumDetail" resultType="com.linjicong.cloud.stat.service.bill.bo.RowBO$AggregateRow">
+        <include refid="aggregateSelect"/>
+    </select>
+
+    <!--
+      ============================================================
+      9. cloud_conf 账号主数据
+         （accountTotalCount / 无账单账号补位 / 厂商可用性判断）
+         手写原因见 BillAggregateMapper#selectCloudConfs 注释。
+      ============================================================
+    -->
+    <select id="selectCloudConfs" resultType="com.linjicong.cloud.stat.service.bill.bo.RowBO$CloudConfRow">
+        SELECT
+            c.name     AS name,
+            c.provider AS provider,
+            c.region   AS region
+        FROM cloud_conf c
+        WHERE 1 = 1
+          <if test="providers != null and providers.size() > 0">
+              AND c.provider IN
+              <foreach collection="providers" item="p" open="(" separator="," close=")">#{p}</foreach>
+          </if>
+          <if test="accounts != null and accounts.size() > 0">
+              AND c.name IN
+              <foreach collection="accounts" item="a" open="(" separator="," close=")">#{a}</foreach>
+          </if>
+        ORDER BY c.pk
+    </select>
+
+    <!--
+      ============================================================
+      10. 账期无法归一的腾讯云账单行数（数据质量指标 droppedRowCount）
+          month 列与 pay_time 都提不出合法 YYYY-MM 的行数。
+          必须在 SQL 侧 COUNT，不能全量加载实体到内存数行数。
+      ============================================================
+    -->
+    <select id="countQcloudUnnormalizeableRows" resultType="long">
+        SELECT COUNT(*)
+        FROM q_cloud_bill_resource_summary q
+        WHERE q.deleted = 0
+          AND NOT (
+              (q.`month` IS NOT NULL AND q.`month` REGEXP '^[0-9]{4}-[0-9]{2}$')
+              OR (TRIM(q.pay_time) REGEXP '^[0-9]{4}-[0-9]{2}'
+                  AND SUBSTRING(TRIM(q.pay_time), 1, 7) &lt;&gt; '0000-00')
+          )
+          <if test="c.hasAccounts()">
+              AND q.conf_name IN
+              <foreach collection="c.accounts" item="acc" open="(" separator="," close=")">#{acc}</foreach>
+          </if>
+    </select>
+
+    <!--
+      ============================================================
+      11. 金额解析异常行数（数据质量指标 amountAnomalyCount，OBS-A 修复）
+          HTTP 请求路径的金额解析全在 SQL 侧 CAST，Java 计数器不可达，
+          故异常行数必须在 SQL 侧 COUNT。判据与 BillAmountParser.toDecimal 严格对齐：
+          TRIM 加去千分位逗号后，空串与短横占位符（单个减号、两个减号）属合法缺失不计；
+          剩余值不符合 BigDecimal 可解析格式（符号／小数／科学计数法）才计。
+          覆盖投影中 5 个 CAST 金额列，任一列异常即计该行（列名只能各写一遍，
+          避免用拼接占位符传列名）。
+      ============================================================
+    -->
+    <select id="countQcloudAnomalyRows" resultType="long">
+        SELECT COUNT(*)
+        FROM q_cloud_bill_resource_summary q
+        WHERE q.deleted = 0
+          AND (
+              (TRIM(q.cash_pay_amount) NOT IN ('', '-', '--')
+               AND TRIM(REPLACE(TRIM(q.cash_pay_amount), ',', ''))
+                   NOT REGEXP '^[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)([eE][+-]?[0-9]+)?$')
+              OR (TRIM(q.voucher_pay_amount) NOT IN ('', '-', '--')
+               AND TRIM(REPLACE(TRIM(q.voucher_pay_amount), ',', ''))
+                   NOT REGEXP '^[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)([eE][+-]?[0-9]+)?$')
+              OR (TRIM(q.incentive_pay_amount) NOT IN ('', '-', '--')
+               AND TRIM(REPLACE(TRIM(q.incentive_pay_amount), ',', ''))
+                   NOT REGEXP '^[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)([eE][+-]?[0-9]+)?$')
+              OR (TRIM(q.total_cost) NOT IN ('', '-', '--')
+               AND TRIM(REPLACE(TRIM(q.total_cost), ',', ''))
+                   NOT REGEXP '^[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)([eE][+-]?[0-9]+)?$')
+              OR (TRIM(q.real_total_cost) NOT IN ('', '-', '--')
+               AND TRIM(REPLACE(TRIM(q.real_total_cost), ',', ''))
+                   NOT REGEXP '^[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)([eE][+-]?[0-9]+)?$')
+          )
+          <if test="c.hasAccounts()">
+              AND q.conf_name IN
+              <foreach collection="c.accounts" item="acc" open="(" separator="," close=")">#{acc}</foreach>
+          </if>
+    </select>
+
+</mapper>

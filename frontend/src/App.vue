@@ -22,6 +22,10 @@
             <el-icon><DataAnalysis /></el-icon>
             <span>跨云汇总</span>
           </el-menu-item>
+          <el-menu-item index="/bills">
+            <el-icon><Money /></el-icon>
+            <span>费用账单</span>
+          </el-menu-item>
           <el-sub-menu index="config">
             <template #title>
               <el-icon><Setting /></el-icon>

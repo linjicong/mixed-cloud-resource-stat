@@ -18,6 +18,12 @@ const routes = [
     meta: { title: '跨云汇总' }
   },
   {
+    path: '/bills',
+    name: 'BillPage',
+    component: () => import('@/views/bill/BillPage.vue'),
+    meta: { title: '费用账单' }
+  },
+  {
     path: '/huawei',
     name: 'HuaweiOverview',
     component: () => import('@/views/huawei/Overview.vue'),

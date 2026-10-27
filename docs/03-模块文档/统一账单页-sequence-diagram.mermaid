@@ -1,0 +1,96 @@
+```mermaid
+sequenceDiagram
+    autonumber
+    participant FE as BillDetailTable.vue
+    participant API as apis/bill.js
+    participant C as BillController
+    participant S as BillQueryService
+    participant M as BillAggregateMapper(XML)
+    participant DB as MySQL
+
+    FE->>API: getBillDetails({startMonth, endMonth, accounts, productMain, pageNum, pageSize, sortField, sortOrder})
+    API->>C: GET /bill/details?...
+    C->>S: queryDetailPage(rawParams, pageNum, pageSize)
+
+    S->>S: 1. 参数校验与归一
+    Note over S: startMonth/endMonth 用 BillMonthUtil.normalize<br/>非法则抛 IllegalArgumentException
+    S->>S: 2. pageSize = min(pageSize, 200) ; pageNum = max(pageNum,1)
+    S->>S: 3. sortField 白名单校验(不在白名单回落 payAmount) / sortOrder 归一 asc|desc
+    S->>S: 4. providers/accounts 逗号串 → List；accounts 为空时不追加账号条件
+    S->>S: 5. 构造 BillQueryCondition（含 offset = (pageNum-1)*pageSize）
+
+    S->>M: countDetail(condition)
+    M->>DB: SELECT COUNT(*) FROM ( UNION ALL 三表投影 ) t
+    DB-->>M: 3482
+    M-->>S: long total
+
+    alt total == 0
+        S-->>C: BillDetailPageVO{total:0, records:[]}
+    else total > 0
+        S->>M: pageDetail(condition, offset, limit)
+        M->>DB: SELECT ... FROM ( UNION ALL 投影 ) t WHERE 筛选 ORDER BY 白名单列 LIMIT ? OFFSET ?
+        Note over M,DB: 三表各自先 WHERE 过滤再 UNION ALL，<br/>避免先全表 UNION 再过滤
+        DB-->>M: List<DetailRow>
+        M-->>S: rows
+        S->>S: 6. DetailRow → UnifiedBillRecord 语义（amountSourceLabel 补中文）
+        S->>M: sumDetail(condition)
+        M->>DB: SELECT SUM(实付), SUM(原价), SUM(优惠) FROM ( UNION ALL 投影 ) t WHERE 筛选
+        DB-->>M: AggregateRow
+        M-->>S: 全量合计
+        S->>S: 7. 组装 pages = ceil(total/pageSize)
+        S-->>C: BillDetailPageVO{pageNum,pageSize,total,pages,records,summary}
+    end
+    C-->>API: ResponseEntity.ok(vo) 或 500 + {error,message}
+    API-->>FE: response.data
+    FE->>FE: 渲染表格 / 分页器 / 空态
+```
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant FE as BillKpiCards.vue
+    participant C as BillController
+    participant S as BillQueryService
+    participant CFG as CloudConfMapper
+    participant M as BillAggregateMapper(XML)
+    participant DB as MySQL
+
+    FE->>C: GET /bill/kpi?startMonth&endMonth&providers&accounts
+    C->>S: queryKpi(condition)
+
+    S->>S: 1. normalize 账期、拆分 providers/accounts
+    S->>S: 2. BillMonthUtil.previousRange(start,end) → [prevStart, prevEnd]
+    Note over S: 等长前置区间：区间长度 N 个月，<br/>prevEnd = start 前一个月，prevStart = prevEnd 前推 N-1 个月
+
+    par 本期聚合
+        S->>M: sumByRange(condition)
+        M->>DB: SELECT SUM(pay), SUM(official), SUM(discount), COUNT(*) FROM ( UNION ALL 投影 ) t WHERE bill_month BETWEEN ? AND ?
+        DB-->>M: AggregateRow
+        M-->>S: cur
+    and 上期聚合
+        S->>M: sumByRange(condition.withRange(prevStart, prevEnd))
+        M->>DB: 同上，BETWEEN prevStart AND prevEnd
+        DB-->>M: AggregateRow
+        M-->>S: prev
+    and 账号数
+        S->>CFG: selectList(provider in providers)
+        CFG-->>S: List<CloudConf>
+    end
+
+    S->>M: sumByAccount(condition)
+    M->>DB: SELECT conf_name, conf_provider, SUM(pay), SUM(official), SUM(discount) FROM (...) GROUP BY conf_name, conf_provider
+    DB-->>M: List<AccountSumRow>
+    M-->>S: accountRows
+
+    S->>S: 3. accountWithBillCount = accountRows 中 payAmount != 0 的账号数
+    S->>S: 4. accountTotalCount = cloudConf 匹配数（含阿里云、含停用）
+    S->>S: 5. topProduct = 单独查 sumByProduct(condition, 1) 取第 1 名
+    S->>S: 6. RatioCalculator.chainRatio(cur.pay, prev.pay) → {rate, comparable}
+    S->>S: 7. discountRate = discount/official*100（official=0 时 null）
+    S->>S: 8. buildProviderAvailability(providers)
+    Note over S: SUPPORTED_PROVIDERS={huawei,tencent}；<br/>cloud_conf 有 aliyun 账号 → available=false
+
+    S-->>C: BillKpiVO
+    C-->>FE: 200 + JSON
+    FE->>FE: 渲染 4 张卡片；comparable=false → "不可比"
+```
