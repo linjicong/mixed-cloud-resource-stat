@@ -44,3 +44,8 @@ __pycache__/
 ### Frontend build artifacts ###
 node_modules/
 frontend/dist/
+
+### 本地凭据与工具产物（不入库）###
+.apifox-token
+/.workbuddy/
+.spec-coding

@@ -1,0 +1,966 @@
+openapi: 3.0.1
+info:
+  title: 多云资源统计系统 API
+  version: 2.0.0
+  description: |
+    mixed-cloud-resource-stat 后端全量接口文档（覆盖 6 个 Controller / 17 个端点）。
+
+    ## 通用约定
+    - **无统一响应包装**：成功 200 直出业务 JSON；参数非法 400；服务端异常 500。
+    - **统一账单模块错误体**固定为 `{ "error": "...", "message": "..." }` 双键（前端 axios 拦截器读取 `message`）。
+    - 其余模块失败时返回 Spring Boot 默认错误结构 `{timestamp,status,error,path}` 或业务自定义 `{success,message}`。
+    - 无数据属于正常业务状态（账单模块一律 200 全 0 / 空数组，不使用 404）。
+    - CORS 全放开（`@CrossOrigin(origins="*")`）。
+
+    ## 账期与金额口径（统一账单模块）
+    - 账期格式 `YYYY-MM`（服务端兼容 `2025-3` / `202503` / `2025/03` 等形态自动归一）。
+    - 华为云实付 = `cash_amount + coupon_amount + credit_amount`（仅取账单费用记录表，摊销口径不参与任何聚合）。
+    - 腾讯云实付 = `CashPayAmount + VoucherPayAmount + IncentivePayAmount`（源字段为字符串，服务端安全转数值）。
+    - 欠费 `debtAmount`、抹零 `eraseAmount`、核销 `writeoffAmount` **不计入实付**，仅在明细展示。
+    - 退款负金额保留参与求和。
+    - 环比 `rate`：上期金额为 0 或负时 `comparable=false` 且 `rate=null`（前端展示"不可比"）。
+
+    ## 已知问题（既有模块）
+    `GET /statistics`、`GET /summary/*`、`GET /{provider}/{type}`、`GET /cloud-configs` 当前运行期可能返回
+    `Invalid bound statement (not found)` 类 500 错误——根因是项目 MyBatis-Plus 的 `CommonSqlInjector`
+    注册为普通 `@Bean` 但未挂到 `GlobalConfig`，导致 MP 内置通用方法（selectList/selectCount 等）未生效。
+    统一账单模块（/bill/*）因全部使用手写 XML SQL 而不受影响。修复需调整基础设施配置，属独立需求。
+
+servers:
+  - url: http://localhost:8080
+    description: 本地开发环境（前端 Vite 代理将 /api 前缀转发至此）
+
+tags:
+  - name: 统一账单
+    description: 多云统一账单页聚合接口（/bills 页面消费）
+  - name: 云厂商配置
+    description: cloud_conf 账号主数据增删改查
+  - name: 资源查询
+    description: 按云厂商与资源类型查询已采集资源明细
+  - name: 跨云汇总
+    description: 按厂商/业务域的资源数量统计与跨云对比
+  - name: 资源统计
+    description: 全量资源计数统计
+  - name: 资源同步
+    description: 触发指定云厂商资源采集
+
+paths:
+  # ==================================================================
+  # 统一账单（BillController）
+  # ==================================================================
+  /bill/kpi:
+    get:
+      tags: [统一账单]
+      summary: 总览 KPI
+      description: 区间实付总费用、原价/优惠、环比、账号计数（去重并集口径）、TOP 产品、厂商可用性、数据质量指标。
+      operationId: getBillKpi
+      parameters:
+        - $ref: '#/components/parameters/StartMonth'
+        - $ref: '#/components/parameters/EndMonth'
+        - $ref: '#/components/parameters/Providers'
+        - $ref: '#/components/parameters/Accounts'
+      responses:
+        '200':
+          description: 成功（无数据时金额全 0）
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/BillKpiVO' }
+              example:
+                range: { startMonth: '2022-01', endMonth: '2023-12', monthCount: 24 }
+                totalPayAmount: 75587.54
+                totalOfficialAmount: 119046.52
+                totalDiscountAmount: 43375.16
+                discountRate: 36.44
+                chainRatio:
+                  rate: null
+                  comparable: false
+                  previousRange: { startMonth: '2020-01', endMonth: '2021-12', monthCount: 24 }
+                  previousPayAmount: 0.0
+                accountTotalCount: 8
+                accountWithBillCount: 2
+                accountWithoutBillCount: 6
+                topProduct: { productMain: 弹性云服务器, provider: huawei, providerLabel: 华为云, payAmount: 20775.69, ratio: 27.49 }
+                providerAvailability:
+                  - { provider: huawei, label: 华为云, available: true, accountCount: 2, message: null }
+                  - { provider: tencent, label: 腾讯云, available: true, accountCount: 5, message: null }
+                  - { provider: aliyun, label: 阿里云, available: false, accountCount: 2, message: 该厂商账单数据暂未采集 }
+                dataQuality: { amountAnomalyCount: 0, droppedRowCount: 0 }
+                currentMonthInProgress: false
+        '400': { $ref: '#/components/responses/BillBadRequest' }
+        '500': { $ref: '#/components/responses/BillServerError' }
+
+  /bill/trend:
+    get:
+      tags: [统一账单]
+      summary: 历史费用趋势
+      description: 按月分厂商实付序列（堆叠柱 + 合计折线）。窗口以 endMonth 为基准向前推 months-1 个月；无数据月份补 0.00（非 null）；chainRatios 首项恒 null。
+      operationId: getBillTrend
+      parameters:
+        - $ref: '#/components/parameters/StartMonth'
+        - $ref: '#/components/parameters/EndMonth'
+        - $ref: '#/components/parameters/Providers'
+        - $ref: '#/components/parameters/Accounts'
+        - name: months
+          in: query
+          required: false
+          description: 趋势窗口月数，仅允许 6 或 12
+          schema: { type: integer, enum: [6, 12], default: 6 }
+      responses:
+        '200':
+          description: 成功（hasData=false 时前端展示空态占位）
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/BillTrendVO' }
+              example:
+                range: { startMonth: '2022-10', endMonth: '2023-03', monthCount: 6 }
+                months: ['2022-10', '2022-11', '2022-12', '2023-01', '2023-02', '2023-03']
+                series:
+                  - { provider: huawei, label: 华为云, amounts: [54370.17, 0.0, 0.0, 0.0, 0.0, 0.0] }
+                  - { provider: tencent, label: 腾讯云, amounts: [0.0, 0.0, 0.0, 0.0, 0.0, 21217.37] }
+                  - { provider: aliyun, label: 阿里云, amounts: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0] }
+                totalAmounts: [54370.17, 0.0, 0.0, 0.0, 0.0, 21217.37]
+                chainRatios: [null, -100.0, null, null, null, null]
+                providerAvailability:
+                  - { provider: huawei, label: 华为云, available: true, accountCount: 2, message: null }
+                  - { provider: tencent, label: 腾讯云, available: true, accountCount: 5, message: null }
+                  - { provider: aliyun, label: 阿里云, available: false, accountCount: 2, message: 该厂商账单数据暂未采集 }
+                hasData: true
+        '400': { $ref: '#/components/responses/BillBadRequest' }
+        '500': { $ref: '#/components/responses/BillServerError' }
+
+  /bill/accounts:
+    get:
+      tags: [统一账单]
+      summary: 账号维度费用
+      description: 账号全集 = 账单聚合账号 ∪ cloud_conf 主数据，按（账号名+归一厂商）去重；有账单账号按实付降序在前，无账单账号 hasBillData=false 排最后且不进占比分母；byProvider 供占比环形图"按厂商"维度消费。
+      operationId: getBillAccounts
+      parameters:
+        - $ref: '#/components/parameters/StartMonth'
+        - $ref: '#/components/parameters/EndMonth'
+        - $ref: '#/components/parameters/Providers'
+        - $ref: '#/components/parameters/Accounts'
+        - name: topN
+          in: query
+          required: false
+          description: 占比图"其他"合并阈值（仅标记用途，rows 恒全量返回）
+          schema: { type: integer, default: 8 }
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/BillAccountVO' }
+              example:
+                range:
+                  startMonth: '2022-01'
+                  endMonth: '2023-12'
+                  monthCount: 24
+                  previousRange: { startMonth: '2020-01', endMonth: '2021-12', monthCount: 24 }
+                totalPayAmount: 75587.54
+                rows:
+                  - account: huawei
+                    provider: huawei
+                    providerLabel: 华为云
+                    region: cn-south-1
+                    enabled: true
+                    payAmount: 54370.17
+                    officialAmount: 90052.46
+                    discountAmount: 35598.47
+                    ratio: 71.93
+                    chainRatio: { rate: null, comparable: false, previousPayAmount: 0.0 }
+                    hasBillData: true
+                    sparkline: [54370.17, 0.0, 0.0, 0.0, 0.0, 0.0]
+                    sparklineMonths: ['2022-10', '2022-11', '2022-12', '2023-01', '2023-02', '2023-03']
+                  - account: tencent-fb
+                    provider: tencent
+                    providerLabel: 腾讯云
+                    region: ap-guangzhou
+                    enabled: true
+                    payAmount: 21217.37
+                    officialAmount: 28994.06
+                    discountAmount: 7776.69
+                    ratio: 28.07
+                    chainRatio: { rate: null, comparable: false, previousPayAmount: 0.0 }
+                    hasBillData: true
+                    sparkline: [0.0, 0.0, 0.0, 0.0, 0.0, 21217.37]
+                    sparklineMonths: ['2022-10', '2022-11', '2022-12', '2023-01', '2023-02', '2023-03']
+                  - account: aliyun-fb
+                    provider: aliyun
+                    providerLabel: 阿里云
+                    region: cn-hangzhou
+                    enabled: true
+                    payAmount: 0.0
+                    officialAmount: 0.0
+                    discountAmount: 0.0
+                    ratio: 0.0
+                    chainRatio: { rate: null, comparable: false, previousPayAmount: 0.0 }
+                    hasBillData: false
+                    sparkline: []
+                    sparklineMonths: []
+                byProvider:
+                  - { provider: huawei, label: 华为云, payAmount: 54370.17, ratio: 71.93 }
+                  - { provider: tencent, label: 腾讯云, payAmount: 21217.37, ratio: 28.07 }
+        '400': { $ref: '#/components/responses/BillBadRequest' }
+        '500': { $ref: '#/components/responses/BillServerError' }
+
+  /bill/details:
+    get:
+      tags: [统一账单]
+      summary: 账单明细分页
+      description: |
+        跨厂商归一化明细，服务端分页与排序。pageSize 服务端钳制上限 200；sortField 白名单 payAmount/officialAmount/billMonth/tradeTime（非法值回落 payAmount）；
+        记录 id 格式 `FEE:{pk}` / `BD:{pk}` / `QCL:{pk}`（跨三张源表去重）；summary 为当前筛选条件的**全量**合计（不是当前页之和）；华为费用记录无资源 ID，resourceId/resourceName 对华为为 null。
+      operationId: getBillDetails
+      parameters:
+        - $ref: '#/components/parameters/StartMonth'
+        - $ref: '#/components/parameters/EndMonth'
+        - $ref: '#/components/parameters/Providers'
+        - $ref: '#/components/parameters/Accounts'
+        - name: productMain
+          in: query
+          required: false
+          description: 产品大类精确筛选
+          schema: { type: string }
+        - name: chargingMode
+          in: query
+          required: false
+          description: 计费模式统一文本筛选（包年包月/按需计费/预留实例/资源包/节省计划/其他）
+          schema: { type: string }
+        - name: pageNum
+          in: query
+          required: false
+          description: 页码，从 1 开始
+          schema: { type: integer, default: 1, minimum: 1 }
+        - name: pageSize
+          in: query
+          required: false
+          description: 每页条数，服务端钳制不超过 200
+          schema: { type: integer, default: 20, minimum: 1 }
+        - name: sortField
+          in: query
+          required: false
+          description: 排序字段白名单，非法值回落 payAmount
+          schema: { type: string, enum: [payAmount, officialAmount, billMonth, tradeTime], default: payAmount }
+        - name: sortOrder
+          in: query
+          required: false
+          description: 排序方向
+          schema: { type: string, enum: [asc, desc], default: desc }
+      responses:
+        '200':
+          description: 成功（超出页数时 records 为空数组但 total 正确）
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/BillDetailPageVO' }
+              example:
+                pageNum: 1
+                pageSize: 2
+                total: 105052
+                pages: 52526
+                records:
+                  - id: 'FEE:32011'
+                    billMonth: '2022-10'
+                    account: huawei
+                    provider: huawei
+                    providerLabel: 华为云
+                    productMain: 云数据库
+                    productSub: RDS数据库实例虚拟机
+                    chargingMode: 包年包月
+                    officialAmount: 5016.96
+                    consumeAmount: 3010.17
+                    discountAmount: 2006.79
+                    payAmount: 3010.17
+                    cashPay: 3010.17
+                    voucherPay: 0.0
+                    creditPay: 0.0
+                    debtAmount: 0.0
+                    eraseAmount: 0.0
+                    writeoffAmount: 0.0
+                    region: cn-south-1
+                    resourceId: null
+                    resourceName: null
+                    tradeTime: '2022-10-15T20:12:24Z'
+                    amountSource: FEE_RECORD
+                    amountSourceLabel: 费用记录
+                    amountAnomaly: false
+                summary: { payAmountSum: 54370.17, officialAmountSum: 90052.46, discountAmountSum: 35598.47 }
+                dataQuality: { amountAnomalyCount: 0 }
+        '400': { $ref: '#/components/responses/BillBadRequest' }
+        '500': { $ref: '#/components/responses/BillServerError' }
+
+  /bill/products/top:
+    get:
+      tags: [统一账单]
+      summary: 产品费用 TOP 排行
+      description: 按产品大类聚合实付金额，支持 provider（按厂商）/account（按账号）维度；topN 截断后剩余归入 others，保证 Σrows.payAmount + others.payAmount == totalPayAmount。
+      operationId: getBillProductTop
+      parameters:
+        - $ref: '#/components/parameters/StartMonth'
+        - $ref: '#/components/parameters/EndMonth'
+        - $ref: '#/components/parameters/Providers'
+        - $ref: '#/components/parameters/Accounts'
+        - name: topN
+          in: query
+          required: false
+          description: TOP N，仅允许 5 / 10 / 20
+          schema: { type: integer, enum: [5, 10, 20], default: 10 }
+        - name: dimension
+          in: query
+          required: false
+          description: 聚合维度 provider（厂商）或 account（账号）
+          schema: { type: string, enum: [provider, account], default: provider }
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/BillProductTopVO' }
+              example:
+                range: { startMonth: '2022-01', endMonth: '2023-12', monthCount: 24 }
+                dimension: provider
+                totalPayAmount: 75587.54
+                rows:
+                  - { rank: 1, productMain: 弹性云服务器, provider: huawei, providerLabel: 华为云, account: null, payAmount: 20775.69, ratio: 27.49, accountCount: 1, resourceCount: 0 }
+                  - { rank: 2, productMain: 云数据库, provider: huawei, providerLabel: 华为云, account: null, payAmount: 15152.82, ratio: 20.05, accountCount: 1, resourceCount: 0 }
+                  - { rank: 3, productMain: 实时音视频, provider: tencent, providerLabel: 腾讯云, account: null, payAmount: 11503.95, ratio: 15.22, accountCount: 1, resourceCount: 3 }
+                others: { payAmount: 43689.08, ratio: 57.8, productCount: 51 }
+        '400': { $ref: '#/components/responses/BillBadRequest' }
+        '500': { $ref: '#/components/responses/BillServerError' }
+
+  # ==================================================================
+  # 云厂商配置（CloudConfigController）
+  # ==================================================================
+  /cloud-configs:
+    get:
+      tags: [云厂商配置]
+      summary: 获取全部云配置列表
+      description: 返回所有账号配置。**注意 accessKey/secretKey 当前为明文返回，存在敏感信息泄露风险，对外提供前需脱敏。**
+      operationId: listCloudConfigs
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/CloudConf' }
+              example:
+                - pk: 1
+                  name: huawei
+                  provider: HCloud
+                  region: cn-south-1
+                  accessKey: '******'
+                  secretKey: '******'
+                  enable: true
+                  remark: 生产账号
+                  createTime: '2024-12-19 10:00:00'
+                  updateTime: '2024-12-19 10:00:00'
+        '500': { $ref: '#/components/responses/EmptyServerError' }
+    post:
+      tags: [云厂商配置]
+      summary: 新增云配置
+      description: createTime/updateTime 由服务端设置；enable 为空时默认 true。provider 实际存储形态为 HCloud/QCloud/ACloud。
+      operationId: createCloudConfig
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CloudConfInput' }
+            example: { name: tencent-new, provider: QCloud, region: ap-guangzhou, accessKey: AKIDxxxx, secretKey: xxxx, enable: true, remark: 新账号 }
+      responses:
+        '201':
+          description: 创建成功，返回落库后的完整对象（含 pk）
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CloudConf' }
+        '500': { $ref: '#/components/responses/EmptyServerError' }
+
+  /cloud-configs/{id}:
+    get:
+      tags: [云厂商配置]
+      summary: 按 ID 获取云配置
+      operationId: getCloudConfigById
+      parameters:
+        - $ref: '#/components/parameters/ConfigId'
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CloudConf' }
+        '404': { description: 配置不存在 }
+        '500': { $ref: '#/components/responses/EmptyServerError' }
+    put:
+      tags: [云厂商配置]
+      summary: 更新云配置
+      description: 请求体需携带完整字段；createTime 为空时保留原值，updateTime 服务端刷新。
+      operationId: updateCloudConfig
+      parameters:
+        - $ref: '#/components/parameters/ConfigId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CloudConfInput' }
+      responses:
+        '200':
+          description: 更新成功，返回更新后的对象
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CloudConf' }
+        '404': { description: 配置不存在 }
+        '500': { $ref: '#/components/responses/EmptyServerError' }
+    delete:
+      tags: [云厂商配置]
+      summary: 删除云配置
+      operationId: deleteCloudConfig
+      parameters:
+        - $ref: '#/components/parameters/ConfigId'
+      responses:
+        '204': { description: 删除成功，无响应体 }
+        '500': { $ref: '#/components/responses/EmptyServerError' }
+
+  # ==================================================================
+  # 资源查询（ResourceController）
+  # ==================================================================
+  /huawei/{type}:
+    get:
+      tags: [资源查询]
+      summary: 查询华为云资源
+      description: |
+        按资源类型查询华为云已采集资源。type 取值（60+）：ecs, rds, elb, evs, vpc, eip, ims, cbr, bills,
+        bills_fee_records, dcs, dds, obs, sfs, ces_metric, dns_private, dns_record_sets, cce, iam, rms,
+        nat, functiongraph, vpn, gaussdb, kms, waf, cts, kafka, rocketmq, rabbitmq, lts, cdn, antiddos,
+        hss, swr, smn, apig, aom, css, cfw, ccm, ssl, drs, mrs, as, bms, workspace, dli, dws, ddm, cse 等。
+        未识别 type 返回 400。
+      operationId: getHuaweiResources
+      parameters:
+        - $ref: '#/components/parameters/ResourceType'
+        - $ref: '#/components/parameters/ConfName'
+      responses:
+        '200':
+          description: 成功（实体列表，字段随 type 变化；查询失败时返回纯文本错误）
+          content:
+            application/json:
+              schema: { type: array, items: { type: object } }
+        '400': { description: 不支持的资源类型 }
+        '500': { $ref: '#/components/responses/EmptyServerError' }
+
+  /tencent/{type}:
+    get:
+      tags: [资源查询]
+      summary: 查询腾讯云资源
+      description: |
+        按资源类型查询腾讯云已采集资源。type 取值（100+）：cvm, cdb, clb, cbs, bills, vpc, subnet, eip, sg,
+        cdn, redis, mongodb, cynosdb, postgresql, sqlserver, nat, cfs, dns, cos, scf, mariadb, dcdb, ckafka,
+        rocketmq, ssl, waf, cls, monitor, domain, tke, tcr, es, memcached, keewidb, ctsdb, chdfs, as,
+        lighthouse, dc, rabbitmq, apigw, bms, tdmq, oceanus, emr, gaap 等。未识别 type 返回 400。
+      operationId: getTencentResources
+      parameters:
+        - $ref: '#/components/parameters/ResourceType'
+        - $ref: '#/components/parameters/ConfName'
+      responses:
+        '200':
+          description: 成功（实体列表，字段随 type 变化）
+          content:
+            application/json:
+              schema: { type: array, items: { type: object } }
+        '400': { description: 不支持的资源类型 }
+        '500': { $ref: '#/components/responses/EmptyServerError' }
+
+  /aliyun/{type}:
+    get:
+      tags: [资源查询]
+      summary: 查询阿里云资源
+      description: |
+        按资源类型查询阿里云已采集资源。type 取值：ack, acr, actiontrail, alb, analyticdb, apigateway, cbh,
+        cdn, cen, clickhouse, cloudfirewall, cms, config, ddos, disk, dns, dns_records, dsc, dts, ecs, eip,
+        elasticsearch, emr, ess, fc, ga, hologres, hss, iot, kafka, kms, lindorm, live, maxcompute, mongodb,
+        mse, nas, nat, nlb, oos, oss, polardb, quota, rabbitmq, rds, redis, rocketmq, sae, sag, securitygroup,
+        selectdb, slb, sls, sms, ssl, storagegateway, vod, vpc, vpcendpoint, vpngateway, waf 等。未识别 type 返回 400。
+      operationId: getAliyunResources
+      parameters:
+        - $ref: '#/components/parameters/ResourceType'
+        - $ref: '#/components/parameters/ConfName'
+      responses:
+        '200':
+          description: 成功（实体列表，字段随 type 变化）
+          content:
+            application/json:
+              schema: { type: array, items: { type: object } }
+        '400': { description: 不支持的资源类型 }
+        '500': { $ref: '#/components/responses/EmptyServerError' }
+
+  # ==================================================================
+  # 跨云汇总（SummaryController）
+  # ==================================================================
+  /summary/provider-stats:
+    get:
+      tags: [跨云汇总]
+      summary: 按云厂商分组的资源数量统计
+      description: 返回华为云/腾讯云/阿里云各资源类型的数量，以及 totals 汇总。confName 为空时统计全部账号。
+      operationId: getProviderStats
+      parameters:
+        - $ref: '#/components/parameters/ConfName'
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ProviderStatsVO' }
+              example:
+                huawei: { ecs: 12, rds: 4, elb: 2, evs: 30, vpc: 3, eip: 5 }
+                tencent: { cvm: 8, cdb: 3, clb: 1, cbs: 20, vpc: 2 }
+                aliyun: { ecs: 6, rds: 2, slb: 1, disk: 15, vpc: 2 }
+                totals: { huawei: 120, tencent: 85, aliyun: 60, all: 265 }
+        '500': { $ref: '#/components/responses/EmptyServerError' }
+
+  /summary/cross-cloud:
+    get:
+      tags: [跨云汇总]
+      summary: 跨云对比数据（按业务域）
+      description: 按计算/存储/数据库/网络/安全/中间件/CDN/大数据/运维管理/物联网十个业务域对齐三家云的资源计数，便于横向对比。
+      operationId: getCrossCloudStats
+      parameters:
+        - $ref: '#/components/parameters/ConfName'
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CrossCloudVO' }
+              example:
+                compute:
+                  label: 计算
+                  huawei: { ecs: 12, cce: 2, faas: 1 }
+                  tencent: { cvm: 8, tke: 1, scf: 3 }
+                  aliyun: { ecs: 6, ack: 1, fc: 2 }
+                storage:
+                  label: 存储
+                  huawei: { obs: 5, evs: 30, sfs: 1 }
+                  tencent: { cos: 4, cbs: 20, cfs: 1 }
+                  aliyun: { oss: 3, disk: 15, nas: 1 }
+        '500': { $ref: '#/components/responses/EmptyServerError' }
+
+  # ==================================================================
+  # 资源统计（StatisticsController）
+  # ==================================================================
+  /statistics:
+    get:
+      tags: [资源统计]
+      summary: 全量资源计数统计
+      description: 统计三家云全部已采集资源类型的记录数（不分账号）。返回结构为 `{huawei:{type:count}, tencent:{...}, aliyun:{...}}`。
+      operationId: getStatistics
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/StatisticsVO' }
+              example:
+                huawei: { ecs: 12, rds: 4, elb: 2, evs: 30, vpc: 3 }
+                tencent: { cvm: 8, cdb: 3, clb: 1, cbs: 20, vpc: 2, subnet: 5 }
+                aliyun: { ecs: 6, rds: 2, slb: 1 }
+        '500':
+          description: 统计失败
+          content:
+            application/json:
+              schema: { type: object }
+              example: { error: 'statistics failed: ...' }
+
+  # ==================================================================
+  # 资源同步（SyncController）
+  # ==================================================================
+  /sync/{provider}:
+    post:
+      tags: [资源同步]
+      summary: 触发指定云厂商资源同步
+      description: |
+        同步该厂商所有启用配置的资源。**当前实现仅调用 syncEcs（ECS/CVM 维度），其余资源类型暂未纳入同步链路。**
+        provider 支持 huawei/hcloud、tencent/qcloud、aliyun/acloud（大小写不敏感）。
+        同步为同步阻塞操作，多账号耗时可能较长。
+      operationId: syncResources
+      parameters:
+        - name: provider
+          in: path
+          required: true
+          description: 云厂商标识
+          schema: { type: string, enum: [huawei, hcloud, tencent, qcloud, aliyun, acloud] }
+      responses:
+        '200':
+          description: 同步成功
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SyncResult' }
+              example: { success: true, message: 同步成功, syncedCount: 12, configCount: 2 }
+        '400':
+          description: 不支持的云厂商 / 未找到启用的该厂商配置
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SyncResult' }
+              example: { success: false, message: '不支持的云厂商: xxx' }
+        '500':
+          description: 同步失败
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SyncResult' }
+              example: { success: false, message: '同步配置 huawei 失败: ...' }
+
+components:
+  parameters:
+    StartMonth:
+      name: startMonth
+      in: query
+      required: true
+      description: 账期起始，格式 YYYY-MM
+      schema: { type: string, example: '2022-01' }
+    EndMonth:
+      name: endMonth
+      in: query
+      required: true
+      description: 账期截止，格式 YYYY-MM，不得早于 startMonth，跨度上限 24 个月
+      schema: { type: string, example: '2023-12' }
+    Providers:
+      name: providers
+      in: query
+      required: false
+      description: 厂商过滤，逗号分隔（huawei,tencent,aliyun；HCloud/QCloud/ACloud 形态亦兼容），空为不限
+      schema: { type: string, example: 'huawei,tencent' }
+    Accounts:
+      name: accounts
+      in: query
+      required: false
+      description: 账号过滤，逗号分隔（cloud_conf.name），空为不限
+      schema: { type: string, example: 'huawei,tencent-fb' }
+    ConfName:
+      name: confName
+      in: query
+      required: false
+      description: 云配置账号名（cloud_conf.name），空为全部账号
+      schema: { type: string, example: huawei }
+    ResourceType:
+      name: type
+      in: path
+      required: true
+      description: 资源类型标识（见接口说明枚举）
+      schema: { type: string, example: ecs }
+    ConfigId:
+      name: id
+      in: path
+      required: true
+      description: 云配置主键 pk
+      schema: { type: integer }
+
+  responses:
+    BillBadRequest:
+      description: 请求参数非法（账期格式错误、区间倒序、跨度超限等）
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ErrorResponse' }
+          example: { error: '账期格式非法: abc，要求 YYYY-MM', message: '账期格式非法: abc，要求 YYYY-MM' }
+    BillServerError:
+      description: 服务端异常
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ErrorResponse' }
+          example: { error: '查询失败: ...', message: '查询失败: ...' }
+    EmptyServerError:
+      description: 服务端异常（Spring Boot 默认错误结构或纯文本）
+      content:
+        application/json:
+          schema: { type: object }
+          example: { timestamp: '2026-10-27T09:46:24.168Z', status: 500, error: Internal Server Error, path: /xxx }
+
+  schemas:
+    ErrorResponse:
+      type: object
+      description: 账单模块错误体（error 与 message 双键，前端拦截器读取 message）
+      properties:
+        error: { type: string }
+        message: { type: string }
+
+    CloudConf:
+      type: object
+      description: 云厂商账号配置
+      properties:
+        pk: { type: integer, description: 主键 }
+        name: { type: string, description: 账号/配置名称 }
+        provider: { type: string, description: '供应商标识，实际存储形态 HCloud/QCloud/ACloud' }
+        region: { type: string, description: 区域 }
+        accessKey: { type: string, description: Access Key（敏感，接口当前明文返回） }
+        secretKey: { type: string, description: Secret Key（敏感，接口当前明文返回） }
+        enable: { type: boolean, description: 是否启用 }
+        remark: { type: string, nullable: true, description: 备注 }
+        createTime: { type: string, format: date-time }
+        updateTime: { type: string, format: date-time, nullable: true }
+
+    CloudConfInput:
+      type: object
+      description: 云配置新增/更新请求体
+      required: [name, provider, region, accessKey]
+      properties:
+        name: { type: string }
+        provider: { type: string }
+        region: { type: string }
+        accessKey: { type: string }
+        secretKey: { type: string, nullable: true }
+        enable: { type: boolean, nullable: true }
+        remark: { type: string, nullable: true }
+
+    BillRange:
+      type: object
+      properties:
+        startMonth: { type: string, description: 'YYYY-MM' }
+        endMonth: { type: string, description: 'YYYY-MM' }
+        monthCount: { type: integer }
+
+    ChainRatio:
+      type: object
+      description: 环比（上期金额为 0 或负时 comparable=false 且 rate=null）
+      properties:
+        rate: { type: number, nullable: true, description: '环比百分比，如 8.32 表示 +8.32%' }
+        comparable: { type: boolean }
+        previousRange:
+          allOf: [{ $ref: '#/components/schemas/BillRange' }]
+          nullable: true
+        previousPayAmount: { type: number }
+
+    NullableChainRatio:
+      type: object
+      properties:
+        rate: { type: number, nullable: true }
+        comparable: { type: boolean }
+        previousPayAmount: { type: number }
+
+    ProviderAvailability:
+      type: object
+      properties:
+        provider: { type: string, description: huawei / tencent / aliyun }
+        label: { type: string }
+        available: { type: boolean, description: 该厂商账单是否已采集 }
+        accountCount: { type: integer }
+        message: { type: string, nullable: true }
+
+    TopProduct:
+      type: object
+      nullable: true
+      properties:
+        productMain: { type: string }
+        provider: { type: string }
+        providerLabel: { type: string }
+        payAmount: { type: number }
+        ratio: { type: number, description: '占区间实付总额百分比' }
+
+    BillKpiVO:
+      type: object
+      properties:
+        range: { $ref: '#/components/schemas/BillRange' }
+        totalPayAmount: { type: number, description: 区间实付总费用 }
+        totalOfficialAmount: { type: number }
+        totalDiscountAmount: { type: number }
+        discountRate: { type: number, nullable: true }
+        chainRatio: { $ref: '#/components/schemas/ChainRatio' }
+        accountTotalCount: { type: integer, description: 去重并集账号总数（与 /bill/accounts rows 行数恒等） }
+        accountWithBillCount: { type: integer, description: 区间内存在账单记录的账号数 }
+        accountWithoutBillCount: { type: integer, description: withBill+withoutBill==total }
+        topProduct: { $ref: '#/components/schemas/TopProduct' }
+        providerAvailability: { type: array, items: { $ref: '#/components/schemas/ProviderAvailability' } }
+        dataQuality: { $ref: '#/components/schemas/DataQuality' }
+        currentMonthInProgress: { type: boolean }
+
+    DataQuality:
+      type: object
+      properties:
+        amountAnomalyCount: { type: integer, description: 字符串金额无法转数值的行数（SQL 侧统计） }
+        droppedRowCount: { type: integer, description: 账期无法归一被剔除的行数 }
+
+    TrendSeries:
+      type: object
+      properties:
+        provider: { type: string }
+        label: { type: string }
+        amounts: { type: array, description: 与 months 等长，无数据月份为 0.00, items: { type: number } }
+
+    BillTrendVO:
+      type: object
+      properties:
+        range: { $ref: '#/components/schemas/BillRange' }
+        months: { type: array, items: { type: string } }
+        series: { type: array, items: { $ref: '#/components/schemas/TrendSeries' } }
+        totalAmounts: { type: array, items: { type: number } }
+        chainRatios: { type: array, description: 首项恒 null, items: { type: number, nullable: true } }
+        providerAvailability: { type: array, items: { $ref: '#/components/schemas/ProviderAvailability' } }
+        hasData: { type: boolean }
+
+    AccountRow:
+      type: object
+      properties:
+        account: { type: string }
+        provider: { type: string }
+        providerLabel: { type: string }
+        region: { type: string, nullable: true }
+        enabled: { type: boolean }
+        payAmount: { type: number }
+        officialAmount: { type: number }
+        discountAmount: { type: number }
+        ratio: { type: number, description: '占比（分母仅含 hasBillData=true 账号）' }
+        chainRatio: { $ref: '#/components/schemas/NullableChainRatio' }
+        hasBillData: { type: boolean }
+        sparkline: { type: array, description: 近 6 月实付迷你趋势, items: { type: number } }
+        sparklineMonths: { type: array, items: { type: string } }
+
+    ProviderShare:
+      type: object
+      properties:
+        provider: { type: string }
+        label: { type: string }
+        payAmount: { type: number }
+        ratio: { type: number }
+
+    BillAccountVO:
+      type: object
+      properties:
+        range:
+          allOf:
+            - $ref: '#/components/schemas/BillRange'
+            - type: object
+              properties:
+                previousRange:
+                  allOf: [{ $ref: '#/components/schemas/BillRange' }]
+                  nullable: true
+        totalPayAmount: { type: number }
+        rows: { type: array, items: { $ref: '#/components/schemas/AccountRow' } }
+        byProvider: { type: array, items: { $ref: '#/components/schemas/ProviderShare' } }
+
+    DetailRow:
+      type: object
+      properties:
+        id: { type: string, description: 'FEE:{pk} / BD:{pk} / QCL:{pk}' }
+        billMonth: { type: string }
+        account: { type: string }
+        provider: { type: string }
+        providerLabel: { type: string }
+        productMain: { type: string, description: 产品大类 }
+        productSub: { type: string, nullable: true }
+        chargingMode: { type: string, description: 计费模式统一文本 }
+        officialAmount: { type: number, description: 原价 }
+        consumeAmount: { type: number, description: 消费/应付 }
+        discountAmount: { type: number, description: 优惠 }
+        payAmount: { type: number, description: 实付（主口径） }
+        cashPay: { type: number, description: 现金支付 }
+        voucherPay: { type: number, description: 代金券/优惠券 }
+        creditPay: { type: number, description: 信用/赠送账户 }
+        debtAmount: { type: number, description: 欠费（不计入实付） }
+        eraseAmount: { type: number, description: 抹零（不计入实付） }
+        writeoffAmount: { type: number, description: 核销（不计入实付） }
+        region: { type: string, nullable: true }
+        resourceId: { type: string, nullable: true, description: 华为费用记录无此字段 }
+        resourceName: { type: string, nullable: true }
+        tradeTime: { type: string, nullable: true, description: 交易时间原样透传 }
+        amountSource: { type: string, enum: [FEE_RECORD, BREAK_DOWN, RESOURCE_SUMMARY] }
+        amountSourceLabel: { type: string }
+        amountAnomaly: { type: boolean }
+
+    BillDetailPageVO:
+      type: object
+      properties:
+        pageNum: { type: integer }
+        pageSize: { type: integer }
+        total: { type: integer, description: 服务端 COUNT 全量条数 }
+        pages: { type: integer }
+        records: { type: array, items: { $ref: '#/components/schemas/DetailRow' } }
+        summary:
+          type: object
+          description: 当前筛选条件全量合计（不是当前页之和）
+          properties:
+            payAmountSum: { type: number }
+            officialAmountSum: { type: number }
+            discountAmountSum: { type: number }
+        dataQuality:
+          type: object
+          properties:
+            amountAnomalyCount: { type: integer }
+
+    ProductTopRow:
+      type: object
+      properties:
+        rank: { type: integer }
+        productMain: { type: string }
+        provider: { type: string, nullable: true }
+        providerLabel: { type: string, nullable: true }
+        account: { type: string, nullable: true, description: dimension=account 时有值 }
+        payAmount: { type: number }
+        ratio: { type: number }
+        accountCount: { type: integer }
+        resourceCount: { type: integer, nullable: true, description: 华为无法统计时为 0/null }
+
+    ProductTopOthers:
+      type: object
+      nullable: true
+      properties:
+        payAmount: { type: number }
+        ratio: { type: number }
+        productCount: { type: integer }
+
+    BillProductTopVO:
+      type: object
+      properties:
+        range: { $ref: '#/components/schemas/BillRange' }
+        dimension: { type: string }
+        totalPayAmount: { type: number }
+        rows: { type: array, items: { $ref: '#/components/schemas/ProductTopRow' } }
+        others: { $ref: '#/components/schemas/ProductTopOthers' }
+
+    ProviderStatsVO:
+      type: object
+      description: 各厂商资源计数（key 为资源类型标识，value 为数量）
+      properties:
+        huawei: { type: object, additionalProperties: { type: integer } }
+        tencent: { type: object, additionalProperties: { type: integer } }
+        aliyun: { type: object, additionalProperties: { type: integer } }
+        totals:
+          type: object
+          properties:
+            huawei: { type: integer }
+            tencent: { type: integer }
+            aliyun: { type: integer }
+            all: { type: integer }
+
+    CrossCloudDomain:
+      type: object
+      properties:
+        label: { type: string, description: 业务域中文名 }
+        huawei: { type: object, additionalProperties: { type: integer } }
+        tencent: { type: object, additionalProperties: { type: integer } }
+        aliyun: { type: object, additionalProperties: { type: integer } }
+
+    CrossCloudVO:
+      type: object
+      description: 按业务域分组的跨云对比（计算/存储/数据库/网络/安全/中间件/CDN/大数据/运维管理/物联网）
+      properties:
+        compute: { $ref: '#/components/schemas/CrossCloudDomain' }
+        storage: { $ref: '#/components/schemas/CrossCloudDomain' }
+        database: { $ref: '#/components/schemas/CrossCloudDomain' }
+        network: { $ref: '#/components/schemas/CrossCloudDomain' }
+        security: { $ref: '#/components/schemas/CrossCloudDomain' }
+        middleware: { $ref: '#/components/schemas/CrossCloudDomain' }
+        cdn: { $ref: '#/components/schemas/CrossCloudDomain' }
+        bigdata: { $ref: '#/components/schemas/CrossCloudDomain' }
+        ops: { $ref: '#/components/schemas/CrossCloudDomain' }
+        iot: { $ref: '#/components/schemas/CrossCloudDomain' }
+
+    StatisticsVO:
+      type: object
+      description: 全量资源计数统计（key 为资源类型，value 为记录数）
+      properties:
+        huawei: { type: object, additionalProperties: { type: integer } }
+        tencent: { type: object, additionalProperties: { type: integer } }
+        aliyun: { type: object, additionalProperties: { type: integer } }
+
+    SyncResult:
+      type: object
+      properties:
+        success: { type: boolean }
+        message: { type: string }
+        syncedCount: { type: integer, description: 成功同步条数（仅成功时返回） }
+        configCount: { type: integer, description: 参与同步的配置数（仅成功时返回） }
