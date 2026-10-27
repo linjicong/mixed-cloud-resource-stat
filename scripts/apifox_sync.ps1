@@ -3,13 +3,13 @@
 #   powershell -NoProfile -ExecutionPolicy Bypass -File scripts/apifox_sync.ps1
 # Token 解析优先级: -Token 参数 > 环境变量 APIFOX_TOKEN > 本地文件 scripts/.apifox-token
 # 说明:
-#   - 读取 docs/02-涉及文档/全量接口-openapi.yaml，调用 Apifox 开放 API 导入项目
+#   - 读取 docs/api/openapi.yaml，调用 Apifox 开放 API 导入项目
 #   - 覆盖策略 AUTO_MERGE: 同名接口自动合并更新, 不删除项目内存量接口
-#   - 每次同步结果追加记录到 docs/02-涉及文档/apifox-sync-log.md
+#   - 每次同步结果追加记录到 docs/api/apifox-sync-log.md
 param(
     [string]$Token = "",
     [string]$ProjectId = "8973200",
-    [string]$SpecPath = "docs\02-涉及文档\全量接口-openapi.yaml"
+    [string]$SpecPath = "docs\api\openapi.yaml"
 )
 
 $ErrorActionPreference = 'Stop'
@@ -73,7 +73,7 @@ try {
     $detail = $_.Exception.Message
 }
 
-$logPath = "docs\02-涉及文档\apifox-sync-log.md"
+$logPath = "docs\api\apifox-sync-log.md"
 $logHeader = "# Apifox 接口同步日志`n`n| 时间 | 项目 | 状态 | 详情 |`n|---|---|---|---|`n"
 if (-not (Test-Path $logPath)) { Set-Content -Path $logPath -Value $logHeader -Encoding UTF8 }
 Add-Content -Path $logPath -Value "| $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss') | $ProjectId | $status | $detail |" -Encoding UTF8
