@@ -53,6 +53,16 @@
 
 ## 四、提交前校验
 
+仅校验 YAML 语法：
+
 ```bash
 python -c "import yaml; yaml.safe_load(open('docs/api/openapi.yaml', encoding='utf-8')); print('OK')"
 ```
+
+完整一致性校验（推荐，扫描 Controller 源码比对接口集合 / 参数名 / 资源类型枚举 / YAML 误解析）：
+
+```bash
+python scripts/verify_openapi_sync.py
+```
+
+输出 `接口集合 / 参数 / 枚举 / YAML 解析 全部一致` 即通过；有差异会逐条列出 `[缺失]` `[多余]` `[参数]` `[枚举]` `[YAML]`。

@@ -5,6 +5,11 @@ info:
   description: |
     mixed-cloud-resource-stat 后端全量接口文档（覆盖 6 个 Controller / 17 个端点）。
 
+    > 端点计数口径：以 paths 下 operation（HTTP 方法）为粒度，共 17 个操作；
+    > 其中 `/bill/*` 5 个、`/cloud-configs` 相关 5 个、资源查询 3 个、`/summary/*` 2 个、`/statistics` 1 个、`/sync/{provider}` 1 个。
+    > 声明带 `@RequestMapping` 前缀的 Controller 共 5 个（Bill / CloudConfig / Statistics / Summary / Sync），
+    > `ResourceController` 无类级前缀，按 `/huawei|/tencent|/aliyun` 三组裸露路径注册。
+
     ## 通用约定
     - **无统一响应包装**：成功 200 直出业务 JSON；参数非法 400；服务端异常 500。
     - **统一账单模块错误体**固定为 `{ "error": "...", "message": "..." }` 双键（前端 axios 拦截器读取 `message`）。
@@ -52,7 +57,7 @@ paths:
     get:
       tags: [统一账单]
       summary: 总览 KPI
-      description: 区间实付总费用、原价/优惠、环比、账号计数（去重并集口径）、TOP 产品、厂商可用性、数据质量指标。
+      description: 区间实付总费用、原价/优惠、环比、账号计数（去重并集口径）、TOP 产品、厂商可用性、数据质量指标。startMonth / endMonth 虽声明为 optional，但缺省或格式非法时服务端一律返回 400。
       operationId: getBillKpi
       parameters:
         - $ref: '#/components/parameters/StartMonth'
@@ -81,8 +86,8 @@ paths:
                 accountWithoutBillCount: 6
                 topProduct: { productMain: 弹性云服务器, provider: huawei, providerLabel: 华为云, payAmount: 20775.69, ratio: 27.49 }
                 providerAvailability:
-                  - { provider: huawei, label: 华为云, available: true, accountCount: 2, message: null }
-                  - { provider: tencent, label: 腾讯云, available: true, accountCount: 5, message: null }
+                  - { provider: huawei, label: 华为云, available: true, accountCount: 2, message: 'null' }
+                  - { provider: tencent, label: 腾讯云, available: true, accountCount: 5, message: 'null' }
                   - { provider: aliyun, label: 阿里云, available: false, accountCount: 2, message: 该厂商账单数据暂未采集 }
                 dataQuality: { amountAnomalyCount: 0, droppedRowCount: 0 }
                 currentMonthInProgress: false
@@ -93,7 +98,7 @@ paths:
     get:
       tags: [统一账单]
       summary: 历史费用趋势
-      description: 按月分厂商实付序列（堆叠柱 + 合计折线）。窗口以 endMonth 为基准向前推 months-1 个月；无数据月份补 0.00（非 null）；chainRatios 首项恒 null。
+      description: 按月分厂商实付序列（堆叠柱 + 合计折线）。窗口以 endMonth 为基准向前推 months-1 个月；无数据月份补 0.00（非 null）；chainRatios 首项恒 null。传入 months 时 startMonth 仅参与参数合法性校验，不参与窗口计算。
       operationId: getBillTrend
       parameters:
         - $ref: '#/components/parameters/StartMonth'
@@ -121,8 +126,8 @@ paths:
                 totalAmounts: [54370.17, 0.0, 0.0, 0.0, 0.0, 21217.37]
                 chainRatios: [null, -100.0, null, null, null, null]
                 providerAvailability:
-                  - { provider: huawei, label: 华为云, available: true, accountCount: 2, message: null }
-                  - { provider: tencent, label: 腾讯云, available: true, accountCount: 5, message: null }
+                  - { provider: huawei, label: 华为云, available: true, accountCount: 2, message: 'null' }
+                  - { provider: tencent, label: 腾讯云, available: true, accountCount: 5, message: 'null' }
                   - { provider: aliyun, label: 阿里云, available: false, accountCount: 2, message: 该厂商账单数据暂未采集 }
                 hasData: true
         '400': { $ref: '#/components/responses/BillBadRequest' }
@@ -388,12 +393,12 @@ paths:
           content:
             application/json:
               schema: { $ref: '#/components/schemas/CloudConf' }
-        '404': { description: 配置不存在 }
+        '404': { description: 配置不存在（空响应体） }
         '500': { $ref: '#/components/responses/EmptyServerError' }
     put:
       tags: [云厂商配置]
       summary: 更新云配置
-      description: 请求体需携带完整字段；createTime 为空时保留原值，updateTime 服务端刷新。
+      description: 请求体需携带完整字段（CloudConf 全量字段，服务端按主键全量 updateById）；createTime 为空时保留原值，updateTime 服务端刷新。
       operationId: updateCloudConfig
       parameters:
         - $ref: '#/components/parameters/ConfigId'
@@ -402,13 +407,14 @@ paths:
         content:
           application/json:
             schema: { $ref: '#/components/schemas/CloudConfInput' }
+            example: { name: huawei, provider: HCloud, region: cn-south-1, accessKey: 'AKxxxx', secretKey: '******', enable: true, remark: '生产账号（已改备注）' }
       responses:
         '200':
           description: 更新成功，返回更新后的对象
           content:
             application/json:
               schema: { $ref: '#/components/schemas/CloudConf' }
-        '404': { description: 配置不存在 }
+        '404': { description: 配置不存在（空响应体） }
         '500': { $ref: '#/components/responses/EmptyServerError' }
     delete:
       tags: [云厂商配置]
@@ -428,11 +434,18 @@ paths:
       tags: [资源查询]
       summary: 查询华为云资源
       description: |
-        按资源类型查询华为云已采集资源。type 取值（60+）：ecs, rds, elb, evs, vpc, eip, ims, cbr, bills,
-        bills_fee_records, dcs, dds, obs, sfs, ces_metric, dns_private, dns_record_sets, cce, iam, rms,
-        nat, functiongraph, vpn, gaussdb, kms, waf, cts, kafka, rocketmq, rabbitmq, lts, cdn, antiddos,
-        hss, swr, smn, apig, aom, css, cfw, ccm, ssl, drs, mrs, as, bms, workspace, dli, dws, ddm, cse 等。
-        未识别 type 返回 400。
+        按资源类型查询华为云已采集资源，type 大小写不敏感，共 88 个取值（含别名）：
+
+        `ecs` `rds` `elb` `evs` `vpc` `eip` `ims` `cbr` `bills` `bills_fee_records` `resource_record_detail`
+        `dcs`(redis) `dds`(mongodb) `obs`(cos/storage) `sfs`(nas) `ces_metric`(metric) `dns_private` `dns_record_sets`
+        `cce`(cluster) `auth_domain` `user`(iam) `access_key` `resource`(rms) `nat` `functiongraph`(faas) `vpn`
+        `gaussdb` `gaussdbnosql` `gaussdbopengauss` `kms` `waf` `cts`(audit) `kafka` `rocketmq` `rabbitmq` `lts`
+        `cdn` `antiddos`(ddos) `hss` `swr` `smn` `apig`(apigw) `aom` `css`(es) `cfw` `ccm`(ssl) `drs` `mrs` `as`
+        `bms` `workspace`(wks) `dli` `dws` `ddm` `cse` `servicestage` `cbh` `dbss` `vod` `live` `oms` `sdrs` `sms`
+        `dsc` `roma` `cph` `er` `vpcep` `ief` `iotda`(iot) `deh` `bcs` `dc` `ga` `eg` `apm` `cloudtable`
+        `dataartsstudio`(dataarts) `dis` `mas` `mpc` `clouddc` `kvs` `eds` `tics` `organizations`(org) `ram` `coc`
+
+        未识别 type 返回 400（响应体为纯文本 `unsupported type: xxx`）。
       operationId: getHuaweiResources
       parameters:
         - $ref: '#/components/parameters/ResourceType'
@@ -451,10 +464,30 @@ paths:
       tags: [资源查询]
       summary: 查询腾讯云资源
       description: |
-        按资源类型查询腾讯云已采集资源。type 取值（100+）：cvm, cdb, clb, cbs, bills, vpc, subnet, eip, sg,
-        cdn, redis, mongodb, cynosdb, postgresql, sqlserver, nat, cfs, dns, cos, scf, mariadb, dcdb, ckafka,
-        rocketmq, ssl, waf, cls, monitor, domain, tke, tcr, es, memcached, keewidb, ctsdb, chdfs, as,
-        lighthouse, dc, rabbitmq, apigw, bms, tdmq, oceanus, emr, gaap 等。未识别 type 返回 400。
+        按资源类型查询腾讯云已采集资源，type 大小写不敏感，共 184 个取值（含别名）。
+
+        **常用类型**：`cvm` `cdb` `clb` `cbs` `bills` `vpc` `subnet` `eip` `sg`(securitygroup) `cdn` `redis`
+        `mongodb` `cynosdb` `postgresql`(pg) `sqlserver` `nat` `cfs` `dns` `cos` `scf` `mariadb` `dcdb` `ckafka`
+        `rocketmq` `ssl` `waf` `cls` `monitor` `domain` `tke` `tcr` `es` `memcached` `keewidb` `ctsdb` `chdfs` `as`
+        `lighthouse` `dc` `rabbitmq` `apigw` `bms` `tdmq` `oceanus` `emr` `gaap` `audit`
+
+        **其余类型**（安全/音视频/AI/行业/企点类等长尾）：`agentgw` `agentplatform` `apprender` `asr` `bi`
+        `bastion` `bizprocess` `cacert` `captcha` `chc` `clbgw` `cloudbase` `cloudcontact` `cloudhsm` `cloudphone`
+        `cloudstudio` `cmq` `codingdevops` `config` `contentrecognize` `contentsafe` `controlcenter` `csp`
+        `cspgateway` `css` `cwp` `cwp3` `ddos` `dlc` `dnsprivate` `dnssec` `dataaudit` `datasafegov` `devicesafety`
+        `distid` `docprocess` `docs` `domainreg` `eo` `esign` `engwrite` `eventbus` `exposedmgr` `face` `facefusion`
+        `facemakeup` `faceswap` `gameantiace` `gamedb` `gameserver` `gamevoice` `gse` `gtm` `ghphone` `hbase` `hsm`
+        `healthdash` `healthomics` `healthreport` `icpbeian` `ioa` `imageprocess` `imagesearch` `iot` `iotdevice`
+        `iothub` `kms` `knowledgeengine` `live` `live2` `mail` `malltraffic` `mathgrade` `mediaasset` `meeting`
+        `microweda` `minisafe` `mongodbckafka` `nmt` `nativebuild` `ocr` `org` `pentest` `privdns` `regionmgr`
+        `riskidentify` `rtiedu` `rtiindustrial` `safeaudio` `safecenter` `safedoc` `safeguard` `safeimage`
+        `safemonitor` `safeplatform` `safetext` `safevideo` `seccredential` `secretmgr` `ses` `smartadvisor`
+        `smartguide` `smartview` `sms` `smssign` `smstemplate` `spokeneval` `sslpod` `tapd` `tbaas` `tcb` `tcaplusdb`
+        `tcrent` `tencentconnect` `tendis` `tchousec` `tchoused` `tchousep` `ti` `tihai` `tokenhub` `tourismbigdata`
+        `trtc` `trtcroom` `tse` `tsf` `tts` `vod` `vodmedia` `vodprocess` `voiceclone` `voicemsg` `vulnmgr` `wedata`
+        `welink` `websearch` `weda`
+
+        未识别 type 返回 400（响应体为纯文本 `unsupported type: xxx`）。
       operationId: getTencentResources
       parameters:
         - $ref: '#/components/parameters/ResourceType'
@@ -473,11 +506,15 @@ paths:
       tags: [资源查询]
       summary: 查询阿里云资源
       description: |
-        按资源类型查询阿里云已采集资源。type 取值：ack, acr, actiontrail, alb, analyticdb, apigateway, cbh,
-        cdn, cen, clickhouse, cloudfirewall, cms, config, ddos, disk, dns, dns_records, dsc, dts, ecs, eip,
-        elasticsearch, emr, ess, fc, ga, hologres, hss, iot, kafka, kms, lindorm, live, maxcompute, mongodb,
-        mse, nas, nat, nlb, oos, oss, polardb, quota, rabbitmq, rds, redis, rocketmq, sae, sag, securitygroup,
-        selectdb, slb, sls, sms, ssl, storagegateway, vod, vpc, vpcendpoint, vpngateway, waf 等。未识别 type 返回 400。
+        按资源类型查询阿里云已采集资源，type 大小写不敏感，共 61 个取值：
+
+        `ack` `acr` `actiontrail` `alb` `analyticdb` `apigateway` `cbh` `cdn` `cen` `clickhouse` `cloudfirewall`
+        `cms` `config` `ddos` `disk` `dns` `dns_records` `dsc` `dts` `ecs` `eip` `elasticsearch` `emr` `ess` `fc`
+        `ga` `hologres` `hss` `iot` `kafka` `kms` `lindorm` `live` `maxcompute` `mongodb` `mse` `nas` `nat` `nlb`
+        `oos` `oss` `polardb` `quota` `rabbitmq` `rds` `redis` `rocketmq` `sae` `sag` `securitygroup` `selectdb`
+        `slb` `sls` `sms` `ssl` `storagegateway` `vod` `vpc` `vpcendpoint` `vpngateway` `waf`
+
+        未识别 type 返回 400（响应体为纯文本 `unsupported type: xxx`）。
       operationId: getAliyunResources
       parameters:
         - $ref: '#/components/parameters/ResourceType'
