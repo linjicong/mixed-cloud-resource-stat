@@ -373,7 +373,7 @@
         <dependency>
             <groupId>com.volcengine</groupId>
             <artifactId>volc-sdk-java</artifactId>
-            <version>1.0.219</version>
+            <version>1.0.289</version>
         </dependency>
 
     </dependencies>
