@@ -459,7 +459,7 @@
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
-                <version>33.5.0-jre</version>
+                <version>33.7.1-jre</version>
             </dependency>
             <!-- 统一bcprov版本：覆盖阿里云SDK带入的bcprov-jdk18on 1.78.1 -->
             <dependency>
