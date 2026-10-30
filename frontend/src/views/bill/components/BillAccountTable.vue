@@ -186,8 +186,8 @@ const sortedRows = computed(() => {
     const bNo = b.hasBillData === false ? 1 : 0
     if (aNo !== bNo) return aNo - bNo
 
-    let valueA = 0
-    let valueB = 0
+    let valueA
+    let valueB
     if (prop === 'chainRatio') {
       // null 视为最小，排序时排在有值之后
       const ra = a.chainRatio?.rate

@@ -151,7 +151,7 @@ const option = computed(() => ({
         label: { show: true, fontSize: 13, formatter: '{b}\n{d}%' },
         scale: true
       },
-      data: pieData.value.map((item, index) => ({
+      data: pieData.value.map((item) => ({
         ...item,
         itemStyle: {
           color:
