@@ -28,7 +28,7 @@ request.interceptors.response.use(
   },
   error => {
     // 处理错误响应
-    let errorMessage = '请求失败'
+    let errorMessage
     
     if (error.response) {
       // 服务器返回了错误状态码
