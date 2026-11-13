@@ -237,7 +237,7 @@
         <dependency>
             <groupId>com.aliyun</groupId>
             <artifactId>live20161101</artifactId>
-            <version>1.1.1</version>
+            <version>3.0.1</version>
             <exclusions>
                 <!-- tea-rpc-util带入的旧版javax构件，项目不需要 -->
                 <exclusion>
@@ -265,6 +265,13 @@
             <groupId>com.aliyun</groupId>
             <artifactId>ddosbgp20171120</artifactId>
             <version>2.0.0</version>
+            <exclusions>
+                <!-- tea-rpc-util带入的旧版javax构件，项目不需要 -->
+                <exclusion>
+                    <groupId>javax.xml.bind</groupId>
+                    <artifactId>jaxb-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.aliyun</groupId>
