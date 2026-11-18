@@ -212,7 +212,7 @@
         <dependency>
             <groupId>com.aliyun</groupId>
             <artifactId>ess20220222</artifactId>
-            <version>1.9.13</version>
+            <version>1.12.3</version>
         </dependency>
         <dependency>
             <groupId>com.aliyun</groupId>
