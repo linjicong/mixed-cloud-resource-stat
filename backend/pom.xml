@@ -254,7 +254,7 @@
         <dependency>
             <groupId>com.aliyun</groupId>
             <artifactId>vod20170321</artifactId>
-            <version>3.6.4</version>
+            <version>3.11.1</version>
         </dependency>
         <dependency>
             <groupId>com.aliyun</groupId>
