@@ -89,7 +89,7 @@ public class CommonSqlInjector extends DefaultSqlInjector {
                     }
                 }
             }
-            String sql = String.format(sqlMethod.getSql(), tableInfo.getTableName(), columnScript, valuesScript);
+            String sql = sqlMethod.format(tableInfo.getTableName(), columnScript, valuesScript);
             SqlSource sqlSource = languageDriver.createSqlSource(configuration, sql, modelClass);
             return this.addInsertMappedStatement(mapperClass, modelClass, methodName, sqlSource, keyGenerator, keyProperty, keyColumn);
 
